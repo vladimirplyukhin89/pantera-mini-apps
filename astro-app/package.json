@@ -1,0 +1,21 @@
+{
+  "name": "astro-app",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "init-db": "node src/scripts/test-db.js",
+    "add-products": "node src/scripts/add-products.js",
+    "migrate:add-collection-name": "node src/scripts/migrate-add-collection-name.js",
+    "migrate:add-price-to-variants": "node src/scripts/migrate-add-price-to-variants.js",
+    "migrate:remove-price-from-products": "node src/scripts/migrate-remove-price-from-products.js"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.1",
+    "astro": "^5.16.6",
+    "better-sqlite3": "^12.5.0"
+  }
+}

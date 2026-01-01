@@ -1,0 +1,40 @@
+# База данных SQLite (не коммитим!)
+database/
+*.db
+*.sqlite
+*.sqlite3
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Переменные окружения
+.env
+.env.local
+.env.*.local
+
+# Логи
+logs
+*.log
+
+# Временные файлы
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Astro
+.astro/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Резервные копии
+*.backup
+*.bak
+
