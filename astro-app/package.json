@@ -8,10 +8,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "init-db": "node src/scripts/test-db.js",
-    "add-products": "node src/scripts/add-products.js",
-    "migrate:add-collection-name": "node src/scripts/migrate-add-collection-name.js",
-    "migrate:add-price-to-variants": "node src/scripts/migrate-add-price-to-variants.js",
-    "migrate:remove-price-from-products": "node src/scripts/migrate-remove-price-from-products.js"
+    "seed": "node src/scripts/seed.js"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.1",
