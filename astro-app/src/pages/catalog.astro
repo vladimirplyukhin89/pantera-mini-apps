@@ -1,0 +1,46 @@
+---
+// src/pages/catalog.astro
+// Страница каталога товаров
+
+import Layout from '../components/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomBar from '../components/BottomBar.astro';
+
+// Пока заглушка - данные будем получать на следующем этапе
+const products = [];
+---
+
+<Layout title="Каталог - Pantera Shop">
+  <Header cartItemsCount={0} />
+  
+  <main class="main-content">
+    <h1 class="page-title">Каталог</h1>
+    <p class="empty-message">Товары будут здесь</p>
+  </main>
+
+  <BottomBar currentPath="/catalog" />
+</Layout>
+
+<style>
+  .main-content {
+    flex: 1;
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+    padding-bottom: 5rem; /* Отступ для bottom bar */
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--tg-theme-text-color, #000000);
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-message {
+    color: var(--tg-theme-hint-color, #999999);
+    text-align: center;
+    padding: 2rem 0;
+  }
+</style>
+

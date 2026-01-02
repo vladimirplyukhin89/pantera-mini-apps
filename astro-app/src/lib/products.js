@@ -105,8 +105,7 @@ export function getProductVariants(productId) {
           WHEN 'M' THEN 3
           WHEN 'L' THEN 4
           WHEN 'XL' THEN 5
-          WHEN 'XXL' THEN 6
-          ELSE 7
+          ELSE 6
         END
     `).all(productId);
 

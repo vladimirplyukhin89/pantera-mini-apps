@@ -1,0 +1,53 @@
+---
+// src/pages/cart.astro
+// Страница корзины
+
+import Layout from '../components/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomBar from '../components/BottomBar.astro';
+
+// Пока заглушка
+const cartItems = [];
+const totalAmount = 0;
+---
+
+<Layout title="Корзина - Pantera Shop">
+  <Header cartItemsCount={cartItems.length} />
+  
+  <main class="main-content">
+    <h1 class="page-title">Корзина</h1>
+    {cartItems.length === 0 ? (
+      <p class="empty-message">Корзина пуста</p>
+    ) : (
+      <div class="cart-items">
+        <!-- Товары корзины будут здесь -->
+      </div>
+    )}
+  </main>
+
+  <BottomBar currentPath="/cart" />
+</Layout>
+
+<style>
+  .main-content {
+    flex: 1;
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+    padding-bottom: 5rem; /* Отступ для bottom bar */
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--tg-theme-text-color, #000000);
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-message {
+    color: var(--tg-theme-hint-color, #999999);
+    text-align: center;
+    padding: 2rem 0;
+  }
+</style>
+

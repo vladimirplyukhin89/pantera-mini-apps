@@ -1,12 +1,30 @@
-<html lang="ru">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+---
+// src/pages/index.astro
+// Главная страница с hero секцией (фон + текст + красный прямоугольник)
+
+import Layout from '../components/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomBar from '../components/BottomBar.astro';
+import HeroSection from '../components/HeroSection.astro';
+---
+
+<Layout title="Главная - Pantera Shop">
+  <main class="main-content">
+    <HeroSection />
+    <Header cartItemsCount={0} />
+  </main>
+
+  <BottomBar currentPath="/" />
+</Layout>
+
+<style>
+  .main-content {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+  }
+</style>
