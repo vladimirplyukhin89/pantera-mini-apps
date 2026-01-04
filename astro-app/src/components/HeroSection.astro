@@ -2,29 +2,25 @@
 // src/components/HeroSection.astro
 // Hero секция с фоном (фото человека), текстом поверх и красным прямоугольником
 
+import HeroAccent from './HeroAccent';
+
 interface Props {
   title?: string;
   description?: string;
-  imageUrl?: string;
   ctaText?: string;
   ctaLink?: string;
 }
 
 const {
-  title = 'Pantera Shop',
+  title = 'Псс, тут тишки продают',
   description = 'Бац бац и мимо',
-  imageUrl = '/images/mini-app-example-man.jpeg',
-  ctaText = 'Перейти в каталог',
-  ctaLink = '/catalog'
+  ctaLink = '/catalog',
 } = Astro.props;
 ---
 
 <section class="hero-section">
-  <!-- Фоновое изображение -->
-  <div class="hero-background">
-    <img src={imageUrl} alt="Hero background" class="hero-image" />
-    <div class="hero-overlay"></div>
-  </div>
+  <!-- Overlay поверх фона -->
+  <div class="hero-overlay"></div>
 
   <!-- Контент поверх изображения -->
   <div class="hero-content">
@@ -33,12 +29,9 @@ const {
       <p class="hero-description">{description}</p>
     </div>
 
-    <!-- Красный прямоугольник (акцентный элемент) -->
-    <div class="hero-accent">
-      <svg class="hero-arrow" width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z" fill="white"/>
-      </svg>
-    </div>
+     <div class="hero-accent" >
+      <HeroAccent client:load linkTo={ctaLink} className="hero-icon" />
+     </div>
   </div>
 </section>
 
@@ -51,22 +44,10 @@ const {
     flex-direction: column;
     justify-content: flex-end;
     overflow: hidden;
-  }
-
-  .hero-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
-
-  .hero-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+    background-image: url('/images/mini-app-example-man.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .hero-overlay {
@@ -77,59 +58,86 @@ const {
     height: 100%;
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.5) 100%
+      var(--color-overlay-dark) 0%,
+      var(--color-overlay-dark-strong) 100%
     );
-    z-index: 2;
+    z-index: 1;
   }
 
   .hero-content {
     position: relative;
-    z-index: 3;
+    z-index: 2;
     padding: 1.5rem 1rem 15vh;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
     width: 100%;
   }
 
   .hero-text {
     flex: 1;
-    color: #ffffff;
-    z-index: 4;
+    color: var(--color-text-cream);
   }
 
   .hero-title {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-family: 'KabrioAbarth', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 900;
     line-height: 1.2;
-    margin-bottom: 0.75rem;
-    color: #ffffff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0.75rem; 
+    color: var(--color-text-cream);
+    text-shadow: 0 2px 4px var(--color-shadow-text);
   }
 
   .hero-description {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-family: 'KabrioAbarth', sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    margin: 5px 0;
+    color: var(--color-text-cream-alpha);
+    text-shadow: 0 1px 2px var(--color-shadow-text-light);
   }
 
-  /* Красный прямоугольник (акцентный элемент) - мобильный */
+  /* Красный прямоугольник (акцентный элемент) */
   .hero-accent {
-    width: 60px;
+    width: 80px;
     height: 60px;
-    background-color: #d84c4c; /* Красный цвет */
+    background-color: var(--color-red-accent);
     flex-shrink: 0;
     opacity: 0.9;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 5px;
+    text-decoration: none;
+    color: var(--color-white);
+    transition: opacity 0.2s;
+    cursor: pointer;
   }
 
-  .hero-arrow {
+  /* Hover эффекты только для устройств с курсором/тачпадом */
+  @media (hover: hover) and (pointer: fine) {
+    .hero-accent:hover {
+      opacity: 1;
+    }
+
+    .hero-accent:hover :global(.hero-icon) {
+      transform: translateX(10px);
+    }
+  }
+
+  .hero-accent:active {
+    opacity: 0.8;
+  }
+
+  :global(.hero-icon) {
+    transition: transform 0.3s ease;
+    width: 40px;
+    height: 40px;
+  }
+  
+  :global(.hero-icon svg) {
     width: 100%;
     height: 100%;
   }
@@ -142,16 +150,23 @@ const {
     }
 
     .hero-title {
-      font-size: 2rem;
+      font-size: 2.75rem;
+      font-weight: 900;
     }
 
     .hero-description {
-      font-size: 1rem;
+      font-size: 1.5rem;
+      font-weight: 700;
     }
 
     .hero-accent {
       width: 10rem;
       height: 8rem;
+    }
+    
+    :global(.hero-icon) {
+      width: 60px;
+      height: 60px;
     }
   }
 
@@ -163,16 +178,36 @@ const {
     }
 
     .hero-title {
-      font-size: 2.5rem;
+      font-size: 3.5rem;
+      font-weight: 900;
     }
 
     .hero-description {
-      font-size: 1.125rem;
+      font-size: 1.75rem;
+      font-weight: 700;
     }
 
     .hero-accent {
       width: 14rem;
       height: 10rem;
+    }
+    
+    :global(.hero-icon) {
+      width: 100px;
+      height: 100px;
+    }
+
+    .hero-section {
+      background-repeat: repeat;
+      background-size: auto;
+    }
+  }
+
+    /* Большие экраны (от 1440px) */
+  @media (min-width: 1440px) {
+    .hero-content {
+      max-width: 1440px;
+      margin: 0 auto;
     }
   }
 </style>

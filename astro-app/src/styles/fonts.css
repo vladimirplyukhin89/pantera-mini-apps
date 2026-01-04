@@ -1,0 +1,58 @@
+/* Font-face declarations for Kabrio fonts */
+
+@font-face {
+  font-family: 'KabrioAbarth';
+  src: url('../fonts/kabrio-pro/Zetafonts - KabrioAbarth-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KabrioAbarth';
+  src: url('../fonts/kabrio-pro/Zetafonts - KabrioAbarth-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KabrioAbarth';
+  src: url('../fonts/kabrio-pro/Zetafonts - KabrioAbarth-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KabrioAbarth';
+  src: url('../fonts/kabrio-pro/Zetafonts - KabrioAbarth-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KabrioAbarth';
+  src: url('../fonts/kabrio-pro/Zetafonts - KabrioAbarth-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KabrioAbarth';
+  src: url('../fonts/kabrio-pro/Zetafonts - KabrioAbarth-ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KabrioAbarth';
+  src: url('../fonts/kabrio-pro/Zetafonts - KabrioAbarth-Heavy.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+

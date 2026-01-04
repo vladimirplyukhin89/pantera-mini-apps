@@ -4,7 +4,7 @@
 
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar.astro';
+import BottomBar from '../components/BottomBar';
 
 // Пока заглушка
 const cartItems = [];
@@ -25,7 +25,7 @@ const totalAmount = 0;
     )}
   </main>
 
-  <BottomBar currentPath="/cart" />
+  <BottomBar client:load currentPath="/cart" />
 </Layout>
 
 <style>

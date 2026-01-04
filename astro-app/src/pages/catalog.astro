@@ -4,10 +4,22 @@
 
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar.astro';
+import BottomBar from '../components/BottomBar';
+import ProductCard from '../components/ProductCard.astro';
+import SizeFilter from '../components/SizeFilter';
+import { getAllProducts } from '../lib/products.js';
 
-// Пока заглушка - данные будем получать на следующем этапе
-const products = [];
+// Получаем все товары с сервера (server-side)
+const products = getAllProducts();
+
+// Получаем все доступные размеры из товаров
+const allSizes = new Set<string>();
+products.forEach(product => {
+  product.variants.forEach(variant => {
+    allSizes.add(variant.size);
+  });
+});
+const availableSizes = Array.from(allSizes).sort();
 ---
 
 <Layout title="Каталог - Pantera Shop">
@@ -15,32 +27,80 @@ const products = [];
   
   <main class="main-content">
     <h1 class="page-title">Каталог</h1>
-    <p class="empty-message">Товары будут здесь</p>
+    
+    {availableSizes.length > 0 && (
+      <SizeFilter client:load availableSizes={availableSizes} />
+    )}
+    
+    {products.length > 0 ? (
+      <div class="products-grid">
+        {products.map((product) => (
+          <ProductCard product={product} />
+        ))}
+      </div>
+    ) : (
+      <p class="empty-message">Товары отсутствуют</p>
+    )}
   </main>
 
-  <BottomBar currentPath="/catalog" />
+  <BottomBar client:load currentPath="/catalog" />
 </Layout>
 
 <style>
   .main-content {
     flex: 1;
-    padding: 2rem 1.5rem;
+    padding: 1.5rem 1rem;
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: 5rem; /* Отступ для bottom bar */
   }
 
   .page-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    color: var(--tg-theme-text-color, #000000);
+    color: var(--tg-theme-text-color, var(--color-text-dark));
     margin-bottom: 1.5rem;
   }
 
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
   .empty-message {
-    color: var(--tg-theme-hint-color, #999999);
+    color: var(--tg-theme-hint-color, var(--color-text-gray));
     text-align: center;
     padding: 2rem 0;
+  }
+
+  /* Планшеты (от 481px) */
+  @media (min-width: 481px) {
+    .main-content {
+      padding: 2rem 1.5rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  /* Десктоп (от 1024px) */
+  @media (min-width: 1024px) {
+    .main-content {
+      max-width: 1280px;
+      padding: 2.5rem 2rem;
+    }
+
+    .products-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
   }
 </style>
 

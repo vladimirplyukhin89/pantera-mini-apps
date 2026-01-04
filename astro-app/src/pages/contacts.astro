@@ -4,7 +4,7 @@
 
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar.astro';
+import BottomBar from '../components/BottomBar';
 ---
 
 <Layout title="Контакты - Pantera Shop">
@@ -31,7 +31,7 @@ import BottomBar from '../components/BottomBar.astro';
     </section>
   </main>
 
-  <BottomBar currentPath="/contacts" />
+  <BottomBar client:load currentPath="/contacts" />
 </Layout>
 
 <style>

@@ -11,14 +11,17 @@ Telegram Mini App для продажи футболок зала бокса. Н
   - Файловый роутинг (file-based routing)
   - API endpoints через `src/pages/api/`
   - SSR через адаптер Node.js
-  - Компоненты `.astro` (HTML-like синтаксис)    
+  - Компоненты `.astro` (HTML-like синтаксис) для статических частей
+  - **React** - для интерактивных компонентов (оптимизация DOM-манипуляций)
 - **Node.js** (v18+) - runtime для Astro SSR
+- **React** - библиотека для создания интерактивных UI компонентов
 - **Telegram WebApp SDK** - для интеграции с Telegram
 
 
 ### Управление состоянием
-- Простые JavaScript модули для состояния (без сложных библиотек на первом этапе)
+- **React** - для клиентского состояния и интерактивности (useState, useEffect)
 - Возможность использовать localStorage для корзины (клиентское состояние)
+- React компоненты для оптимизации DOM-манипуляций
 
 ### База данных
 - **SQLite** - выбрана для упрощения разработки
@@ -33,26 +36,39 @@ Telegram Mini App для продажи футболок зала бокса. Н
 
 ### Дополнительные инструменты
 - **@astrojs/node** - адаптер для SSR на Node.js
+- **@astrojs/react** - интеграция React в Astro
+- **react** и **react-dom** - React библиотеки
 - **dotenv** - управление переменными окружения
 - **better-sqlite3** - драйвер для SQLite (все данные: товары, корзина, заказы)
 
 
-### Почему Astro?
+### Почему Astro + React?
+**Astro:**
 - ✅ Единая структура для frontend и API (не нужно разделять на два проекта)
 - ✅ Простой файловый роутинг (страницы в папке `src/pages/`)
 - ✅ API endpoints в той же структуре (`src/pages/api/`)
-- ✅ Минималистичный синтаксис компонентов (похож на HTML)
-- ✅ Отличная производительность
+- ✅ Отличная производительность (SSR из коробки)
 - ✅ Подходит для SSR приложений (Telegram Mini App)
-- ✅ Легко изучать для новичков
+- ✅ Zero JS по умолчанию (JavaScript загружается только для интерактивных компонентов)
+
+**React:**
+- ✅ Оптимизированные DOM-манипуляции (виртуальный DOM, эффективные обновления)
+- ✅ Управление состоянием (useState, useEffect)
+- ✅ Компонентный подход для интерактивных элементов
+- ✅ Интеграция с Astro через `@astrojs/react` (гибридный подход)
+
+**Гибридный подход (Astro + React):**
+- ✅ Статические части в `.astro` (быстрая загрузка, SEO-friendly)
+- ✅ Интерактивные компоненты в React (оптимизированные DOM-операции)
+- ✅ Лучшее из обоих миров: производительность Astro + интерактивность React
 
 ### Особенность: Обучение в процессе
 **Важно:** 
-- Вы будете учиться **Astro** и **SQLite/SQL** в процессе разработки
+- Вы будете учиться **Astro**, **React** и **SQLite/SQL** в процессе разработки
 - Я буду настраивать основные этапы и структуру, а вы будете продолжать писать код
 - Каждый этап включает объяснения, чтобы вы понимали что и зачем делаете
 - Learning by doing - обучение на реальной задаче
-- Фокус на двух технологиях (Astro + SQL)
+- Фокус на трех технологиях (Astro + React + SQL)
 
 ## 3. Структура страниц
 
@@ -166,13 +182,14 @@ pantera-mini-apps/
 │   │       ├── products.ts      # GET /api/products, GET /api/products/:id
 │   │       ├── cart.ts          # GET, POST, PUT, DELETE /api/cart
 │   │       └── orders.ts        # POST /api/orders, GET /api/orders
-│   ├── components/         # Astro компоненты
-│   │   ├── Layout.astro         # Базовый layout
-│   │   ├── Header.astro         # Header с корзиной
-│   │   ├── BottomBar.astro      # Нижняя панель навигации
-│   │   ├── ProductCard.astro
-│   │   ├── CartIcon.astro
-│   │   ├── SizeFilter.astro
+│   ├── components/         # Компоненты (Astro + React)
+│   │   ├── Layout.astro         # Базовый layout (Astro)
+│   │   ├── Header.astro         # Header с корзиной (Astro)
+│   │   ├── BottomBar.tsx        # Нижняя панель навигации (React)
+│   │   ├── BottomBar.module.css # Стили для BottomBar
+│   │   ├── ProductCard.astro    # Карточка товара (Astro)
+│   │   ├── CartIcon.astro       # Иконка корзины (Astro)
+│   │   ├── SizeFilter.tsx       # Фильтр размеров (React - для интерактивности)
 │   │   └── ...
 │   ├── lib/                # Утилиты и работа с БД
 │   │   ├── db.js                # Подключение к SQLite
@@ -363,7 +380,8 @@ pantera-mini-apps/
 - [+] Создание базового Layout (`src/components/Layout.astro`)
 - [+] Изучение синтаксиса Astro компонентов (.astro файлы)
 - [+] Создание Header компонента (`src/components/Header.astro`)
-- [+] Создание BottomBar компонента (`src/components/BottomBar.astro`)
+- [+] Установка React интеграции (`@astrojs/react`)
+- [+] Создание BottomBar компонента (`src/components/BottomBar.tsx`) - React компонент
 - [+] Изучение файлового роутинга (создание страниц)
 - [+] Создание главной страницы (`src/pages/index.astro`)
 - [+] Интеграция Telegram WebApp SDK (клиентский скрипт)
@@ -382,22 +400,24 @@ pantera-mini-apps/
 
 **Обучение:** Вы узнаете как получать данные с API и отображать их на страницах
 
-- [ ] Создание компонента ProductCard (`src/components/ProductCard.astro`)
-- [ ] Создание страницы каталога (`src/pages/catalog.astro`)
-- [ ] Fetch данных с API в Astro (fetch в --- секции)
-- [ ] Отображение списка товаров (map через массив)
-- [ ] Создание компонента SizeFilter (`src/components/SizeFilter.astro`)
-- [ ] Реализация фильтрации по размеру (client-side JavaScript)
-- [ ] Создание страницы товара (`src/pages/product/[id].astro`)
-- [ ] Получение данных товара по ID из API
-- [ ] Динамические роуты в Astro (параметры)
-- [ ] Выбор размера и подготовка к добавлению в корзину
+- [+] Создание компонента ProductCard (`src/components/ProductCard.astro`) - Astro (статический)
+- [+] Создание страницы каталога (`src/pages/catalog.astro`)
+- [+] Fetch данных с API в Astro (fetch в --- секции)
+- [+] Отображение списка товаров (map через массив)
+- [+] Создание компонента SizeFilter (`src/components/SizeFilter.tsx`) - React (интерактивный)
+- [+] Реализация фильтрации по размеру (React useState, useEffect)
+- [+] Создание страницы товара (`src/pages/product/[id].astro`)
+- [+] Получение данных товара по ID из API
+- [+] Динамические роуты в Astro (параметры)
+- [+] Выбор размера и подготовка к добавлению в корзину (React состояние)
 
 **Что вы изучите:**
 - Как делать fetch запросы в Astro (server-side)
 - Работа с динамическими параметрами роутов (Astro.params)
-- Client-side интерактивность (client:load директивы)
-- Работа с формами и событиями
+- React useState и useEffect для управления состоянием
+- React компоненты для интерактивности (оптимизированные DOM-операции)
+- Работа с формами и событиями в React
+- Когда использовать Astro vs React компоненты (статика vs интерактивность)
 
 ### Этап 5: Cart API (4-5 часов)
 **Цель:** API корзины работает

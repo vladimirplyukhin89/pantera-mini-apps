@@ -1,6 +1,8 @@
 ---
 // src/components/Header.astro
 // Шапка сайта с логотипом и иконкой корзины
+import { Image } from 'astro:assets';
+import CartIcon from './CartIcon';
 
 interface Props {
   cartItemsCount?: number;
@@ -9,17 +11,39 @@ interface Props {
 const { 
   cartItemsCount = 0,
    } = Astro.props;
+
+const isHomePage = Astro.url.pathname === '/';
 ---
 
 <header class="header">
   <div class="header-content">
-    <img src='/favicon.svg' alt="Logo" class="logo-image" />
-    <h1 class="title">Pantera</h1>
+    {isHomePage ? (
+      <Image 
+        src='/favicon.svg' 
+        alt="Logo" 
+        class="logo-image"
+        fetchpriority="high"
+        loading="eager"
+        width={40}
+        height={40}
+      />
+    ) : (
+      <a href="/" class="logo-link" aria-label="На главную">
+        <Image 
+          src='/favicon.svg' 
+          alt="Logo" 
+          class="logo-image"
+          fetchpriority="high"
+          loading="eager"
+          width={40}
+          height={40}
+        />
+      </a>
+    )}
+    <h1 class="title">Pantera Shop</h1>
     
     <a href="/cart" class="cart-link">
-      <svg class="cart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7 18C5.9 18 5.01 18.9 5.01 20C5.01 21.1 5.9 22 7 22C8.1 22 9 21.1 9 20C9 18.9 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.48C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20C15.01 21.1 15.9 22 17 22C18.1 22 19 21.1 19 20C19 18.9 18.1 18 17 18Z" fill="currentColor"/>
-      </svg>
+      <CartIcon client:load className="cart-icon" size={24} />
       {cartItemsCount > 0 && (
         <span class="cart-badge">{cartItemsCount}</span>
       )}
@@ -29,7 +53,7 @@ const {
 
 <style>
   .header {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: var(--color-header-overlay);
     backdrop-filter: blur(2px);
     border-bottom: none;
     position: absolute;
@@ -49,16 +73,33 @@ const {
   }
 
   .title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--tg-theme-text-color, #ffffff);
+    font-family: 'KabrioAbarth', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--tg-theme-text-color, var(--color-text-cream));
     margin: 0;
   }
 
   .logo-image {
-    width: 32px;
-    height: 32px;
     object-fit: cover;
+  }
+
+  .logo-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  /* Hover эффекты только для устройств с курсором/тачпадом */
+  @media (hover: hover) and (pointer: fine) {
+    .logo-link:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+
+  .logo-link:active {
+    transform: scale(0.95);
   }
 
   /* Планшеты (от 481px) */
@@ -68,7 +109,8 @@ const {
     }
 
     .title {
-      font-size: 1.5rem;
+      font-size: 1.875rem;
+      font-weight: 900;
     }
 
     .logo-image {
@@ -80,13 +122,13 @@ const {
   /* Десктоп (от 1024px) */
   @media (min-width: 1024px) {
     .header-content {
-      padding: 1.25rem 2rem;
-      max-width: 1280px;
+      padding: 1.25rem 1.5rem;
       margin: 0 auto;
     }
 
     .title {
-      font-size: 1.75rem;
+      font-size: 2.25rem;
+      font-weight: 900;
     }
 
     .logo-image {
@@ -100,31 +142,59 @@ const {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--tg-theme-text-color, #ffffff);
+    color: var(--tg-theme-text-color, var(--color-text-cream));
     text-decoration: none;
     padding: 0.5rem;
   }
 
-  .cart-icon {
+  :global(.cart-icon) {
     width: 24px;
     height: 24px;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .cart-link {
+    color: var(--color-text-cream);
+  }
+
+  /* Hover эффекты только для устройств с курсором/тачпадом */
+  @media (hover: hover) and (pointer: fine) {
+    :global(.cart-link:hover .cart-icon) {
+      color: var(--color-icon-fire);
+      transform: translateY(-2px);
+    }
   }
 
   .cart-badge {
     position: absolute;
     top: 0;
     right: 0;
-    background-color: var(--tg-theme-button-color, #3390ec);
-    color: var(--tg-theme-button-text-color, #ffffff);
-    font-size: 0.75rem;
+    background-color: var(--tg-theme-button-color, var(--color-accent-blue));
+    color: var(--tg-theme-button-text-color, var(--color-white));
+    font-size: 12px;
     font-weight: 600;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     transform: translate(25%, -25%);
+  }
+
+  /* Десктоп (от 1024px) */
+  @media (min-width: 1024px) {
+    .cart-badge {
+      font-size: 14px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .header-content  {
+      max-width: 1440px;
+    }
   }
 </style>
 

@@ -5,6 +5,9 @@
 // Ниже - HTML разметка
 
 import TelegramWebAppInit from './TelegramWebAppInit.astro';
+import { ClientRouter, fade, slide } from 'astro:transitions';
+import '../styles/variables.css';
+import '../styles/fonts.css';
 
 interface Props {
   title?: string;
@@ -21,10 +24,11 @@ const { title = 'Pantera Shop' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <ClientRouter />
     <title>{title}</title>
     
     <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   </head>
   <body>
     <TelegramWebAppInit />
@@ -62,8 +66,8 @@ const { title = 'Pantera Shop' } = Astro.props;
   }
 
   body {
-    background-color: #ffffff;
-    color: #1a1a1a;
+    background-color: var(--color-bg-dark);
+    color: var(--color-white);
     min-height: 100vh;
   }
 
@@ -76,8 +80,24 @@ const { title = 'Pantera Shop' } = Astro.props;
   /* Стили для Telegram Mini App */
   body {
     /* Telegram WebApp автоматически устанавливает эти переменные */
-    background-color: var(--tg-theme-bg-color, #ffffff);
-    color: var(--tg-theme-text-color, #000000);
+    background-color: var(--tg-theme-bg-color, var(--color-burgundy));
+    color: var(--tg-theme-text-color, var(--color-text-cream));
+    /* Отступ для bottom bar */
+    padding-bottom: 70px;
+  }
+
+  /* Планшеты */
+  @media (min-width: 481px) {
+    body {
+      padding-bottom: 80px;
+    }
+  }
+
+  /* Десктоп */
+  @media (min-width: 1024px) {
+    body {
+      padding-bottom: 90px;
+    }
   }
 </style>
 
