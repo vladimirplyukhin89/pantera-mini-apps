@@ -40,5 +40,23 @@
   --color-icon-contacts: #4caf50; /* Зеленый цвет */
   --color-icon-home: #9c27b0; /* Фиолетовый цвет */
   --color-icon-catalog: #e91e63; /* Розовый цвет */
+  --color-icon-heart: #f05187; /* Оттенок красного цвета */
+
+  /* Высота header (мобильные по умолчанию) */
+  --header-height: 64px; /* padding: 0.75rem (12px) * 2 + logo 40px */
+}
+
+/* Планшеты (от 481px) */
+@media (min-width: 481px) {
+  :root {
+    --header-height: 72px; /* padding: 1rem (16px) * 2 + logo 40px */
+  }
+}
+
+/* Десктоп (от 1024px) */
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 88px; /* padding: 1.25rem (20px) * 2 + logo 48px */
+  }
 }
 

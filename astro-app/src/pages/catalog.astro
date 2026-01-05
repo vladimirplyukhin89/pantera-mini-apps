@@ -8,6 +8,7 @@ import BottomBar from '../components/BottomBar';
 import ProductCard from '../components/ProductCard.astro';
 import SizeFilter from '../components/SizeFilter';
 import { getAllProducts } from '../lib/products.js';
+import { ImNeutral, ImWink } from 'react-icons/im';
 
 // Получаем все товары с сервера (server-side)
 const products = getAllProducts();
@@ -26,7 +27,10 @@ const availableSizes = Array.from(allSizes).sort();
   <Header cartItemsCount={0} />
   
   <main class="main-content">
-    <h1 class="page-title">Каталог</h1>
+    <div class="wrapper-text">
+      <h1 class="page-title">Это всё тебе, родной</h1>
+      <ImWink className="heart-icon" size={40} />
+    </div>
     
     {availableSizes.length > 0 && (
       <SizeFilter client:load availableSizes={availableSizes} />
@@ -39,7 +43,10 @@ const availableSizes = Array.from(allSizes).sort();
         ))}
       </div>
     ) : (
-      <p class="empty-message">Товары отсутствуют</p>
+      <div class="wrapper-text">
+        <span class="empty-message">Ща наберу шефу где товар</span>
+        <ImNeutral size={40} />
+      </div>
     )}
   </main>
 
@@ -50,40 +57,57 @@ const availableSizes = Array.from(allSizes).sort();
   .main-content {
     flex: 1;
     padding: 1.5rem 1rem;
+    padding-top: calc(var(--header-height) + 1.5rem);
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: 5rem; /* Отступ для bottom bar */
   }
 
   .page-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--tg-theme-text-color, var(--color-text-dark));
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--color-icon-catalog);
     margin-bottom: 1.5rem;
+    text-align: center;
+    display: inline-block;
   }
 
   .products-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 1rem;
   }
+
+  .wrapper-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
 
   .empty-message {
     color: var(--tg-theme-hint-color, var(--color-text-gray));
     text-align: center;
     padding: 2rem 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-text-white);
   }
 
   /* Планшеты (от 481px) */
   @media (min-width: 481px) {
     .main-content {
       padding: 2rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2rem);
     }
 
     .page-title {
-      font-size: 2rem;
+      font-size: 2.5rem;
     }
+  }
 
+  @media (min-width: 600px) {
     .products-grid {
       grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
@@ -95,6 +119,11 @@ const availableSizes = Array.from(allSizes).sort();
     .main-content {
       max-width: 1280px;
       padding: 2.5rem 2rem;
+      padding-top: calc(var(--header-height) + 2.5rem);
+    }
+
+    .page-title {
+      font-size: 3rem;
     }
 
     .products-grid {

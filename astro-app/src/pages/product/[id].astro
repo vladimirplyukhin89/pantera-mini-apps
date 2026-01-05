@@ -2,6 +2,7 @@
 // src/pages/product/[id].astro
 // Страница отдельного товара
 
+import { Image } from 'astro:assets';
 import Layout from '../../components/Layout.astro';
 import Header from '../../components/Header.astro';
 import BottomBar from '../../components/BottomBar';
@@ -39,6 +40,7 @@ if (!product) {
             fetchpriority="high"
             loading="eager"
             decoding="async"
+
           />
         ) : (
           <div class="product-page-image-placeholder">
@@ -149,6 +151,7 @@ if (!product) {
   .main-content {
     flex: 1;
     padding: 1.5rem 1rem;
+    padding-top: calc(var(--header-height) + 1.5rem);
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: 5rem;
@@ -329,6 +332,7 @@ if (!product) {
   @media (min-width: 481px) {
     .main-content {
       padding: 2rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2rem);
     }
 
     .product-page {
@@ -360,6 +364,7 @@ if (!product) {
     .main-content {
       max-width: 1280px;
       padding: 2.5rem 2rem;
+      padding-top: calc(var(--header-height) + 2.5rem);
     }
 
     .product-page {

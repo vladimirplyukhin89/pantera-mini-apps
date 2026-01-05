@@ -19,19 +19,20 @@ const priceDisplay = minPrice === maxPrice
   ? `${minPrice.toLocaleString('ru-RU')} ₽`
   : `${minPrice.toLocaleString('ru-RU')} - ${maxPrice.toLocaleString('ru-RU')} ₽`;
 
-// Формируем ссылку на страницу товара
 const productUrl = `/product/${product.id}`;
 ---
 
 <a href={productUrl} class="product-card">
   <div class="product-image-container">
     {product.image_url ? (
-      <img
+      <Image
         src={product.image_url}
         alt={product.name}
         class="product-image"
-        loading="lazy"
+        loading="eager"
         decoding="async"
+        width={48}
+        height={48}
       />
     ) : (
       <div class="product-image-placeholder">
@@ -47,9 +48,6 @@ const productUrl = `/product/${product.id}`;
       <div class="product-collection">{product.collection_name}</div>
     )}
     <h3 class="product-name">{product.name}</h3>
-    {product.description && (
-      <p class="product-description">{product.description}</p>
-    )}
     <div class="product-price">{priceDisplay}</div>
     {product.variants.length > 0 && (
       <div class="product-sizes">
@@ -72,16 +70,6 @@ const productUrl = `/product/${product.id}`;
   }
 
   /* Hover эффекты только для устройств с курсором/тачпадом */
-  @media (hover: hover) and (pointer: fine) {
-    .product-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-  }
-
-  .product-card:active {
-    transform: translateY(0);
-  }
 
   .product-image-container {
     width: 100%;
@@ -118,11 +106,12 @@ const productUrl = `/product/${product.id}`;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 0.5rem;
+    color: var(--color-icon-fire);
   }
 
   .product-name {
-    font-size: 1.125rem;
-    font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: 800;
     color: var(--tg-theme-text-color, var(--color-text-dark));
     margin: 0 0 0.5rem 0;
     line-height: 1.3;

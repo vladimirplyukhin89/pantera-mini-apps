@@ -5,6 +5,7 @@
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomBar from '../components/BottomBar';
+import { ImSad, ImHeartBroken } from "react-icons/im";
 
 // Пока заглушка
 const cartItems = [];
@@ -15,9 +16,16 @@ const totalAmount = 0;
   <Header cartItemsCount={cartItems.length} />
   
   <main class="main-content">
-    <h1 class="page-title">Корзина</h1>
+    <div class="wrapper-text">
+      <h1 class="page-title">Корзина как на вайлдберрис</h1>
+      <ImHeartBroken className="heart-icon" size={40} />
+    </div>
+
     {cartItems.length === 0 ? (
-      <p class="empty-message">Корзина пуста</p>
+      <div class="wrapper-text">
+        <p class="empty-message">Корзина пуста</p>
+        <ImSad size={40} />
+      </div>
     ) : (
       <div class="cart-items">
         <!-- Товары корзины будут здесь -->
@@ -32,22 +40,38 @@ const totalAmount = 0;
   .main-content {
     flex: 1;
     padding: 2rem 1.5rem;
+    padding-top: calc(var(--header-height) + 2rem);
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: 5rem; /* Отступ для bottom bar */
   }
 
   .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--tg-theme-text-color, #000000);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-icon-fire);
     margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .wrapper-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .heart-icon {
+    fill: var(--color-icon-heart);
   }
 
   .empty-message {
-    color: var(--tg-theme-hint-color, #999999);
+    color: var(--tg-theme-hint-color, var(--color-text-gray));
     text-align: center;
     padding: 2rem 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-text-white);
   }
 </style>
 
