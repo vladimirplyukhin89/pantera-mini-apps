@@ -2,7 +2,7 @@
 // API endpoint: GET /api/products/:id
 // Возвращает товар по ID
 
-import { getProductById } from '../../../lib/products.js';
+import { getProductById } from '@/lib/products.js';
 
 export async function GET(context) {
   try {

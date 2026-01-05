@@ -2,7 +2,7 @@
 // API endpoint: GET /api/products
 // Возвращает все активные товары
 
-import { getAllProducts } from '../../../lib/products.js';
+import { getAllProducts } from '@/lib/products.js';
 
 export async function GET() {
   try {

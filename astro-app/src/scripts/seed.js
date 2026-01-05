@@ -2,8 +2,8 @@
 // Скрипт для заполнения базы данных реальными данными о товарах
 // Используется для восстановления БД на новой машине или после очистки
 
-import { initDatabase } from '../lib/init-db.js';
-import db from '../lib/db.js';
+import { initDatabase } from '@/lib/init-db.js';
+import db from '@/lib/db.js';
 
 console.log('🌱 Заполнение базы данных товарами...\n');
 

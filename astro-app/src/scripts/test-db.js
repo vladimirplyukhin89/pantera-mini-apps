@@ -1,8 +1,8 @@
 // src/scripts/test-db.js
 // Тестовый скрипт для проверки работы базы данных
 
-import { initDatabase } from '../lib/init-db.js';
-import db from '../lib/db.js';
+import { initDatabase } from '@/lib/init-db.js';
+import db from '@/lib/db.js';
 
 // Запускаем инициализацию
 initDatabase();

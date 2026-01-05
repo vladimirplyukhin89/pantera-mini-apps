@@ -6,7 +6,7 @@ import { Image } from 'astro:assets';
 import Layout from '../../components/Layout.astro';
 import Header from '../../components/Header.astro';
 import BottomBar from '../../components/BottomBar';
-import { getProductById } from '../../lib/products.js';
+import { getProductById } from '@/lib/products.js';
 
 // Получаем ID товара из параметров маршрута
 const { id } = Astro.params;

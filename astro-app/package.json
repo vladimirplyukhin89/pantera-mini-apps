@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "init-db": "node src/scripts/test-db.js",
-    "seed": "node src/scripts/seed.js"
+    "seed": "node src/scripts/seed.js",
+    "test:cart-api": "node src/scripts/test-cart-api.js"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.1",
