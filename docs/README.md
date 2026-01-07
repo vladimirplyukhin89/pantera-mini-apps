@@ -83,7 +83,9 @@ pantera-mini-apps/
 #### Способы выполнения SQL:
 
 1. **Через скрипты миграции** (рекомендуется для изменений структуры)
-   - См. [HOW_TO_USE_SQL.md](./HOW_TO_USE_SQL.md)
+   ```bash
+   npm run migrate:add-collection-name
+   ```
 
 2. **Через better-sqlite3 в коде** (для работы с данными)
    ```javascript
@@ -92,12 +94,10 @@ pantera-mini-apps/
    ```
 
 3. **Через SQLite CLI** (для отладки и проверки)
-   - См. [SQLITE_CLI_GUIDE.md](./SQLITE_CLI_GUIDE.md)
-
-### Полезные ссылки
-
-- [HOW_TO_USE_SQL.md](./HOW_TO_USE_SQL.md) - как использовать SQL команды в проекте
-- [SQLITE_CLI_GUIDE.md](./SQLITE_CLI_GUIDE.md) - полное руководство по SQLite CLI
+   ```bash
+   cd astro-app
+   sqlite3 database/shop.db
+   ```
 
 ---
 
@@ -125,9 +125,7 @@ pantera-mini-apps/
 
 ### Документация по API
 
-- [CART_API_TESTING.md](./CART_API_TESTING.md) - тестирование Cart API
-- [QUICK_TEST_CART_API.md](./QUICK_TEST_CART_API.md) - быстрый тест Cart API
-- [TROUBLESHOOTING_CART_API.md](./TROUBLESHOOTING_CART_API.md) - решение проблем Cart API
+Подробная информация об API endpoints доступна в [BACKEND_GUIDE.md](./BACKEND_GUIDE.md).
 
 ---
 
@@ -167,10 +165,9 @@ logger.info('Товар добавлен в корзину', {
 
 ### Документация по логированию
 
-- [LOGGER_USAGE.md](./LOGGER_USAGE.md) - полное руководство по использованию logger
-- [LOGGING_SUMMARY.md](./LOGGING_SUMMARY.md) - краткое резюме по логированию
-- [LOGGING_RECOMMENDATIONS.md](./LOGGING_RECOMMENDATIONS.md) - рекомендации по логированию
-- [TELEGRAM_LOGGER_BOT.md](./TELEGRAM_LOGGER_BOT.md) - создание Telegram бота для мониторинга логов
+Логирование реализовано через `logger.js` в `src/lib/`. Логи записываются в папку `astro-app/logs/`:
+- `YYYY-MM-DD-combined.log` - все логи
+- `YYYY-MM-DD-error.log` - только ошибки
 
 ---
 
@@ -178,16 +175,24 @@ logger.info('Товар добавлен в корзину', {
 
 ### Типизация и импорты
 
-- [TYPES_AND_IMPORTS_GUIDE.md](./TYPES_AND_IMPORTS_GUIDE.md) - руководство по типизации и импортам
-- [PATH_ALIASES.md](./PATH_ALIASES.md) - использование алиасов `@/` для импортов
+В проекте используется TypeScript для типизации. Файлы в `src/lib/` используют TypeScript (`.ts`), а импорты выполняются с расширением `.js`:
+
+```typescript
+import { getAllProducts } from '@/lib/products.js';
+import type { Product } from '@/lib/types.js';
+```
+
+Алиасы `@/` настроены в `tsconfig.json` и `astro.config.mjs` для удобных импортов.
 
 ### Компоненты
 
-- [COMPONENTS_ANALYSIS.md](./COMPONENTS_ANALYSIS.md) - анализ компонентов проекта
+Компоненты находятся в `src/components/`:
+- Astro компоненты (`.astro`) - для статических частей
+- React компоненты (`.tsx`) - для интерактивных элементов
 
 ### Telegram SDK
 
-- [TELEGRAM_SDK_TESTING.md](./TELEGRAM_SDK_TESTING.md) - тестирование Telegram WebApp SDK
+Интеграция с Telegram WebApp SDK реализована через компонент `TelegramWebAppInit.astro`.
 
 ---
 

@@ -47,10 +47,9 @@ pantera-mini-apps/
 
 ### Быстрые ссылки
 
-- [Работа с базой данных](./docs/HOW_TO_USE_SQL.md)
-- [Использование logger](./docs/LOGGER_USAGE.md)
+- [Основная документация](./docs/README.md)
+- [Руководство для бекендера](./docs/BACKEND_GUIDE.md)
 - [API Endpoints](./docs/README.md#api-endpoints)
-- [Типизация и импорты](./docs/TYPES_AND_IMPORTS_GUIDE.md)
 
 ## 🗄️ База данных
 
@@ -84,7 +83,7 @@ cd astro-app
 sqlite3 database/shop.db
 ```
 
-Подробнее см. [SQLITE_CLI_GUIDE.md](./docs/SQLITE_CLI_GUIDE.md)
+Для работы с БД используйте SQLite CLI или скрипты миграции. Подробнее см. [документацию](./docs/README.md#работа-с-базой-данных).
 
 ## 📝 Лицензия
 

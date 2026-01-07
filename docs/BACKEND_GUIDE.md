@@ -505,9 +505,8 @@ export async function POST(context) {
 ## 📚 Дополнительные ресурсы
 
 - [README.md](./README.md) - общая документация проекта
-- [HOW_TO_USE_SQL.md](./HOW_TO_USE_SQL.md) - работа с SQL
-- [LOGGER_USAGE.md](./LOGGER_USAGE.md) - подробное руководство по логированию
-- [TYPES_AND_IMPORTS_GUIDE.md](./TYPES_AND_IMPORTS_GUIDE.md) - типизация и импорты
+- [PLAN.md](./PLAN.md) - полный план реализации проекта
+- [REFACTORING_PLAN.md](./REFACTORING_PLAN.md) - план рефакторинга
 
 ---
 
