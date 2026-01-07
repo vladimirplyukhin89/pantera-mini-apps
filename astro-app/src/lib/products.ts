@@ -3,6 +3,7 @@
 
 import db from './db.js';
 import type { Product, ProductRow, ProductVariant } from './types.js';
+import { logger } from './logger.js';
 
 /**
  * Получить все активные товары
@@ -38,7 +39,11 @@ export function getAllProducts(): Product[] {
 
     return productsWithVariants;
   } catch (error) {
-    console.error('Ошибка при получении товаров:', error);
+    logger.error('Ошибка при получении товаров', {
+      function: 'getAllProducts',
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
@@ -78,7 +83,12 @@ export function getProductById(id: number): Product | null {
       variants
     };
   } catch (error) {
-    console.error(`Ошибка при получении товара с ID ${id}:`, error);
+    logger.error('Ошибка при получении товара по ID', {
+      function: 'getProductById',
+      product_id: id,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
@@ -116,7 +126,12 @@ export function getProductVariants(productId: number): ProductVariant[] {
       product_id: productId
     }));
   } catch (error) {
-    console.error(`Ошибка при получении вариантов товара ${productId}:`, error);
+    logger.error('Ошибка при получении вариантов товара', {
+      function: 'getProductVariants',
+      product_id: productId,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }

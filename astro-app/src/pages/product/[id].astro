@@ -25,7 +25,7 @@ if (!product) {
 ---
 
 <Layout title={`${product.name} - Pantera Shop`}>
-  <Header cartItemsCount={0} />
+  <Header />
   
   <main class="main-content">
     <a href="/catalog" class="back-link">← Назад к каталогу</a>
@@ -100,11 +100,43 @@ if (!product) {
 </Layout>
 
 <script>
+  // Функция для получения telegram_user_id
+  function getTelegramUserId() {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    try {
+      // Проверяем наличие Telegram WebApp SDK
+      const tg = (window as any).Telegram;
+      if (tg?.WebApp?.initDataUnsafe?.user?.id) {
+        return String(tg.WebApp.initDataUnsafe.user.id);
+      }
+
+      // Fallback для разработки
+      const testUserId = localStorage.getItem('test_telegram_user_id');
+      if (testUserId) {
+        return testUserId;
+      }
+      
+      return '123456789'; // Для разработки
+    } catch (error) {
+      console.error('Ошибка при получении telegram_user_id:', error);
+      return null;
+    }
+  }
+
   // Client-side скрипт для выбора размера и добавления в корзину
   document.addEventListener('DOMContentLoaded', () => {
     const variantItems = document.querySelectorAll('.variant-item');
     const addToCartButton = document.querySelector('.add-to-cart-button') as HTMLButtonElement | null;
     let selectedVariant: { id: number; size: string; price: number; stock: number; } | null = null;
+    let productId: number | null = null;
+
+    // Получаем product_id из URL
+    const pathParts = window.location.pathname.split('/');
+    const idFromPath = pathParts[pathParts.length - 1];
+    productId = parseInt(idFromPath);
 
     variantItems.forEach(item => {
       const variantElement = item as HTMLElement;
@@ -135,13 +167,84 @@ if (!product) {
       });
     });
     
-    // Обработка добавления в корзину (пока заглушка, будет реализовано на этапе 5)
+    // Обработка добавления в корзину
     if (addToCartButton) {
-      addToCartButton.addEventListener('click', () => {
-        if (!selectedVariant) return;
-        
-        // TODO: Реализовать добавление в корзину на этапе 5
-        alert(`Товар будет добавлен в корзину (размер ${selectedVariant.size})`);
+      addToCartButton.addEventListener('click', async () => {
+        if (!selectedVariant || !productId) {
+          alert('Выберите размер товара');
+          return;
+        }
+
+        const telegramUserId = getTelegramUserId();
+        if (!telegramUserId) {
+          alert('Не удалось определить пользователя. Пожалуйста, откройте приложение в Telegram.');
+          return;
+        }
+
+        // Блокируем кнопку во время запроса
+        addToCartButton.disabled = true;
+        const originalText = addToCartButton.textContent || '';
+        addToCartButton.textContent = 'Добавление...';
+
+        try {
+          const response = await fetch('/api/cart/items', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              telegram_user_id: telegramUserId,
+              product_id: productId,
+              variant_id: selectedVariant.id,
+              quantity: 1
+            }),
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Ошибка при добавлении товара в корзину');
+          }
+
+          const cartItem = await response.json();
+
+          // Обновляем localStorage
+          const currentCount = parseInt(localStorage.getItem('cart_items_count') || '0');
+          localStorage.setItem('cart_items_count', String(currentCount + 1));
+
+          // Отправляем событие обновления корзины
+          window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+          // Показываем уведомление об успехе
+          addToCartButton.textContent = '✓ Добавлено!';
+          addToCartButton.style.backgroundColor = '#4CAF50';
+
+          // Предлагаем перейти в корзину
+          setTimeout(() => {
+            const goToCart = confirm('Товар добавлен в корзину! Перейти в корзину?');
+            if (goToCart) {
+              window.location.href = '/cart';
+            } else {
+              // Восстанавливаем кнопку и сбрасываем выбор
+              if (selectedVariant) {
+                addToCartButton.textContent = `Добавить в корзину (${selectedVariant.size})`;
+              } else {
+                addToCartButton.textContent = 'Добавить в корзину';
+              }
+              addToCartButton.style.backgroundColor = '';
+              addToCartButton.disabled = false;
+              // selectedVariant остается выбранным, можно добавить еще
+            }
+          }, 500);
+
+        } catch (error) {
+          console.error('Ошибка при добавлении товара в корзину:', error);
+          const errorMessage = error instanceof Error ? error.message : 'Не удалось добавить товар в корзину';
+          alert(errorMessage);
+          
+          // Восстанавливаем кнопку
+          addToCartButton.textContent = originalText;
+          addToCartButton.disabled = false;
+        }
       });
     }
   });

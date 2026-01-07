@@ -4,6 +4,7 @@
 // DELETE - удалить товар из корзины
 
 import { updateCartItem, deleteCartItem } from '@/lib/cart.js';
+import { logger } from '@/lib/logger.js';
 
 /**
  * PUT /api/cart/items/:id
@@ -68,11 +69,23 @@ export async function PUT(context) {
       );
     }
 
+    // Логируем попытку обновления
+    logger.info('Попытка обновления количества товара в корзине', {
+      endpoint: `PUT /api/cart/items/${cartItemId}`,
+      cart_item_id: cartItemId,
+      new_quantity: quantity
+    });
+
     // Обновляем количество товара в корзине
     const cartItem = updateCartItem(cartItemId, quantity);
 
     // Если элемент корзины не найден
     if (!cartItem) {
+      logger.warn('Элемент корзины не найден при обновлении', {
+        endpoint: `PUT /api/cart/items/${cartItemId}`,
+        cart_item_id: cartItemId
+      });
+      
       return new Response(
         JSON.stringify({ 
           error: 'Элемент корзины не найден',
@@ -87,6 +100,13 @@ export async function PUT(context) {
       );
     }
 
+    // Логируем успешное обновление
+    logger.info('Количество товара успешно обновлено', {
+      endpoint: `PUT /api/cart/items/${cartItemId}`,
+      cart_item_id: cartItemId,
+      new_quantity: quantity
+    });
+
     // Возвращаем успешный ответ с данными элемента корзины
     return new Response(JSON.stringify(cartItem), {
       status: 200,
@@ -96,7 +116,12 @@ export async function PUT(context) {
     });
   } catch (error) {
     // Обработка ошибок
-    console.error(`Ошибка в PUT /api/cart/items/${context.params.id}:`, error);
+    logger.error('Ошибка при обновлении элемента корзины', {
+      endpoint: `PUT /api/cart/items/${context.params.id}`,
+      cart_item_id: context.params.id,
+      error: error.message,
+      stack: error.stack
+    });
     
     // Определяем код статуса в зависимости от типа ошибки
     let status = 500;
@@ -144,11 +169,22 @@ export async function DELETE(context) {
       );
     }
 
+    // Логируем попытку удаления
+    logger.info('Попытка удаления товара из корзины', {
+      endpoint: `DELETE /api/cart/items/${cartItemId}`,
+      cart_item_id: cartItemId
+    });
+
     // Удаляем товар из корзины
     const success = deleteCartItem(cartItemId);
 
     // Если элемент корзины не найден
     if (!success) {
+      logger.warn('Элемент корзины не найден при удалении', {
+        endpoint: `DELETE /api/cart/items/${cartItemId}`,
+        cart_item_id: cartItemId
+      });
+      
       return new Response(
         JSON.stringify({ 
           error: 'Элемент корзины не найден',
@@ -162,6 +198,12 @@ export async function DELETE(context) {
         }
       );
     }
+
+    // Логируем успешное удаление
+    logger.info('Товар успешно удален из корзины', {
+      endpoint: `DELETE /api/cart/items/${cartItemId}`,
+      cart_item_id: cartItemId
+    });
 
     // Возвращаем успешный ответ
     return new Response(
@@ -178,7 +220,12 @@ export async function DELETE(context) {
     );
   } catch (error) {
     // Обработка ошибок
-    console.error(`Ошибка в DELETE /api/cart/items/${context.params.id}:`, error);
+    logger.error('Ошибка при удалении элемента корзины', {
+      endpoint: `DELETE /api/cart/items/${context.params.id}`,
+      cart_item_id: context.params.id,
+      error: error.message,
+      stack: error.stack
+    });
     
     return new Response(
       JSON.stringify({ 

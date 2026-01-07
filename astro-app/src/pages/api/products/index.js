@@ -3,6 +3,7 @@
 // Возвращает все активные товары
 
 import { getAllProducts } from '@/lib/products.js';
+import { logger } from '@/lib/logger.js';
 
 export async function GET() {
   try {
@@ -18,7 +19,11 @@ export async function GET() {
     });
   } catch (error) {
     // Обработка ошибок
-    console.error('Ошибка в GET /api/products:', error);
+    logger.error('Ошибка при получении товаров', {
+      endpoint: 'GET /api/products',
+      error: error.message,
+      stack: error.stack
+    });
     
     return new Response(
       JSON.stringify({ 

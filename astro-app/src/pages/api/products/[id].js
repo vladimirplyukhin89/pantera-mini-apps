@@ -3,6 +3,7 @@
 // Возвращает товар по ID
 
 import { getProductById } from '@/lib/products.js';
+import { logger } from '@/lib/logger.js';
 
 export async function GET(context) {
   try {
@@ -50,7 +51,12 @@ export async function GET(context) {
       },
     });
   } catch (error) {
-    console.error(`Ошибка в GET /api/products/${context.params.id}:`, error);
+    logger.error('Ошибка при получении товара по ID', {
+      endpoint: `GET /api/products/${context.params.id}`,
+      product_id: context.params.id,
+      error: error.message,
+      stack: error.stack
+    });
     
     return new Response(
       JSON.stringify({ 

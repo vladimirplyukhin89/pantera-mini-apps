@@ -3,6 +3,7 @@
 // Добавить товар в корзину
 
 import { addCartItem } from '@/lib/cart.js';
+import { logger } from '@/lib/logger.js';
 
 /**
  * POST /api/cart/items
@@ -81,8 +82,27 @@ export async function POST(context) {
       );
     }
 
+    // Логируем попытку добавления товара
+    logger.info('Попытка добавления товара в корзину', {
+      endpoint: 'POST /api/cart/items',
+      telegram_user_id,
+      product_id,
+      variant_id,
+      quantity: itemQuantity
+    });
+
     // Добавляем товар в корзину
     const cartItem = addCartItem(telegram_user_id, product_id, variant_id, itemQuantity);
+
+    // Логируем успешное добавление
+    logger.info('Товар успешно добавлен в корзину', {
+      endpoint: 'POST /api/cart/items',
+      cart_item_id: cartItem.id,
+      telegram_user_id,
+      product_id,
+      variant_id,
+      quantity: itemQuantity
+    });
 
     // Возвращаем успешный ответ с данными элемента корзины
     return new Response(JSON.stringify(cartItem), {
@@ -93,7 +113,14 @@ export async function POST(context) {
     });
   } catch (error) {
     // Обработка ошибок
-    console.error('Ошибка в POST /api/cart/items:', error);
+    logger.error('Ошибка при добавлении товара в корзину', {
+      endpoint: 'POST /api/cart/items',
+      telegram_user_id: body?.telegram_user_id,
+      product_id: body?.product_id,
+      variant_id: body?.variant_id,
+      error: error.message,
+      stack: error.stack
+    });
     
     // Определяем код статуса в зависимости от типа ошибки
     let status = 500;

@@ -3,6 +3,7 @@
 
 import db from './db.js';
 import type { Cart, CartRow, CartItem, CartItemRow } from './types.js';
+import { logger } from './logger.js';
 
 /**
  * Получить или создать корзину для пользователя
@@ -33,7 +34,12 @@ export function getOrCreateCart(telegramUserId: string): CartRow {
 
     return cart;
   } catch (error) {
-    console.error(`Ошибка при получении/создании корзины для пользователя ${telegramUserId}:`, error);
+    logger.error('Ошибка при получении/создании корзины', {
+      function: 'getOrCreateCart',
+      telegram_user_id: telegramUserId,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
@@ -83,7 +89,12 @@ export function getCart(telegramUserId: string): Cart | null {
       items
     };
   } catch (error) {
-    console.error(`Ошибка при получении корзины пользователя ${telegramUserId}:`, error);
+    logger.error('Ошибка при получении корзины пользователя', {
+      function: 'getCart',
+      telegram_user_id: telegramUserId,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
@@ -193,7 +204,15 @@ export function addCartItem(
 
     return fullItem;
   } catch (error) {
-    console.error(`Ошибка при добавлении товара в корзину:`, error);
+    logger.error('Ошибка при добавлении товара в корзину', {
+      function: 'addCartItem',
+      telegram_user_id: telegramUserId,
+      product_id: productId,
+      variant_id: variantId,
+      quantity,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
@@ -271,7 +290,13 @@ export function updateCartItem(cartItemId: number, quantity: number): CartItem |
 
     return fullItem;
   } catch (error) {
-    console.error(`Ошибка при обновлении элемента корзины ${cartItemId}:`, error);
+    logger.error('Ошибка при обновлении элемента корзины', {
+      function: 'updateCartItem',
+      cart_item_id: cartItemId,
+      quantity,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
@@ -308,7 +333,12 @@ export function deleteCartItem(cartItemId: number): boolean {
 
     return result.changes > 0;
   } catch (error) {
-    console.error(`Ошибка при удалении элемента корзины ${cartItemId}:`, error);
+    logger.error('Ошибка при удалении элемента корзины', {
+      function: 'deleteCartItem',
+      cart_item_id: cartItemId,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }
@@ -345,7 +375,12 @@ export function clearCart(telegramUserId: string): boolean {
 
     return true;
   } catch (error) {
-    console.error(`Ошибка при очистке корзины пользователя ${telegramUserId}:`, error);
+    logger.error('Ошибка при очистке корзины пользователя', {
+      function: 'clearCart',
+      telegram_user_id: telegramUserId,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     throw error;
   }
 }

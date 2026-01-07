@@ -4,6 +4,7 @@
 // DELETE - очистить корзину пользователя
 
 import { getCart, clearCart } from '@/lib/cart.js';
+import { logger } from '@/lib/logger.js';
 
 /**
  * GET /api/cart?telegram_user_id=xxx
@@ -36,6 +37,11 @@ export async function GET(context) {
 
     // Если корзина не найдена, возвращаем пустую корзину
     if (!cart) {
+      logger.debug('Корзина не найдена, возвращаем пустую', {
+        endpoint: 'GET /api/cart',
+        telegram_user_id: telegramUserId
+      });
+      
       return new Response(
         JSON.stringify({
           id: null,
@@ -53,6 +59,15 @@ export async function GET(context) {
       );
     }
 
+    // Логируем успешное получение корзины (только если есть товары)
+    if (cart.items && cart.items.length > 0) {
+      logger.debug('Корзина получена', {
+        endpoint: 'GET /api/cart',
+        telegram_user_id: telegramUserId,
+        items_count: cart.items.length
+      });
+    }
+
     // Возвращаем корзину с элементами
     return new Response(JSON.stringify(cart), {
       status: 200,
@@ -62,7 +77,12 @@ export async function GET(context) {
     });
   } catch (error) {
     // Обработка ошибок
-    console.error('Ошибка в GET /api/cart:', error);
+    logger.error('Ошибка при получении корзины', {
+      endpoint: 'GET /api/cart',
+      telegram_user_id,
+      error: error.message,
+      stack: error.stack
+    });
     
     return new Response(
       JSON.stringify({ 
@@ -105,10 +125,21 @@ export async function DELETE(context) {
       );
     }
 
+    // Логируем попытку очистки
+    logger.info('Попытка очистки корзины', {
+      endpoint: 'DELETE /api/cart',
+      telegram_user_id: telegramUserId
+    });
+
     // Очищаем корзину пользователя
     const success = clearCart(telegramUserId);
 
     if (!success) {
+      logger.warn('Корзина не найдена при очистке', {
+        endpoint: 'DELETE /api/cart',
+        telegram_user_id: telegramUserId
+      });
+      
       return new Response(
         JSON.stringify({ 
           error: 'Корзина не найдена',
@@ -122,6 +153,12 @@ export async function DELETE(context) {
         }
       );
     }
+
+    // Логируем успешную очистку
+    logger.info('Корзина успешно очищена', {
+      endpoint: 'DELETE /api/cart',
+      telegram_user_id: telegramUserId
+    });
 
     // Возвращаем успешный ответ
     return new Response(
@@ -138,7 +175,12 @@ export async function DELETE(context) {
     );
   } catch (error) {
     // Обработка ошибок
-    console.error('Ошибка в DELETE /api/cart:', error);
+    logger.error('Ошибка при очистке корзины', {
+      endpoint: 'DELETE /api/cart',
+      telegram_user_id,
+      error: error.message,
+      stack: error.stack
+    });
     
     return new Response(
       JSON.stringify({ 

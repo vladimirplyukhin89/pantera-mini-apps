@@ -4,13 +4,7 @@
 import { Image } from 'astro:assets';
 import CartIcon from './CartIcon';
 
-interface Props {
-  cartItemsCount?: number;
-}
-
-const { 
-  cartItemsCount = 0,
-   } = Astro.props;
+// Props больше не нужны, CartIcon сам получает количество товаров
 
 const isHomePage = Astro.url.pathname === '/';
 ---
@@ -44,9 +38,6 @@ const isHomePage = Astro.url.pathname === '/';
     
     <a href="/cart" class="cart-link">
       <CartIcon client:load className="cart-icon" size={24} />
-      {cartItemsCount > 0 && (
-        <span class="cart-badge">{cartItemsCount}</span>
-      )}
     </a>
   </div>
 </header>
@@ -77,6 +68,8 @@ const isHomePage = Astro.url.pathname === '/';
     font-size: 1.5rem;
     font-weight: 900;
     color: var(--tg-theme-text-color, var(--color-text-cream));
+    background-color: var(--color-bg-orange);
+    line-height: 1;
     margin: 0;
   }
 
