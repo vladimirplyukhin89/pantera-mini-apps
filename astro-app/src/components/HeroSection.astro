@@ -12,8 +12,8 @@ interface Props {
 }
 
 const {
-  title = 'Псс, тут тишки продают',
-  description = 'Бац бац и мимо',
+  title = 'Пссc,',
+  description = 'Тут ребзя тишки продаёт',
   ctaLink = '/catalog',
 } = Astro.props;
 ---
@@ -44,7 +44,7 @@ const {
     flex-direction: column;
     justify-content: flex-end;
     overflow: hidden;
-    background-image: url('/images/mini-app-example-man.jpeg');
+    background-image: url('/images/jpg/37.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -80,7 +80,6 @@ const {
   }
 
   .hero-title {
-    font-family: 'KabrioAbarth', sans-serif;
     font-size: 2.25rem;
     font-weight: 900;
     line-height: 1.2;
@@ -90,7 +89,6 @@ const {
   }
 
   .hero-description {
-    font-family: 'KabrioAbarth', sans-serif;
     font-size: 1.125rem;
     font-weight: 700;
     line-height: 1.5;
@@ -170,6 +168,12 @@ const {
     }
   }
 
+  @media(min-width: 769px) {
+      .hero-section {
+      background-image: url('/images/jpg/01.jpg');
+    }
+  }
+
   /* Десктоп (от 1024px) */
   @media (min-width: 1024px) {
     .hero-content {
@@ -195,11 +199,6 @@ const {
     :global(.hero-icon) {
       width: 100px;
       height: 100px;
-    }
-
-    .hero-section {
-      background-repeat: repeat;
-      background-size: auto;
     }
   }
 

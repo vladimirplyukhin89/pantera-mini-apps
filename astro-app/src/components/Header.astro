@@ -13,23 +13,23 @@ const isHomePage = Astro.url.pathname === '/';
   <div class="header-content">
     {isHomePage ? (
       <Image 
-        src='/favicon.svg' 
+        src='/images/svg/white_logo.svg' 
         alt="Logo" 
         class="logo-image"
         fetchpriority="high"
         loading="eager"
-        width={40}
+        width={60}
         height={40}
       />
     ) : (
       <a href="/" class="logo-link" aria-label="На главную">
         <Image 
-          src='/favicon.svg' 
+          src='/images/svg/white_logo.svg' 
           alt="Logo" 
           class="logo-image"
           fetchpriority="high"
           loading="eager"
-          width={40}
+          width={60}
           height={40}
         />
       </a>
@@ -75,6 +75,7 @@ const isHomePage = Astro.url.pathname === '/';
 
   .logo-image {
     object-fit: cover;
+    fill: --color-bg-cream;
   }
 
   .logo-link {
@@ -92,7 +93,7 @@ const isHomePage = Astro.url.pathname === '/';
   }
 
   .logo-link:active {
-    transform: scale(0.95);
+    transform: scale(1.05);
   }
 
   /* Планшеты (от 481px) */
@@ -105,10 +106,12 @@ const isHomePage = Astro.url.pathname === '/';
       font-size: 2rem;
       font-weight: 900;
     }
+  }
 
+  @media (min-width: 576px) {
     .logo-image {
-      width: 40px;
-      height: 40px;
+      width: 70px;
+      height: 50px;
     }
   }
 
@@ -122,11 +125,6 @@ const isHomePage = Astro.url.pathname === '/';
     .title {
       font-size: 2.25rem;
       font-weight: 900;
-    }
-
-    .logo-image {
-      width: 48px;
-      height: 48px;
     }
   }
 
@@ -152,9 +150,10 @@ const isHomePage = Astro.url.pathname === '/';
 
   /* Hover эффекты только для устройств с курсором/тачпадом */
   @media (hover: hover) and (pointer: fine) {
-    :global(.cart-link:hover .cart-icon) {
+    :global(.cart-link:hover .cart-icon, .cart-link:active .cart-icon) {
       color: var(--color-icon-fire);
-      transform: translateY(-2px);
+      transform: scale(1.1);
+
     }
   }
 
