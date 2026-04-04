@@ -7,23 +7,21 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "init-db": "node src/scripts/test-db.js",
-    "seed": "node src/scripts/seed.js",
-    "test:cart-api": "node src/scripts/test-cart-api.js",
-    "format": "prettier --write \"src/**/*.{astro,ts,tsx,js,jsx,css,json}\"",
-    "format:check": "prettier --check \"src/**/*.{astro,ts,tsx,js,jsx,css,json}\""
+    "format": "prettier --write \"src/**/*.{astro,ts,tsx,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{astro,ts,tsx,css,json}\""
   },
   "dependencies": {
     "@astrojs/node": "^9.5.1",
     "@astrojs/react": "^4.4.2",
     "astro": "^5.16.6",
-    "better-sqlite3": "^12.5.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "prettier": "^3.7.4",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.3"
   }
 }

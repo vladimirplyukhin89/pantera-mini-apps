@@ -1,6 +1,3 @@
-// src/components/HeroAccent.tsx
-// Акцентный элемент со стрелкой для Hero секции (React компонент)
-
 import { ImPointRight } from 'react-icons/im';
 
 interface HeroAccentProps {
@@ -8,11 +5,11 @@ interface HeroAccentProps {
   className?: string;
 }
 
-const HeroAccent = ({ linkTo = '/catalog', className = '' }: HeroAccentProps) => {
+const HeroAccent = ({ linkTo = '/sportsmen', className = '' }: HeroAccentProps) => {
   const iconSize = 40;
-  
+
   return (
-    <a href={linkTo} className={className} aria-label="Перейти в каталог">
+    <a href={linkTo} className={className} aria-label="Перейти">
       <ImPointRight size={iconSize} />
     </a>
   );

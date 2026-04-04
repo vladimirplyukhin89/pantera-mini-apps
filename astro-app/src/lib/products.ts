@@ -1,137 +1,106 @@
-// src/lib/products.ts
-// Функции для работы с товарами из базы данных
+import type { Product, ProductVariant } from './types';
 
-import db from './db.js';
-import type { Product, ProductRow, ProductVariant } from './types.js';
-import { logger } from './logger.js';
+const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
+const STRAPI_TOKEN = import.meta.env.STRAPI_TOKEN || '';
 
-/**
- * Получить все активные товары
- * @returns {Product[]} Массив товаров с их вариантами (размерами)
- */
-export function getAllProducts(): Product[] {
-  try {
-    // SQL запрос для получения всех активных товаров
-    // JOIN объединяет данные из двух таблиц
-    const products = db.prepare(`
-      SELECT 
-        p.id,
-        p.name,
-        p.description,
-        p.image_url,
-        p.collection_name,
-        p.active,
-        p.created_at,
-        p.updated_at
-      FROM products p
-      WHERE p.active = 1
-      ORDER BY p.id
-    `).all() as ProductRow[];
-
-    // Для каждого товара получаем его варианты (размеры)
-    const productsWithVariants: Product[] = products.map(product => {
-      const variants = getProductVariants(product.id);
-      return {
-        ...product,
-        variants
-      };
-    });
-
-    return productsWithVariants;
-  } catch (error) {
-    logger.error('Ошибка при получении товаров', {
-      function: 'getAllProducts',
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
-    });
-    throw error;
-  }
+interface StrapiResponse<T> {
+  data: T;
+  meta: {
+    pagination?: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
 }
 
-/**
- * Получить товар по ID
- * @param {number} id - ID товара
- * @returns {Product | null} Товар с вариантами или null если не найден
- */
-export function getProductById(id: number): Product | null {
-  try {
-    // Получаем товар по ID
-    const product = db.prepare(`
-      SELECT 
-        p.id,
-        p.name,
-        p.description,
-        p.image_url,
-        p.collection_name,
-        p.active,
-        p.created_at,
-        p.updated_at
-      FROM products p
-      WHERE p.id = ?
-    `).get(id) as ProductRow | undefined;
+interface StrapiProduct {
+  id: number;
+  documentId: string;
+  name: string;
+  description: string | null;
+  collection_name: string | null;
+  images?: { url: string }[];
+  variants?: StrapiVariant[];
+}
 
-    // Если товар не найден, возвращаем null
-    if (!product) {
-      return null;
+interface StrapiVariant {
+  id: number;
+  size: string;
+  stock: number;
+  price: number;
+}
+
+function getStrapiHeaders(): HeadersInit {
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (STRAPI_TOKEN) {
+    headers['Authorization'] = `Bearer ${STRAPI_TOKEN}`;
+  }
+
+  return headers;
+}
+
+function mapStrapiProduct(item: StrapiProduct): Product {
+  const imageUrls = item.images?.map((img) => {
+    return img.url.startsWith('http') ? img.url : `${STRAPI_URL}${img.url}`;
+  }) ?? [];
+
+  const variants: ProductVariant[] = item.variants?.map((v) => ({
+    id: v.id,
+    size: v.size,
+    stock: v.stock,
+    price: v.price,
+  })) ?? [];
+
+  return {
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    image_urls: imageUrls,
+    collection_name: item.collection_name,
+    variants,
+  };
+}
+
+export async function getAllProducts(): Promise<Product[]> {
+  try {
+    const res = await fetch(
+      `${STRAPI_URL}/api/products?populate=images,variants`,
+      { headers: getStrapiHeaders() }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Strapi responded with ${res.status}`);
     }
 
-    // Получаем варианты (размеры) для этого товара
-    const variants = getProductVariants(id);
-
-    return {
-      ...product,
-      variants
-    };
+    const json: StrapiResponse<StrapiProduct[]> = await res.json();
+    return json.data.map(mapStrapiProduct);
   } catch (error) {
-    logger.error('Ошибка при получении товара по ID', {
-      function: 'getProductById',
-      product_id: id,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
-    });
-    throw error;
+    console.error('Failed to fetch products from Strapi:', error);
+    return [];
   }
 }
 
-/**
- * Получить варианты (размеры) товара
- * @param {number} productId - ID товара
- * @returns {ProductVariant[]} Массив вариантов товара (размеры с ценами и остатками)
- */
-export function getProductVariants(productId: number): ProductVariant[] {
+export async function getProductById(id: number): Promise<Product | null> {
   try {
-    // Получаем все варианты (размеры) для товара
-    const variants = db.prepare(`
-      SELECT 
-        id,
-        size,
-        stock,
-        price
-      FROM product_variants
-      WHERE product_id = ?
-      ORDER BY 
-        CASE size
-          WHEN 'XS' THEN 1
-          WHEN 'S' THEN 2
-          WHEN 'M' THEN 3
-          WHEN 'L' THEN 4
-          WHEN 'XL' THEN 5
-          ELSE 6
-        END
-    `).all(productId) as Omit<ProductVariant, 'product_id' | 'created_at' | 'updated_at'>[];
-    
-    // Добавляем product_id к каждому варианту
-    return variants.map(variant => ({
-      ...variant,
-      product_id: productId
-    }));
+    const res = await fetch(
+      `${STRAPI_URL}/api/products/${id}?populate=images,variants`,
+      { headers: getStrapiHeaders() }
+    );
+
+    if (!res.ok) {
+      if (res.status === 404) return null;
+      throw new Error(`Strapi responded with ${res.status}`);
+    }
+
+    const json: StrapiResponse<StrapiProduct> = await res.json();
+    return mapStrapiProduct(json.data);
   } catch (error) {
-    logger.error('Ошибка при получении вариантов товара', {
-      function: 'getProductVariants',
-      product_id: productId,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
-    });
-    throw error;
+    console.error('Failed to fetch product from Strapi:', error);
+    return null;
   }
 }

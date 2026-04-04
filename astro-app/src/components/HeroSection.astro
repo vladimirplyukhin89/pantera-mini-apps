@@ -1,37 +1,31 @@
 ---
-// src/components/HeroSection.astro
-// Hero секция с фоном (фото человека), текстом поверх и красным прямоугольником
-
 import HeroAccent from './HeroAccent';
 
 interface Props {
   title?: string;
   description?: string;
-  ctaText?: string;
   ctaLink?: string;
 }
 
 const {
   title = 'Пссc,',
   description = 'Тут ребзя тишки продаёт',
-  ctaLink = '/catalog',
+  ctaLink = '/sportsmen',
 } = Astro.props;
 ---
 
 <section class="hero-section">
-  <!-- Overlay поверх фона -->
   <div class="hero-overlay"></div>
 
-  <!-- Контент поверх изображения -->
   <div class="hero-content">
     <div class="hero-text">
       <h1 class="hero-title">{title}</h1>
       <p class="hero-description">{description}</p>
     </div>
 
-     <div class="hero-accent" >
+    <div class="hero-accent">
       <HeroAccent client:load linkTo={ctaLink} className="hero-icon" />
-     </div>
+    </div>
   </div>
 </section>
 
@@ -83,7 +77,7 @@ const {
     font-size: 2.25rem;
     font-weight: 900;
     line-height: 1.2;
-    margin-bottom: 0.75rem; 
+    margin-bottom: 0.75rem;
     color: var(--color-text-cream);
     text-shadow: 0 2px 4px var(--color-shadow-text);
   }
@@ -97,7 +91,6 @@ const {
     text-shadow: 0 1px 2px var(--color-shadow-text-light);
   }
 
-  /* Красный прямоугольник (акцентный элемент) */
   .hero-accent {
     width: 80px;
     height: 60px;
@@ -114,33 +107,41 @@ const {
     cursor: pointer;
   }
 
-  /* Hover эффекты только для устройств с курсором/тачпадом */
-  @media (hover: hover) and (pointer: fine) {
-    .hero-accent:hover {
-      opacity: 1;
-    }
-
-    .hero-accent:hover :global(.hero-icon) {
-      transform: translateX(10px);
-    }
+  .hero-accent:hover,
+  .hero-accent:active {
+    opacity: 1;
   }
 
-  .hero-accent:active {
-    opacity: 0.8;
+  .hero-accent:hover :global(.hero-icon),
+  .hero-accent:active :global(.hero-icon) {
+    transform: translateX(10px);
+  }
+
+  .hero-accent:active :global(.hero-icon) {
+    color: var(--color-icon-home);
+  }
+
+  .hero-accent:active :global(.hero-icon svg) {
+    color: var(--color-icon-home);
+    fill: var(--color-icon-home);
   }
 
   :global(.hero-icon) {
-    transition: transform 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      color 0.3s ease;
     width: 40px;
     height: 40px;
   }
-  
+
   :global(.hero-icon svg) {
     width: 100%;
     height: 100%;
+    transition:
+      color 0.3s ease,
+      fill 0.3s ease;
   }
 
-  /* Планшеты (от 481px) */
   @media (min-width: 481px) {
     .hero-content {
       padding: 2rem 1.5rem 15vh;
@@ -161,20 +162,19 @@ const {
       width: 10rem;
       height: 8rem;
     }
-    
+
     :global(.hero-icon) {
       width: 60px;
       height: 60px;
     }
   }
 
-  @media(min-width: 769px) {
-      .hero-section {
+  @media (min-width: 769px) {
+    .hero-section {
       background-image: url('/images/jpg/01.jpg');
     }
   }
 
-  /* Десктоп (от 1024px) */
   @media (min-width: 1024px) {
     .hero-content {
       padding: 2.5rem 2rem 15vh;
@@ -195,14 +195,13 @@ const {
       width: 14rem;
       height: 10rem;
     }
-    
+
     :global(.hero-icon) {
       width: 100px;
       height: 100px;
     }
   }
 
-    /* Большие экраны (от 1440px) */
   @media (min-width: 1440px) {
     .hero-content {
       max-width: 1440px;
@@ -210,4 +209,3 @@ const {
     }
   }
 </style>
-

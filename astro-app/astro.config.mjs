@@ -5,17 +5,15 @@ import react from '@astrojs/react';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Получаем путь к корню проекта
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// https://astro.build/config
 export default defineConfig({
-  output: 'server', // Включаем SSR режим
+  output: 'server',
   adapter: node({
-    mode: 'standalone', // Режим работы (standalone = отдельный процесс)
+    mode: 'standalone',
   }),
-  integrations: [react()], // Интеграция React
+  integrations: [react()],
   vite: {
     resolve: {
       alias: {

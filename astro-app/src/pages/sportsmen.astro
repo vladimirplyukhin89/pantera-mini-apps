@@ -1,41 +1,40 @@
 ---
-// src/pages/contacts.astro
-// Страница контактов
-
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomBar from '../components/BottomBar/BottomBar';
-import { ImGrin } from "react-icons/im";
+import { ImGrin } from 'react-icons/im';
 ---
 
-<Layout title="Контакты - Pantera Shop">
+<Layout title="Наши спортсмены - Pantera">
   <Header />
-  
+
   <main class="main-content">
     <div class="wrapper-text">
-      <h1 class="page-title">Как нам шумануть</h1>
+      <h1 class="page-title">Наши спортсмены</h1>
       <ImGrin className="smile-icon" size={40} />
     </div>
-    
-    <section class="contacts-section">
-      <div class="contact-item">
-        <h2 class="contact-label">Адрес</h2>
-        <p class="contact-value">Укажите адрес зала</p>
+
+    <section class="sportsmen-section">
+      <div class="sportsmen-item">
+        <h2 class="sportsmen-label">Адрес зала</h2>
+        <p class="sportsmen-value">Укажите адрес зала</p>
       </div>
 
-      <div class="contact-item">
-        <h2 class="contact-label">Телефон</h2>
-        <a href="tel:+79991234567" class="contact-value contact-link">+7 (999) 123-45-67</a>
+      <div class="sportsmen-item">
+        <h2 class="sportsmen-label">Телефон</h2>
+        <a href="tel:+79991234567" class="sportsmen-value sportsmen-link">+7 (999) 123-45-67</a>
       </div>
 
-      <div class="contact-item">
-        <h2 class="contact-label">Email</h2>
-        <a href="mailto:info@pantera-box.com" class="contact-value contact-link">info@pantera-box.com</a>
+      <div class="sportsmen-item">
+        <h2 class="sportsmen-label">Email</h2>
+        <a href="mailto:info@pantera-box.com" class="sportsmen-value sportsmen-link"
+          >info@pantera-box.com</a
+        >
       </div>
     </section>
   </main>
 
-  <BottomBar client:load currentPath="/contacts" />
+  <BottomBar client:load currentPath="/sportsmen" />
 </Layout>
 
 <style>
@@ -45,7 +44,7 @@ import { ImGrin } from "react-icons/im";
     padding-top: calc(var(--header-height) + 2rem);
     max-width: 100%;
     margin: 0 auto;
-    padding-bottom: 5rem; /* Отступ для bottom bar */
+    padding-bottom: 5rem;
   }
 
   .page-title {
@@ -68,40 +67,39 @@ import { ImGrin } from "react-icons/im";
     fill: var(--color-icon-home);
   }
 
-  .contacts-section {
+  .sportsmen-section {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
 
-  .contact-item {
+  .sportsmen-item {
     padding: 1.5rem;
-    background-color: var(--tg-theme-secondary-bg-color, #f5f5f5);
+    background-color: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
   }
 
-  .contact-label {
+  .sportsmen-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--tg-theme-hint-color, #999999);
+    color: var(--color-text-gray);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 0.5rem;
   }
 
-  .contact-value {
+  .sportsmen-value {
     font-size: 1.125rem;
-    color: var(--tg-theme-text-color, #000000);
+    color: var(--color-text-cream);
     margin: 0;
   }
 
-  .contact-link {
-    color: var(--tg-theme-link-color, #3390ec);
+  .sportsmen-link {
+    color: var(--color-accent-blue);
     text-decoration: none;
   }
 
-  .contact-link:hover {
+  .sportsmen-link:hover {
     text-decoration: underline;
   }
 </style>
-

@@ -1,8 +1,5 @@
-// src/components/BottomBar.tsx
-// Нижняя навигационная панель (React компонент)
-
 import { useEffect, useState, type ReactElement } from 'react';
-import { ImCool, ImPointRight, ImFire, ImPowerCord as ImPowerCode } from 'react-icons/im';
+import { ImCool, ImPowerCord as ImPowerCode } from 'react-icons/im';
 import styles from './BottomBar.module.css';
 
 interface BottomBarProps {
@@ -22,19 +19,9 @@ const navItems: NavItem[] = [
     icon: <ImCool className={`${styles.icon} ${styles.iconHome}`} />,
   },
   {
-    path: '/catalog',
-    label: 'Каталог',
-    icon: <ImPointRight className={`${styles.icon} ${styles.iconCatalog}`} />,
-  },
-  {
-    path: '/cart',
-    label: 'Корзина',
-    icon: <ImFire className={`${styles.icon} ${styles.iconFire}`} />,
-  },
-  {
-    path: '/contacts',
-    label: 'Контакты',
-    icon: <ImPowerCode className={`${styles.icon} ${styles.iconContacts}`} />,
+    path: '/sportsmen',
+    label: 'Спортсмены',
+    icon: <ImPowerCode className={`${styles.icon} ${styles.iconSportsmen}`} />,
   },
 ];
 
@@ -48,24 +35,40 @@ const BottomBar = ({ currentPath }: BottomBarProps) => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
-    // Обновляем путь при изменении URL (для SPA-навигации)
+
     const handleLocationChange = () => {
       setPath(window.location.pathname);
     };
 
     window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
+    document.addEventListener('astro:page-load', handleLocationChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      document.removeEventListener('astro:page-load', handleLocationChange);
+    };
   }, []);
 
   const isActive = (itemPath: string) => path === itemPath;
+  const isHomePage = path === '/';
+
+  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, navPath: string) => {
+    if (navPath === window.location.pathname) {
+      e.preventDefault();
+      return;
+    }
+  };
 
   return (
-    <nav className={styles.bottomBar}>
+    <nav
+      className={`${styles.bottomBar} ${!isHomePage ? styles.bottomBarBlurred : ''}`}
+      data-astro-transition-scope="bottom-bar"
+    >
       {navItems.map((item) => (
         <a
           key={item.path}
           href={item.path}
+          onClick={(e) => handleNavigation(e, item.path)}
           className={`${styles.bottomBarItem} ${isActive(item.path) ? styles.bottomBarItemActive : ''}`}
         >
           {item.icon}

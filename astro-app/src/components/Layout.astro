@@ -1,11 +1,5 @@
 ---
-// src/components/Layout.astro
-// Базовый Layout для всех страниц
-// Верхняя часть (---) - это секция для JavaScript/TypeScript
-// Ниже - HTML разметка
-
-import TelegramWebAppInit from './TelegramWebAppInit.astro';
-import { ClientRouter, fade, slide } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import '../styles/variables.css';
 import '../styles/fonts.css';
 
@@ -20,18 +14,14 @@ const { title = 'Pantera Shop' } = Astro.props;
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Магазин футболок зала бокса Pantera" />
+    <meta name="description" content="Pantera — зал бокса" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/images/white_logo.svg" />
     <meta name="generator" content={Astro.generator} />
     <ClientRouter />
     <title>{title}</title>
-    
-    <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
   </head>
   <body>
-    <TelegramWebAppInit />
     <div class="app-container">
       <slot />
     </div>
@@ -51,14 +41,12 @@ const { title = 'Pantera Shop' } = Astro.props;
     line-height: 1.5;
   }
 
-  /* Планшеты (от 481px) */
   @media (min-width: 481px) {
     html {
       font-size: 15px;
     }
   }
 
-  /* Десктоп (от 1024px) */
   @media (min-width: 1024px) {
     html {
       font-size: 16px;
@@ -68,8 +56,9 @@ const { title = 'Pantera Shop' } = Astro.props;
   body {
     font-family: 'KabrioAbarth', sans-serif;
     background-color: var(--color-bg-dark);
-    color: var(--color-white);
+    color: var(--color-text-cream);
     min-height: 100vh;
+    padding-bottom: 70px;
   }
 
   .app-container {
@@ -78,27 +67,15 @@ const { title = 'Pantera Shop' } = Astro.props;
     flex-direction: column;
   }
 
-  /* Стили для Telegram Mini App */
-  body {
-    /* Telegram WebApp автоматически устанавливает эти переменные */
-    background-color: var(--tg-theme-bg-color, var(--color-bg-dark));
-    color: var(--tg-theme-text-color, var(--color-text-cream));
-    /* Отступ для bottom bar */
-    padding-bottom: 70px;
-  }
-
-  /* Планшеты */
   @media (min-width: 481px) {
     body {
       padding-bottom: 80px;
     }
   }
 
-  /* Десктоп */
   @media (min-width: 1024px) {
     body {
       padding-bottom: 90px;
     }
   }
 </style>
-

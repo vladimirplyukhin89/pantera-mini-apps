@@ -1,10 +1,8 @@
-/* CSS переменные для проекта */
-
 :root {
   /* Цвета бренда */
   --color-burgundy: rgba(119, 18, 19, 1);
   --color-red-accent: #d84c4c;
-  --color-turquoise-panther: #4D897C;
+  --color-turquoise-panther: #4d897c;
 
   /* Основные цвета */
   --color-white: #ffffff;
@@ -12,14 +10,14 @@
   --color-text-dark: #1a1a1a;
   --color-text-light: rgba(255, 255, 255, 1);
   --color-text-light-alpha: rgba(255, 255, 255, 0.9);
-  
+
   /* Кремовые цвета текста */
-  --color-text-cream: #FFF8E7;
+  --color-text-cream: #fff8e7;
   --color-text-cream-alpha: rgba(255, 248, 231, 0.9);
 
   /* Фоны и overlay */
   --color-bg-white: #ffffff;
-  --color-bg-cream: #FFF8E7;
+  --color-bg-cream: #fff8e7;
   --color-bg-dark: rgba(0, 0, 0, 0.8);
   --color-bg-orange: rgba(230, 96, 0, 0.8);
   --color-overlay-dark: rgba(0, 0, 0, 0.3);
@@ -31,33 +29,27 @@
   --color-shadow-text: rgba(0, 0, 0, 0.3);
   --color-shadow-text-light: rgba(0, 0, 0, 0.3);
 
-  /* Акцентные цвета (fallback для Telegram темы) */
+  /* Акцентные цвета */
   --color-accent-blue: #3390ec;
   --color-border-gray: #e0e0e0;
   --color-text-gray: #999999;
 
-  /* Цвета иконок при наведении */
-  --color-icon-fire: #ff8c00; /* Желто-огненный цвет */
-  --color-icon-contacts: #4caf50; /* Зеленый цвет */
-  --color-icon-home: #9c27b0; /* Фиолетовый цвет */
-  --color-icon-catalog: #e91e63; /* Розовый цвет */
-  --color-icon-heart: #f05187; /* Оттенок красного цвета */
+  /* Цвета иконок */
+  --color-icon-home: #9c27b0;
+  --color-icon-contacts: #4caf50;
 
-  /* Высота header (мобильные по умолчанию) */
-  --header-height: 64px; /* padding: 0.75rem (12px) * 2 + logo 40px */
+  /* Высота header */
+  --header-height: 64px;
 }
 
-/* Планшеты (от 481px) */
 @media (min-width: 481px) {
   :root {
-    --header-height: 72px; /* padding: 1rem (16px) * 2 + logo 40px */
+    --header-height: 72px;
   }
 }
 
-/* Десктоп (от 1024px) */
 @media (min-width: 1024px) {
   :root {
-    --header-height: 88px; /* padding: 1.25rem (20px) * 2 + logo 48px */
+    --header-height: 88px;
   }
 }
-
