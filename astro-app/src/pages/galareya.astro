@@ -5,42 +5,76 @@ import BottomBar from '../components/BottomBar/BottomBar';
 import PhotoGrid from '../components/PhotoGrid/PhotoGrid';
 import ClubValues from '../components/ClubValues.astro';
 import EventsSlider from '../components/PlansSlider/PlansSlider';
-import { getPlannedEvents, getPastEvents } from '../lib/events';
+import {
+  fetchStrapi, strapiMedia, getAccentColor,
+  type StrapiGalleryPhoto, type StrapiClubValue, type StrapiEvent,
+} from '../lib/strapi';
 
-const galleryPhotos = [
-  { src: '/images/jpg/01.jpg', alt: 'Клуб Pantera', variant: 'tall' as const },
-  { src: '/images/jpg/03.jpg', alt: 'Тренировка' },
-  { src: '/images/jpg/04.jpg', alt: 'В зале' },
-  { src: '/images/jpg/05.jpg', alt: 'Подготовка', variant: 'wide' as const },
-  { src: '/images/jpg/06.jpg', alt: 'Спарринг' },
-  { src: '/images/jpg/07.jpg', alt: 'Дисциплина', variant: 'tall' as const },
-  { src: '/images/jpg/08.jpg', alt: 'Техника' },
-  { src: '/images/jpg/09.jpg', alt: 'Сила' },
+// ─── Gallery photos ──────────────────────────────────────
 
-  { src: '/images/jpg/10.jpg', alt: 'Командный дух', variant: 'tall' as const },
-  { src: '/images/jpg/11.jpg', alt: 'Бокс' },
-  { src: '/images/jpg/12.jpg', alt: 'На ринге' },
-  { src: '/images/jpg/15.jpg', alt: 'Мотивация', variant: 'wide' as const },
-  { src: '/images/jpg/21.jpg', alt: 'Бойцы' },
-  { src: '/images/jpg/27.jpg', alt: 'Характер', variant: 'tall' as const },
-  { src: '/images/jpg/28.jpg', alt: 'Движение' },
-  { src: '/images/jpg/31.jpg', alt: 'Зал' },
+let galleryPhotos: { src: string; alt: string; variant?: 'tall' | 'wide' }[] = [];
+try {
+  const raw = await fetchStrapi<StrapiGalleryPhoto[]>('gallery-photos?populate=image&sort=order:asc');
+  galleryPhotos = raw.map((p) => ({
+    src: strapiMedia(p.image?.url),
+    alt: p.alt || '',
+    ...(p.variant && p.variant !== 'default' ? { variant: p.variant } : {}),
+  }));
+} catch (e) {
+  console.error('Strapi gallery-photos:', e);
+}
 
-  { src: '/images/jpg/34.jpg', alt: 'Работа над собой', variant: 'tall' as const },
-  { src: '/images/jpg/36.jpg', alt: 'Группа' },
-  { src: '/images/jpg/37.jpg', alt: 'Дух победы' },
-  { src: '/images/jpg/39.jpg', alt: 'Энергия', variant: 'wide' as const },
-  { src: '/images/jpg/41.jpg', alt: 'Выносливость' },
-  { src: '/images/jpg/43.jpg', alt: 'Фокус', variant: 'tall' as const },
-  { src: '/images/jpg/48.jpg', alt: 'Стойкость' },
-  { src: '/images/jpg/50.jpg', alt: 'Путь бойца' },
+// ─── Club values ─────────────────────────────────────────
 
-  { src: '/images/jpg/51.jpg', alt: 'Гордость' },
-  { src: '/images/jpg/52.jpg', alt: 'Pantera family', variant: 'wide' as const },
-];
+let clubValues: { photo: string; title: string; description: string; accent?: string }[] = [];
+try {
+  const raw = await fetchStrapi<StrapiClubValue[]>('club-values?populate=photo&sort=order:asc');
+  clubValues = raw.map((v) => ({
+    photo: strapiMedia(v.photo?.url),
+    title: v.title,
+    description: v.description,
+    accent: getAccentColor(v.accent_color),
+  }));
+} catch (e) {
+  console.error('Strapi club-values:', e);
+}
 
-const planned = getPlannedEvents();
-const past = getPastEvents();
+// ─── Events ──────────────────────────────────────────────
+
+interface SliderEvent {
+  id: string;
+  emoji: string;
+  title: string;
+  teaser: string;
+  date: string;
+  status: 'planned' | 'past';
+  media: { type: 'image' | 'video'; src: string; alt?: string }[];
+  accentIndex: number;
+}
+
+let planned: SliderEvent[] = [];
+let past: SliderEvent[] = [];
+try {
+  const raw = await fetchStrapi<StrapiEvent[]>('events?populate=media&sort=order:asc');
+  const all = raw.map((ev): SliderEvent => ({
+    id: ev.slug || ev.documentId,
+    emoji: ev.emoji || '📌',
+    title: ev.title,
+    teaser: ev.teaser || '',
+    date: ev.date_label || '',
+    status: ev.status || 'past',
+    media: (ev.media || []).map((m) => ({
+      type: 'image' as const,
+      src: strapiMedia(m.url),
+      alt: m.alternativeText || '',
+    })),
+    accentIndex: ev.accent_index ?? 0,
+  }));
+  planned = all.filter((e) => e.status === 'planned');
+  past = all.filter((e) => e.status === 'past');
+} catch (e) {
+  console.error('Strapi events:', e);
+}
 ---
 
 <Layout title="Галерея - Pantera">
@@ -48,23 +82,23 @@ const past = getPastEvents();
 
   <main class="main-content">
 
-    <section class="club-section">
-      <div class="section-header">
-        <div class="section-label">О нашем клубе</div>
-        <h1 class="section-title">
-          Место, где <span class="accent-word">характер</span> закаляется <br /> (да просто пафосную херню несём)
-        </h1>
-        <p class="section-subtitle">
-          Если я упал — не радуйся, я просто шнурки завязывал
-        </p>
-      </div>
+    {galleryPhotos.length > 0 && (
+      <section class="club-section">
+        <div class="section-header">
+          <div class="section-label">О нашем клубе</div>
+          <h1 class="section-title">
+            Место, где <span class="accent-word">характер</span> закаляется
+          </h1>
+        </div>
+        <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
+      </section>
+    )}
 
-      <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
-    </section>
+    {clubValues.length > 0 && <ClubValues values={clubValues} />}
 
-    <ClubValues />
-
-    <EventsSlider client:load planned={planned} past={past} bgVariant="diagonal" />
+    {(planned.length > 0 || past.length > 0) && (
+      <EventsSlider client:load planned={planned} past={past} bgVariant="diagonal" />
+    )}
 
   </main>
 
@@ -111,32 +145,21 @@ const past = getPastEvents();
     font-style: italic;
   }
 
-  .section-subtitle {
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--color-text-cream-alpha);
-    line-height: 1.5;
-  }
-
   @media (min-width: 481px) {
     .main-content {
-      padding: 2rem 1.5rem;
+      padding: 2rem 1.5rem 7rem;
       padding-top: calc(var(--header-height) + 2rem);
     }
 
     .section-title {
       font-size: 2.5rem;
     }
-
-    .section-subtitle {
-      font-size: 1.125rem;
-    }
   }
 
   @media (min-width: 1024px) {
     .main-content {
       max-width: 1100px;
-      padding: 2.5rem 1.5rem;
+      padding: 2.5rem 1.5rem 8rem;
       padding-top: calc(var(--header-height) + 2.5rem);
     }
 

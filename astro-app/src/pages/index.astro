@@ -3,11 +3,28 @@ import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomBar from '../components/BottomBar/BottomBar';
 import HeroSection from '../components/HeroSection.astro';
+import { fetchStrapi, strapiMedia, type StrapiHero } from '../lib/strapi';
+
+let heroProps: Record<string, string> = {};
+try {
+  const raw = await fetchStrapi<StrapiHero>('hero?populate=*');
+  if (raw) {
+    heroProps = {
+      ...(raw.title ? { title: raw.title } : {}),
+      ...(raw.description ? { description: raw.description } : {}),
+      ...(raw.cta_link ? { ctaLink: raw.cta_link } : {}),
+      ...(raw.bg_mobile?.url ? { bgMobile: strapiMedia(raw.bg_mobile.url) } : {}),
+      ...(raw.bg_desktop?.url ? { bgDesktop: strapiMedia(raw.bg_desktop.url) } : {}),
+    };
+  }
+} catch (e) {
+  console.error('Strapi hero:', e);
+}
 ---
 
 <Layout title="Главная - Pantera">
   <main class="main-content">
-    <HeroSection />
+    <HeroSection {...heroProps} />
     <Header />
   </main>
 

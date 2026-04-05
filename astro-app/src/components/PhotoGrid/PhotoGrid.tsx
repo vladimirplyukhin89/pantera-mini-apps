@@ -15,9 +15,7 @@ interface PhotoGridProps {
 const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
   const [visibleCount, setVisibleCount] = useState(perPage);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [revealedSet, setRevealedSet] = useState<Set<number>>(new Set());
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const allLoaded = visibleCount >= photos.length;
 
   const loadMore = useCallback(() => {
@@ -39,34 +37,6 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, [allLoaded, loadMore]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const newRevealed = new Set(revealedSet);
-        let changed = false;
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = Number(entry.target.getAttribute('data-idx'));
-            if (!newRevealed.has(idx)) {
-              newRevealed.add(idx);
-              changed = true;
-            }
-            observer.unobserve(entry.target);
-          }
-        });
-        if (changed) setRevealedSet(newRevealed);
-      },
-      { rootMargin: '50px', threshold: 0.1 }
-    );
-
-    itemRefs.current.forEach((el) => {
-      const idx = Number(el.getAttribute('data-idx'));
-      if (!revealedSet.has(idx)) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, [visibleCount, revealedSet]);
 
   useEffect(() => {
     if (lightboxIndex === null) return;
@@ -94,10 +64,8 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
         {visiblePhotos.map((photo, i) => (
           <div
             key={photo.src}
-            data-idx={i}
-            ref={(el) => { if (el) itemRefs.current.set(i, el); }}
-            className={`${styles.item} ${photo.variant === 'tall' ? styles.tall : ''} ${photo.variant === 'wide' ? styles.wide : ''} ${revealedSet.has(i) ? styles.itemVisible : ''}`}
-            style={revealedSet.has(i) ? { animationDelay: `${(i % perPage) * 0.06}s` } : undefined}
+            className={`${styles.item} ${photo.variant === 'tall' ? styles.tall : ''} ${photo.variant === 'wide' ? styles.wide : ''}`}
+            style={{ animationDelay: `${(i % perPage) * 0.05}s` }}
             onClick={() => setLightboxIndex(i)}
           >
             <img src={photo.src} alt={photo.alt} loading="lazy" />

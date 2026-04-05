@@ -2,14 +2,9 @@
 import Layout from '../../components/Layout.astro';
 import Header from '../../components/Header.astro';
 import BottomBar from '../../components/BottomBar/BottomBar';
-import { getEventById } from '../../lib/events';
+import { fetchStrapi, strapiMedia, renderBlocks, type StrapiEvent } from '../../lib/strapi';
 
 const { id } = Astro.params;
-const event = getEventById(id!);
-
-if (!event) {
-  return Astro.redirect('/galareya');
-}
 
 const accentColors = [
   'var(--color-red-accent)',
@@ -17,8 +12,28 @@ const accentColors = [
   'var(--color-icon-home)',
   'var(--color-icon-gallery)',
 ];
-const accent = accentColors[event.accentIndex % 4];
-const isPast = event.status === 'past';
+
+let event: StrapiEvent | null = null;
+try {
+  const raw = await fetchStrapi<StrapiEvent[]>(
+    `events?filters[slug][$eq]=${id}&populate=media`
+  );
+  if (raw.length > 0) event = raw[0];
+} catch (e) {
+  console.error('Strapi event fetch:', e);
+}
+
+if (!event) {
+  return Astro.redirect('/galareya');
+}
+
+const accent = accentColors[(event.accent_index ?? 0) % 4];
+const isPast = (event.status || 'past') === 'past';
+const bodyHtml = renderBlocks(event.body);
+const media = (event.media || []).map((m) => ({
+  src: strapiMedia(m.url),
+  alt: m.alternativeText || '',
+}));
 ---
 
 <Layout title={`${event.title} — Pantera`}>
@@ -32,32 +47,24 @@ const isPast = event.status === 'past';
         <span class="event-badge" style={`--accent: ${accent}`}>
           {isPast ? 'Прошедшее' : 'Запланировано'}
         </span>
-        <span class="event-date">{event.date}</span>
+        <span class="event-date">{event.date_label}</span>
       </div>
-      <span class="event-emoji">{event.emoji}</span>
+      {event.emoji && <span class="event-emoji">{event.emoji}</span>}
       <h1 class="event-title">{event.title}</h1>
     </div>
 
-    {event.media.length > 0 && (
+    {media.length > 0 && (
       <div class="media-section">
         <div class="media-slider">
-          {event.media.map((m) =>
-            m.type === 'image' ? (
-              <img src={m.src} alt={m.alt || ''} loading="lazy" />
-            ) : (
-              <video src={m.src} controls preload="metadata" />
-            )
-          )}
+          {media.map((m) => (
+            <img src={m.src} alt={m.alt} loading="lazy" />
+          ))}
         </div>
-        <div class="media-hint">← листай →</div>
+        {media.length > 1 && <div class="media-hint">← листай →</div>}
       </div>
     )}
 
-    <div class="event-body">
-      {event.body.split('\n\n').map((paragraph) => (
-        <p>{paragraph}</p>
-      ))}
-    </div>
+    <div class="event-body" set:html={bodyHtml} />
 
     <a href="/galareya" class="bottom-back">← Все события</a>
   </main>
@@ -133,8 +140,6 @@ const isPast = event.status === 'past';
     line-height: 1.15;
   }
 
-  /* ===== Media slider ===== */
-
   .media-section {
     margin: 0 -1rem 2rem;
   }
@@ -174,13 +179,11 @@ const isPast = event.status === 'past';
     opacity: 0.5;
   }
 
-  /* ===== Body ===== */
-
   .event-body {
     margin-bottom: 2.5rem;
   }
 
-  .event-body p {
+  .event-body :global(p) {
     font-size: 1rem;
     font-weight: 400;
     color: var(--color-text-cream-alpha);
@@ -188,8 +191,21 @@ const isPast = event.status === 'past';
     margin-bottom: 1rem;
   }
 
-  .event-body p:last-child {
+  .event-body :global(p:last-child) {
     margin-bottom: 0;
+  }
+
+  .event-body :global(strong) {
+    color: var(--color-text-cream);
+    font-weight: 700;
+  }
+
+  .event-body :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: var(--color-text-cream-alpha);
   }
 
   .bottom-back {
@@ -201,9 +217,7 @@ const isPast = event.status === 'past';
     padding: 0.6rem 1.25rem;
     border: 1px solid var(--accent);
     border-radius: 2rem;
-    transition:
-      background 0.15s ease,
-      color 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease;
   }
 
   .bottom-back:hover {
@@ -253,7 +267,7 @@ const isPast = event.status === 'past';
       height: 360px;
     }
 
-    .event-body p {
+    .event-body :global(p) {
       font-size: 1.05rem;
     }
   }

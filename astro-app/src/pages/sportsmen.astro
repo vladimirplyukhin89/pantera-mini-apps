@@ -4,6 +4,57 @@ import Header from '../components/Header.astro';
 import BottomBar from '../components/BottomBar/BottomBar';
 import AthleteCard from '../components/AthleteCard.astro';
 import ContactSection from '../components/ContactSection.astro';
+import {
+  fetchStrapi, strapiMedia, getSocialIcon,
+  type StrapiAthlete, type StrapiContactInfo, type StrapiSocialLink,
+} from '../lib/strapi';
+
+// ─── Athletes ────────────────────────────────────────────
+
+let athletes: StrapiAthlete[] = [];
+try {
+  athletes = await fetchStrapi<StrapiAthlete[]>('athletes?populate=photo&sort=order:asc');
+} catch (e) {
+  console.error('Strapi athletes:', e);
+}
+
+// ─── Contact info ────────────────────────────────────────
+
+let contactProps: Record<string, unknown> = {};
+try {
+  const raw = await fetchStrapi<StrapiContactInfo>('contact-info');
+  if (raw) {
+    const contacts = [];
+    if (raw.address) contacts.push({ icon: '📍', label: 'Адрес', value: raw.address });
+    if (raw.phone) contacts.push({ icon: '📞', label: 'Телефон', value: raw.phone, href: `tel:${raw.phone.replace(/\D/g, '')}` });
+    if (raw.email) contacts.push({ icon: '✉️', label: 'Email', value: raw.email, href: `mailto:${raw.email}` });
+    if (raw.schedule) contacts.push({ icon: '⏰', label: 'График', value: raw.schedule });
+
+    contactProps = {
+      ...(raw.title ? { title: raw.title } : {}),
+      ...(raw.subtitle ? { subtitle: raw.subtitle } : {}),
+      contacts,
+      ...(raw.quote ? { quote: raw.quote } : {}),
+    };
+  }
+} catch (e) {
+  console.error('Strapi contact-info:', e);
+}
+
+// ─── Social links ────────────────────────────────────────
+
+try {
+  const raw = await fetchStrapi<StrapiSocialLink[]>('social-links?sort=order:asc');
+  if (raw.length > 0) {
+    contactProps.socials = raw.map((s) => ({
+      name: s.name,
+      url: s.url,
+      icon: s.icon || getSocialIcon(s.name),
+    }));
+  }
+} catch (e) {
+  console.error('Strapi social-links:', e);
+}
 ---
 
 <Layout title="Наши спортсмены - Pantera">
@@ -18,11 +69,20 @@ import ContactSection from '../components/ContactSection.astro';
       </p>
     </div>
 
-    <section class="athlete-section">
-      <AthleteCard />
-    </section>
+    {athletes.map((a) => (
+      <section class="athlete-section">
+        <AthleteCard
+          photo={strapiMedia(a.photo?.url)}
+          label={a.label}
+          name={a.name}
+          quote={a.quote}
+          stats={a.stats}
+          badge={a.badge}
+        />
+      </section>
+    ))}
 
-    <ContactSection />
+    <ContactSection {...contactProps} />
   </main>
 
   <BottomBar client:load currentPath="/sportsmen" />
@@ -69,12 +129,12 @@ import ContactSection from '../components/ContactSection.astro';
   }
 
   .athlete-section {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   @media (min-width: 481px) {
     .main-content {
-      padding: 2rem 1.5rem;
+      padding: 2rem 1.5rem 7rem;
       padding-top: calc(var(--header-height) + 2rem);
     }
 
@@ -90,7 +150,7 @@ import ContactSection from '../components/ContactSection.astro';
   @media (min-width: 1024px) {
     .main-content {
       max-width: 1100px;
-      padding: 2.5rem 1.5rem;
+      padding: 2.5rem 1.5rem 8rem;
       padding-top: calc(var(--header-height) + 2.5rem);
     }
 

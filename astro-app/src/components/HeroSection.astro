@@ -5,16 +5,21 @@ interface Props {
   title?: string;
   description?: string;
   ctaLink?: string;
+  bgMobile?: string;
+  bgDesktop?: string;
 }
 
 const {
-  title = 'Пссc,',
+  title,
   description = 'Тут ребзя бокс раздаёт',
   ctaLink = '/sportsmen',
+  bgMobile,
+  bgDesktop,
 } = Astro.props;
+
 ---
 
-<section class="hero-section">
+<section class="hero-section" style={`--bg-mobile: url('${bgMobile}'); --bg-desktop: url('${bgDesktop}')`}>
   <div class="hero-overlay"></div>
 
   <div class="hero-content">
@@ -38,7 +43,7 @@ const {
     flex-direction: column;
     justify-content: flex-end;
     overflow: hidden;
-    background-image: url('/images/jpg/37.jpg');
+    background-image: var(--bg-mobile);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -171,7 +176,7 @@ const {
 
   @media (min-width: 769px) {
     .hero-section {
-      background-image: url('/images/jpg/01.jpg');
+      background-image: var(--bg-desktop);
     }
   }
 
