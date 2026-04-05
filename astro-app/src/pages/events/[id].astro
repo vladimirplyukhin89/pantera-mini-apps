@@ -1,0 +1,260 @@
+---
+import Layout from '../../components/Layout.astro';
+import Header from '../../components/Header.astro';
+import BottomBar from '../../components/BottomBar/BottomBar';
+import { getEventById } from '../../lib/events';
+
+const { id } = Astro.params;
+const event = getEventById(id!);
+
+if (!event) {
+  return Astro.redirect('/galareya');
+}
+
+const accentColors = [
+  'var(--color-red-accent)',
+  'var(--color-turquoise-panther)',
+  'var(--color-icon-home)',
+  'var(--color-icon-gallery)',
+];
+const accent = accentColors[event.accentIndex % 4];
+const isPast = event.status === 'past';
+---
+
+<Layout title={`${event.title} — Pantera`}>
+  <Header />
+
+  <main class="event-page">
+    <a href="/galareya" class="back-link">← Назад к галерее</a>
+
+    <div class="event-header">
+      <div class="event-meta">
+        <span class="event-badge" style={`--accent: ${accent}`}>
+          {isPast ? 'Прошедшее' : 'Запланировано'}
+        </span>
+        <span class="event-date">{event.date}</span>
+      </div>
+      <span class="event-emoji">{event.emoji}</span>
+      <h1 class="event-title">{event.title}</h1>
+    </div>
+
+    {event.media.length > 0 && (
+      <div class="media-section">
+        <div class="media-slider">
+          {event.media.map((m) =>
+            m.type === 'image' ? (
+              <img src={m.src} alt={m.alt || ''} loading="lazy" />
+            ) : (
+              <video src={m.src} controls preload="metadata" />
+            )
+          )}
+        </div>
+        <div class="media-hint">← листай →</div>
+      </div>
+    )}
+
+    <div class="event-body">
+      {event.body.split('\n\n').map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </div>
+
+    <a href="/galareya" class="bottom-back">← Все события</a>
+  </main>
+
+  <BottomBar client:load currentPath="/galareya" />
+</Layout>
+
+<style define:vars={{ accent }}>
+  .event-page {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    padding-top: calc(var(--header-height) + 1.5rem);
+    max-width: 720px;
+    margin: 0 auto;
+    padding-bottom: 7rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-cream-alpha);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.15s ease;
+  }
+
+  .back-link:hover {
+    color: var(--color-text-cream);
+  }
+
+  .event-header {
+    margin-bottom: 2rem;
+  }
+
+  .event-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .event-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+    background: var(--accent);
+    color: var(--color-text-cream);
+  }
+
+  .event-date {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .event-emoji {
+    font-size: 3.5rem;
+    line-height: 1;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .event-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: var(--color-text-cream);
+    line-height: 1.15;
+  }
+
+  /* ===== Media slider ===== */
+
+  .media-section {
+    margin: 0 -1rem 2rem;
+  }
+
+  .media-slider {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 1rem;
+    scrollbar-width: none;
+  }
+
+  .media-slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  .media-slider img,
+  .media-slider video {
+    flex: 0 0 85%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 1rem;
+    scroll-snap-align: center;
+    display: block;
+  }
+
+  .media-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-gray);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 0.75rem;
+    opacity: 0.5;
+  }
+
+  /* ===== Body ===== */
+
+  .event-body {
+    margin-bottom: 2.5rem;
+  }
+
+  .event-body p {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text-cream-alpha);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .event-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .bottom-back {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.6rem 1.25rem;
+    border: 1px solid var(--accent);
+    border-radius: 2rem;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .bottom-back:hover {
+    background: var(--accent);
+    color: var(--color-text-cream);
+  }
+
+  @media (min-width: 481px) {
+    .event-page {
+      padding: 2rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2rem);
+    }
+
+    .event-title {
+      font-size: 2.75rem;
+    }
+
+    .media-section {
+      margin-left: -1.5rem;
+      margin-right: -1.5rem;
+    }
+
+    .media-slider {
+      padding: 0 1.5rem;
+    }
+
+    .media-slider img,
+    .media-slider video {
+      flex: 0 0 70%;
+      height: 300px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .event-page {
+      padding: 2.5rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2.5rem);
+    }
+
+    .event-title {
+      font-size: 3rem;
+    }
+
+    .media-slider img,
+    .media-slider video {
+      flex: 0 0 60%;
+      height: 360px;
+    }
+
+    .event-body p {
+      font-size: 1.05rem;
+    }
+  }
+</style>

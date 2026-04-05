@@ -2,36 +2,27 @@
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomBar from '../components/BottomBar/BottomBar';
-import { ImGrin } from 'react-icons/im';
+import AthleteCard from '../components/AthleteCard.astro';
+import ContactSection from '../components/ContactSection.astro';
 ---
 
 <Layout title="Наши спортсмены - Pantera">
   <Header />
 
   <main class="main-content">
-    <div class="wrapper-text">
+    <div class="page-header">
+      <span class="page-label">Команда</span>
       <h1 class="page-title">Наши спортсмены</h1>
-      <ImGrin className="smile-icon" size={40} />
+      <p class="page-subtitle">
+        Люди, которые делают Pantera — это не только зал
+      </p>
     </div>
 
-    <section class="sportsmen-section">
-      <div class="sportsmen-item">
-        <h2 class="sportsmen-label">Адрес зала</h2>
-        <p class="sportsmen-value">Укажите адрес зала</p>
-      </div>
-
-      <div class="sportsmen-item">
-        <h2 class="sportsmen-label">Телефон</h2>
-        <a href="tel:+79991234567" class="sportsmen-value sportsmen-link">+7 (999) 123-45-67</a>
-      </div>
-
-      <div class="sportsmen-item">
-        <h2 class="sportsmen-label">Email</h2>
-        <a href="mailto:info@pantera-box.com" class="sportsmen-value sportsmen-link"
-          >info@pantera-box.com</a
-        >
-      </div>
+    <section class="athlete-section">
+      <AthleteCard />
     </section>
+
+    <ContactSection />
   </main>
 
   <BottomBar client:load currentPath="/sportsmen" />
@@ -40,66 +31,77 @@ import { ImGrin } from 'react-icons/im';
 <style>
   .main-content {
     flex: 1;
-    padding: 2rem 1.5rem;
-    padding-top: calc(var(--header-height) + 2rem);
+    padding: 1.5rem 1rem;
+    padding-top: calc(var(--header-height) + 1.5rem);
     max-width: 100%;
     margin: 0 auto;
-    padding-bottom: 5rem;
+    padding-bottom: 7rem;
+  }
+
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--color-icon-contacts);
+    display: block;
+    margin-bottom: 0.75rem;
   }
 
   .page-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--color-icon-contacts);
-    margin-bottom: 2rem;
-    text-align: center;
-    display: inline-block;
-  }
-
-  .wrapper-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-  }
-
-  .smile-icon {
-    fill: var(--color-icon-home);
-  }
-
-  .sportsmen-section {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .sportsmen-item {
-    padding: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-  }
-
-  .sportsmen-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-text-gray);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: var(--color-text-cream);
+    line-height: 1.15;
     margin-bottom: 0.5rem;
   }
 
-  .sportsmen-value {
-    font-size: 1.125rem;
-    color: var(--color-text-cream);
+  .page-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text-cream-alpha);
+    line-height: 1.5;
     margin: 0;
   }
 
-  .sportsmen-link {
-    color: var(--color-accent-blue);
-    text-decoration: none;
+  .athlete-section {
+    margin-bottom: 1rem;
   }
 
-  .sportsmen-link:hover {
-    text-decoration: underline;
+  @media (min-width: 481px) {
+    .main-content {
+      padding: 2rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2rem);
+    }
+
+    .page-title {
+      font-size: 2.75rem;
+    }
+
+    .page-subtitle {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .main-content {
+      max-width: 1100px;
+      padding: 2.5rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2.5rem);
+    }
+
+    .page-title {
+      font-size: 3rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .main-content {
+      max-width: 1200px;
+    }
   }
 </style>

@@ -1,0 +1,261 @@
+---
+interface ContactItem {
+  icon: string;
+  label: string;
+  value: string;
+  href?: string;
+}
+
+interface Social {
+  name: string;
+  url: string;
+  icon: string;
+}
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  contacts?: ContactItem[];
+  socials?: Social[];
+  quote?: string;
+}
+
+const {
+  title = 'Мы на связи',
+  subtitle = 'Заходи, пиши, звони — мы рады всем',
+  contacts = [
+    { icon: '📍', label: 'Адрес', value: 'Укажите адрес зала' },
+    { icon: '📞', label: 'Телефон', value: '+7 (999) 123-45-67', href: 'tel:+79991234567' },
+    { icon: '✉️', label: 'Email', value: 'info@pantera-box.com', href: 'mailto:info@pantera-box.com' },
+    { icon: '⏰', label: 'График', value: 'Пн — Сб: 8:00 — 22:00' },
+  ],
+  socials = [
+    { name: 'Telegram', url: '#', icon: '✈️' },
+    { name: 'Instagram', url: '#', icon: '📸' },
+    { name: 'VK', url: '#', icon: '💬' },
+  ],
+  quote = '«Не бойся начать — бойся не попробовать.»',
+} = Astro.props;
+---
+
+<section class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-header">
+      <span class="contact-label">Контакты</span>
+      <h2 class="contact-title">{title}</h2>
+      <p class="contact-subtitle">{subtitle}</p>
+    </div>
+
+    <div class="contact-grid">
+      {contacts.map((c) => (
+        <div class="contact-card">
+          <span class="contact-icon">{c.icon}</span>
+          <div class="contact-card-body">
+            <span class="contact-card-label">{c.label}</span>
+            {c.href ? (
+              <a href={c.href} class="contact-card-value contact-link">{c.value}</a>
+            ) : (
+              <span class="contact-card-value">{c.value}</span>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="socials-row">
+      {socials.map((s) => (
+        <a href={s.url} class="social-link" target="_blank" rel="noopener noreferrer" aria-label={s.name}>
+          <span class="social-icon">{s.icon}</span>
+          <span class="social-name">{s.name}</span>
+        </a>
+      ))}
+    </div>
+
+    {quote && (
+      <p class="contact-quote">{quote}</p>
+    )}
+  </div>
+</section>
+
+<style>
+  .contact-section {
+    margin-top: 3rem;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 100%, rgba(77, 137, 124, 0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 0%, rgba(216, 76, 76, 0.06) 0%, transparent 60%),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.3) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .contact-inner {
+    padding: 2rem 1.25rem;
+  }
+
+  .contact-header {
+    margin-bottom: 1.75rem;
+  }
+
+  .contact-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--color-turquoise-panther);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-title {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--color-text-cream);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-subtitle {
+    font-size: 0.95rem;
+    color: var(--color-text-cream-alpha);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .contact-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.75rem;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .contact-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .contact-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .contact-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .contact-card-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--color-text-gray);
+  }
+
+  .contact-card-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-cream);
+    line-height: 1.4;
+  }
+
+  .contact-link {
+    color: var(--color-text-cream);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .contact-link:hover {
+    color: var(--color-turquoise-panther);
+  }
+
+  .socials-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 2rem;
+    text-decoration: none;
+    color: var(--color-text-cream);
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .social-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .social-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .contact-quote {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--color-text-cream-alpha);
+    line-height: 1.6;
+    padding: 0 0.5rem;
+    margin: 0;
+    opacity: 0.7;
+  }
+
+  @media (min-width: 481px) {
+    .contact-inner {
+      padding: 2.5rem 1.5rem;
+    }
+
+    .contact-title {
+      font-size: 2rem;
+    }
+
+    .contact-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .contact-inner {
+      padding: 3rem 2rem;
+    }
+
+    .contact-title {
+      font-size: 2.25rem;
+    }
+
+    .contact-quote {
+      font-size: 1.05rem;
+    }
+  }
+</style>

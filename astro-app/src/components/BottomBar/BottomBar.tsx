@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ImCool, ImPowerCord as ImPowerCode } from 'react-icons/im';
+import { ImCool, ImCamera, ImPowerCord as ImPowerCode } from 'react-icons/im';
 import styles from './BottomBar.module.css';
 
 interface BottomBarProps {
@@ -16,12 +16,17 @@ const navItems: NavItem[] = [
   {
     path: '/',
     label: 'Главная',
-    icon: <ImCool className={`${styles.icon} ${styles.iconHome}`} />,
+    icon: <ImPowerCode className={`${styles.icon} ${styles.iconHome}`} />,
+  },
+  {
+    path: '/galareya',
+    label: 'Галерея',
+    icon: <ImCamera className={`${styles.icon} ${styles.iconGallery}`} />,
   },
   {
     path: '/sportsmen',
     label: 'Спортсмены',
-    icon: <ImPowerCode className={`${styles.icon} ${styles.iconSportsmen}`} />,
+    icon: <ImCool className={`${styles.icon} ${styles.iconSportsmen}`} />,
   },
 ];
 

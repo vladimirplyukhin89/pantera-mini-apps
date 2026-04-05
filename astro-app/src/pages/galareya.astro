@@ -1,0 +1,153 @@
+---
+import Layout from '../components/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomBar from '../components/BottomBar/BottomBar';
+import PhotoGrid from '../components/PhotoGrid/PhotoGrid';
+import ClubValues from '../components/ClubValues.astro';
+import EventsSlider from '../components/PlansSlider/PlansSlider';
+import { getPlannedEvents, getPastEvents } from '../lib/events';
+
+const galleryPhotos = [
+  { src: '/images/jpg/01.jpg', alt: 'Клуб Pantera', variant: 'tall' as const },
+  { src: '/images/jpg/03.jpg', alt: 'Тренировка' },
+  { src: '/images/jpg/04.jpg', alt: 'В зале' },
+  { src: '/images/jpg/05.jpg', alt: 'Подготовка', variant: 'wide' as const },
+  { src: '/images/jpg/06.jpg', alt: 'Спарринг' },
+  { src: '/images/jpg/07.jpg', alt: 'Дисциплина', variant: 'tall' as const },
+  { src: '/images/jpg/08.jpg', alt: 'Техника' },
+  { src: '/images/jpg/09.jpg', alt: 'Сила' },
+
+  { src: '/images/jpg/10.jpg', alt: 'Командный дух', variant: 'tall' as const },
+  { src: '/images/jpg/11.jpg', alt: 'Бокс' },
+  { src: '/images/jpg/12.jpg', alt: 'На ринге' },
+  { src: '/images/jpg/15.jpg', alt: 'Мотивация', variant: 'wide' as const },
+  { src: '/images/jpg/21.jpg', alt: 'Бойцы' },
+  { src: '/images/jpg/27.jpg', alt: 'Характер', variant: 'tall' as const },
+  { src: '/images/jpg/28.jpg', alt: 'Движение' },
+  { src: '/images/jpg/31.jpg', alt: 'Зал' },
+
+  { src: '/images/jpg/34.jpg', alt: 'Работа над собой', variant: 'tall' as const },
+  { src: '/images/jpg/36.jpg', alt: 'Группа' },
+  { src: '/images/jpg/37.jpg', alt: 'Дух победы' },
+  { src: '/images/jpg/39.jpg', alt: 'Энергия', variant: 'wide' as const },
+  { src: '/images/jpg/41.jpg', alt: 'Выносливость' },
+  { src: '/images/jpg/43.jpg', alt: 'Фокус', variant: 'tall' as const },
+  { src: '/images/jpg/48.jpg', alt: 'Стойкость' },
+  { src: '/images/jpg/50.jpg', alt: 'Путь бойца' },
+
+  { src: '/images/jpg/51.jpg', alt: 'Гордость' },
+  { src: '/images/jpg/52.jpg', alt: 'Pantera family', variant: 'wide' as const },
+];
+
+const planned = getPlannedEvents();
+const past = getPastEvents();
+---
+
+<Layout title="Галерея - Pantera">
+  <Header />
+
+  <main class="main-content">
+
+    <section class="club-section">
+      <div class="section-header">
+        <div class="section-label">О нашем клубе</div>
+        <h1 class="section-title">
+          Место, где <span class="accent-word">характер</span> закаляется <br /> (да просто пафосную херню несём)
+        </h1>
+        <p class="section-subtitle">
+          Если я упал — не радуйся, я просто шнурки завязывал
+        </p>
+      </div>
+
+      <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
+    </section>
+
+    <ClubValues />
+
+    <EventsSlider client:load planned={planned} past={past} bgVariant="diagonal" />
+
+  </main>
+
+  <BottomBar client:load currentPath="/galareya" />
+</Layout>
+
+<style>
+  .main-content {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    padding-top: calc(var(--header-height) + 1.5rem);
+    max-width: 100%;
+    margin: 0 auto;
+    padding-bottom: 7rem;
+  }
+
+  .club-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--color-icon-gallery);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--color-text-cream);
+    margin-bottom: 0.75rem;
+  }
+
+  .accent-word {
+    color: var(--color-red-accent);
+    font-style: italic;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text-cream-alpha);
+    line-height: 1.5;
+  }
+
+  @media (min-width: 481px) {
+    .main-content {
+      padding: 2rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2rem);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .main-content {
+      max-width: 1100px;
+      padding: 2.5rem 1.5rem;
+      padding-top: calc(var(--header-height) + 2.5rem);
+    }
+
+    .section-title {
+      font-size: 3rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .main-content {
+      max-width: 1200px;
+    }
+  }
+</style>
