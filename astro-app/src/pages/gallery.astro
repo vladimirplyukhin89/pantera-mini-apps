@@ -115,6 +115,9 @@ try {
             <h1 class="section-title">
               Место, где <span class="accent-word">характер</span> закаляется
             </h1>
+            <p class="section-subtitle">
+              Если я упал - не радуйся, я просто шнурки проверял
+            </p>
           </div>
           <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
         </section>
@@ -132,7 +135,7 @@ try {
 
   </main>
 
-  <BottomBar client:load currentPath="/galareya" />
+  <BottomBar client:load currentPath="/gallery" />
 </Layout>
 
 <style>
@@ -190,6 +193,14 @@ try {
     margin-bottom: 0.75rem;
   }
 
+  .section-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text-cream-alpha);
+    line-height: 1.5;
+    margin: 0;
+  }
+
   .accent-word {
     color: var(--color-red-accent);
     font-style: italic;
@@ -207,6 +218,10 @@ try {
 
     .section-title {
       font-size: 2.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.125rem;
     }
   }
 

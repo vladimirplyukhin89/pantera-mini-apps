@@ -80,11 +80,11 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
             </div>
           </>
         )}
-
-        {allLoaded && visibleCount > perPage && (
-          <div className={styles.endMessage}>Все фотографии загружены</div>
-        )}
       </div>
+
+      {allLoaded && visibleCount > perPage && (
+        <p className={styles.endMessage}>Все фотографии загружены</p>
+      )}
 
       {lightboxIndex !== null && (
         <div className={styles.lightboxOverlay} onClick={() => setLightboxIndex(null)}>

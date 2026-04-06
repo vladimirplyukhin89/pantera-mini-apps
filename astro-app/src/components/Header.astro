@@ -68,12 +68,15 @@ const isHomePage = Astro.url.pathname === '/';
   }
 
   .logo-image {
+    display: block;
     object-fit: cover;
     fill: --color-bg-cream;
   }
 
   .logo-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
     text-decoration: none;
     transition:
       opacity 0.2s,

@@ -31,6 +31,7 @@ const bgClassMap: Record<BgVariant, string> = {
   glow: 'u-bg-glow',
   diagonal: 'u-bg-diagonal',
   mesh: 'u-bg-mesh',
+  salad: 'u-bg-salad',
 };
 
 const EventCard = ({ event }: { event: EventItem }) => (
@@ -86,16 +87,6 @@ function EventCarousel({ events }: { events: EventItem[] }) {
 
 const EventsSlider = ({ planned, past, bgVariant = 'glow' }: EventsSliderProps) => (
   <div className={`${styles.section}  ${bgClassMap[bgVariant]}`}>
-    {planned.length > 0 && (
-      <>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Что впереди</h2>
-          <span className={styles.sectionTag}>планы</span>
-        </div>
-        <EventCarousel events={planned} />
-      </>
-    )}
-
     {past.length > 0 && (
       <>
         <div
@@ -105,8 +96,21 @@ const EventsSlider = ({ planned, past, bgVariant = 'glow' }: EventsSliderProps) 
           <span className={`${styles.sectionTag} ${styles.tagPast}`}>архив</span>
         </div>
         <EventCarousel events={past} />
+        {past.length > 2 && <div className={styles.cardHint}>← листай →</div>}
       </>
     )}
+
+    {planned.length > 0 && (
+      <>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Что впереди</h2>
+          <span className={styles.sectionTag}>планы</span>
+        </div>
+        <EventCarousel events={planned} />
+        {planned.length > 2 && <div className={styles.cardHint}>← листай →</div>}
+      </>
+    )}
+
   </div>
 );
 

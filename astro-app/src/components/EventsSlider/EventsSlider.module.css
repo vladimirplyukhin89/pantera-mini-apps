@@ -203,10 +203,21 @@
 .cardDate {
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--color-text-gray);
+  color: var(--color-text-cream);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 0.1rem;
+}
+
+.cardHint {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-gray);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 0.75rem;
+  opacity: 0.5;
 }
 
 @media (hover: hover) and (pointer: fine) {

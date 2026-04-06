@@ -25,7 +25,7 @@ try {
 }
 
 if (!event) {
-  return Astro.redirect('/galareya');
+  return Astro.redirect('/gallery');
 }
 
 const accent = accentColors[(event.accent_index ?? 0) % 4];
@@ -41,7 +41,7 @@ const media = (event.media || []).map((m) => ({
   <Header />
 
   <main class="main-content">
-    <a href="/galareya" class="back-link" data-astro-prefetch="hover">← Назад к галерее</a>
+    <a href="/gallery" class="back-link" data-astro-prefetch="hover">← Назад к галерее</a>
 
     <div class="event-header">
       <div class="event-meta">
@@ -62,10 +62,10 @@ const media = (event.media || []).map((m) => ({
 
     <div class="event-body" set:html={bodyHtml} />
 
-    <a href="/galareya" class="bottom-back" data-astro-prefetch="hover">← Все события</a>
+    <a href="/gallery" class="bottom-back" data-astro-prefetch="hover">← Все события</a>
   </main>
 
-  <BottomBar client:load currentPath="/galareya" />
+  <BottomBar client:load currentPath="/gallery" />
 </Layout>
 
 <style define:vars={{ accent }}>

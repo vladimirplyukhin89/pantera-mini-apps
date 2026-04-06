@@ -71,7 +71,8 @@
 }
 
 .endMessage {
-  grid-column: 1 / -1;
+  margin: 0.75rem 0 0;
+  padding: 0;
   text-align: center;
   font-size: 0.8rem;
   font-weight: 600;
@@ -79,8 +80,6 @@
   letter-spacing: 1.5px;
   color: var(--color-text-gray);
   line-height: 1;
-  padding: 0;
-  margin: 0.75rem 0 0;
 }
 
 /* ===== Lightbox ===== */

@@ -19,7 +19,7 @@ const navItems: NavItem[] = [
     icon: <ImPointDown className={`${styles.icon} ${styles.iconHome}`} />,
   },
   {
-    path: '/galareya',
+    path: '/gallery',
     label: 'Галерея',
     icon: <ImCamera className={`${styles.icon} ${styles.iconGallery}`} />,
   },
