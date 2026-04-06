@@ -81,7 +81,7 @@ try {
   console.error('Strapi events:', e);
 }
 
-// ─── Фон слайдера событий (Strapi Single Type `gallery-settings`, поле `events_slider_bg`) ─
+// ─── Фон слайдера событий ──────────────────────────────────────────────
 
 let eventsSliderBg: BgVariant = 'glow';
 try {
@@ -98,30 +98,36 @@ try {
 
   <main class="main-content">
 
-    <span class="section-label">События</span>
     {(planned.length > 0 || past.length > 0) && (
-      <section class="events-section">
-        <EventsSlider client:load planned={planned} past={past} bgVariant={eventsSliderBg} />
-      </section>
-    )}
-
-    <span class="section-label">Наши ценности</span>
-    {clubValues.length > 0 && (
-      <section class="club-section">
-        <ClubValues values={clubValues} />
-      </section>
+      <>
+        <span class="section-label">События</span>
+        <section class="events-section">
+          <EventsSlider client:load planned={planned} past={past} bgVariant={eventsSliderBg} />
+        </section>
+      </>
     )}
 
     {galleryPhotos.length > 0 && (
-      <section class="club-section">
-        <div class="section-header">
-          <span class="section-label">О нашем клубе</span>
-          <h1 class="section-title">
-            Место, где <span class="accent-word">характер</span> закаляется
-          </h1>
-        </div>
-        <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
-      </section>
+      <>
+        <span class="section-label">О нашем клубе</span>
+        <section class="club-section">
+          <div class="section-header">
+            <h1 class="section-title">
+              Место, где <span class="accent-word">характер</span> закаляется
+            </h1>
+          </div>
+          <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
+        </section>
+      </>
+    )}
+
+    {clubValues.length > 0 && (
+      <>
+        <span class="section-label">Наши ценности</span>
+        <section class="club-section">
+          <ClubValues values={clubValues} />
+        </section>
+      </>
     )}
 
   </main>
@@ -159,7 +165,7 @@ try {
     margin-top: 0;
   }
 
-  /* Подпись внутри блока с заголовком — свои интервалы, без дублирования margin-block */
+
   .section-header .section-label {
     margin: 0 0 0.75rem;
   }
@@ -189,7 +195,6 @@ try {
     font-style: italic;
   }
 
-  /* Убираем лишний верхний отступ у слайдера: на странице уже есть .section-label */
   .events-section {
     --events-slider-margin-top: 0;
   }

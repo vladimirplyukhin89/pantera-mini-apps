@@ -2,45 +2,11 @@
 
 .section {
   margin-top: var(--events-slider-margin-top, 3rem);
+  margin-bottom: var(--section-stack-gap, 2.5rem);
   border-radius: 1.5rem;
   margin-left: -1rem;
   margin-right: -1rem;
   overflow: hidden;
-}
-
-/* Голубой акцент: токены --color-accent-blue-overlay, --color-accent-blue */
-.bgGlow {
-  background:
-    radial-gradient(ellipse 88% 58% at 50% 100%, var(--color-accent-blue-overlay) 0%, transparent 74%),
-    radial-gradient(ellipse 58% 44% at 16% 78%, rgba(51, 144, 236, 0.14) 0%, transparent 58%),
-    radial-gradient(ellipse 45% 38% at 85% 18%, rgba(114, 179, 244, 0.12) 0%, transparent 52%),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.3) 100%);
-  border: 1px solid rgba(51, 144, 236, 0.12);
-}
-
-/* Оранжевый акцент: токен --color-bg-orange + тёплый свет снизу */
-.bgDiagonal {
-  background:
-    radial-gradient(ellipse 78% 52% at 50% 100%, var(--color-bg-orange) 0%, transparent 70%),
-    linear-gradient(
-      135deg,
-      rgba(255, 140, 0, 0.12) 0%,
-      transparent 30%,
-      transparent 70%,
-      rgba(77, 137, 124, 0.06) 100%
-    ),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.26) 100%);
-  border: 1px solid rgba(255, 140, 0, 0.14);
-}
-
-/* Дефолт: нейтральный «меш» без доминирования одного бренд-цвета */
-.bgMesh {
-  background:
-    radial-gradient(circle at 10% 20%, rgba(156, 39, 176, 0.07) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(255, 140, 0, 0.07) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(216, 76, 76, 0.04) 0%, transparent 50%),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 /* ===== Header ===== */
@@ -51,12 +17,6 @@
   gap: 0.75rem;
   padding: 2rem 1rem 0;
   padding-top: 0;
-}
-
-.sectionHeaderSpaced {
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  margin-top: 0.5rem;
 }
 
 .sectionTitle {
@@ -165,8 +125,6 @@
   transform: scale(0.98);
 }
 
-/* Media: 60% of card height */
-
 .cardMedia {
   flex: 0 0 75%;
   min-height: 0;
@@ -182,9 +140,13 @@
 .cardThumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
   object-position: top;
+  object-fit: cover;
+}
+
+.plannedImg {
+  object-fit: contain !important;
 }
 
 .cardPlaceholder {

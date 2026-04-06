@@ -26,7 +26,9 @@
   --color-bg-overlay-cream: rgba(255, 248, 231, 0.2);
   --color-overlay-dark-strong: rgba(0, 0, 0, 0.5);
   --color-header-overlay: rgba(0, 0, 0, 0.3);
-  --color-accent-blue-overlay: rgba(114, 179, 244, 0.3);
+  --color-accent-blue-overlay: rgba(0, 48, 95, 0.3);
+  --color-bg-accent-green: rgba(8, 255, 162, 0.8);
+  --color-bg-accent-purple: rgba(123, 18, 116, 0.96);
 
   /* Тени */
   --color-shadow-text: rgba(0, 0, 0, 0.3);

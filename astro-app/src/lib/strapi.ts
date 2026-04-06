@@ -169,8 +169,8 @@ export interface StrapiClubValue {
   photo?: StrapiImage;
 }
 
-/** Значения enum в Strapi: Single Type `gallery-settings` → поле `events_slider_bg` */
-export const EVENTS_SLIDER_BG_VALUES = ['glow', 'diagonal', 'mesh'] as const;
+/** !TODO Значения enum в Strapi: Single Type `gallery-settings` → поле `events_slider_bg` */
+export const EVENTS_SLIDER_BG_VALUES = ['glow', 'diagonal', 'mesh', 'salad'] as const;
 
 export type EventsSliderBgStr = (typeof EVENTS_SLIDER_BG_VALUES)[number];
 

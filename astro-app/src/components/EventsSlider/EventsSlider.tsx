@@ -1,5 +1,6 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import type { EventsSliderBgStr } from '../../lib/strapi';
+import '../../styles/section-backgrounds.css';
 import styles from './EventsSlider.module.css';
 
 interface EventMedia {
@@ -27,9 +28,9 @@ interface EventsSliderProps {
 }
 
 const bgClassMap: Record<BgVariant, string> = {
-  glow: styles.bgGlow,
-  diagonal: styles.bgDiagonal,
-  mesh: styles.bgMesh,
+  glow: 'u-bg-glow',
+  diagonal: 'u-bg-diagonal',
+  mesh: 'u-bg-mesh',
 };
 
 const EventCard = ({ event }: { event: EventItem }) => (
@@ -41,12 +42,13 @@ const EventCard = ({ event }: { event: EventItem }) => (
     >
       <div className={styles.cardMedia}>
         {event.media.length > 0 ? (
-          <div className={styles.cardThumb}>
+          <div className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.plannedImg : ''}`}>
             <img
               src={event.media[0].src}
               alt={event.media[0].alt ?? ''}
               loading="lazy"
               decoding="async"
+              className={event.statusCode === 'planned' ? styles.plannedImg : ''}
             />
           </div>
         ) : (
@@ -83,7 +85,7 @@ function EventCarousel({ events }: { events: EventItem[] }) {
 }
 
 const EventsSlider = ({ planned, past, bgVariant = 'glow' }: EventsSliderProps) => (
-  <div className={`${styles.section} ${bgClassMap[bgVariant]}`}>
+  <div className={`${styles.section}  ${bgClassMap[bgVariant]}`}>
     {planned.length > 0 && (
       <>
         <div className={styles.sectionHeader}>
@@ -97,7 +99,7 @@ const EventsSlider = ({ planned, past, bgVariant = 'glow' }: EventsSliderProps) 
     {past.length > 0 && (
       <>
         <div
-          className={`${styles.sectionHeader} ${planned.length > 0 ? styles.sectionHeaderSpaced : ''}`}
+          className={`${styles.sectionHeader}`}
         >
           <h2 className={styles.sectionTitle}>Прошедшие</h2>
           <span className={`${styles.sectionTag} ${styles.tagPast}`}>архив</span>

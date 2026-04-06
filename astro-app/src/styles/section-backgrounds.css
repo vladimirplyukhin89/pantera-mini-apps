@@ -1,0 +1,45 @@
+/* Shared panel backgrounds (EventsSlider, ClubValues, …) */
+
+.u-bg-glow {
+  background: var(--color-bg-accent-purple);
+  border: 1px solid rgba(51, 144, 236, 0.18);
+  box-shadow: inset 0 0 80px rgba(51, 144, 236, 0.06);
+}
+
+.u-bg-diagonal {
+  background: var(--color-bg-orange);
+  border: 1px solid rgba(255, 140, 0, 0.22);
+  box-shadow: inset 0 0 70px rgba(255, 140, 0, 0.06);
+}
+
+.u-bg-salad {
+  background: var(--color-bg-accent-green);
+  border: 1px solid var(--color-bg-accent-green);;
+  box-shadow: inset 0 0 70px var(--color-bg-accent-green);;
+}
+
+.u-bg-mesh {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(156, 39, 176, 0.07) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 140, 0, 0.07) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(216, 76, 76, 0.04) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Bleed + rounding to match EventsSlider .section */
+.u-bg-panel {
+  border-radius: 1.5rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  overflow: hidden;
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+@media (min-width: 481px) {
+  .u-bg-panel {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding: 1.5rem 1.5rem 1.75rem;
+  }
+}

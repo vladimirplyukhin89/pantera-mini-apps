@@ -1,4 +1,6 @@
 ---
+import '../styles/section-backgrounds.css';
+
 interface ValueItem {
   photo: string;
   title: string;
@@ -8,12 +10,14 @@ interface ValueItem {
 
 interface Props {
   values?: ValueItem[];
+  /** Same variants as EventsSlider / gallery-settings */
+  bgVariant?: 'glow' | 'diagonal' | 'mesh' | 'salad';
 }
 
-const { values } = Astro.props;
+const { values, bgVariant = 'salad' } = Astro.props;
 ---
 
-<section class="values-section">
+<section class:list={['values-section', 'u-bg-panel', `u-bg-${bgVariant}`]}>
   <div class="values-header">
     <h2 class="values-title">
       Не просто тренировки — <span class="values-accent">добрая морось</span>
