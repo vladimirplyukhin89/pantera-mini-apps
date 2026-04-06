@@ -169,6 +169,22 @@ export interface StrapiClubValue {
   photo?: StrapiImage;
 }
 
+/** Значения enum в Strapi: Single Type `gallery-settings` → поле `events_slider_bg` */
+export const EVENTS_SLIDER_BG_VALUES = ['glow', 'diagonal', 'mesh'] as const;
+
+export type EventsSliderBgStr = (typeof EVENTS_SLIDER_BG_VALUES)[number];
+
+export interface StrapiGallerySettings {
+  events_slider_bg?: EventsSliderBgStr | string;
+}
+
+export function parseEventsSliderBg(value: string | undefined | null): EventsSliderBgStr | null {
+  if (!value) return null;
+  return (EVENTS_SLIDER_BG_VALUES as readonly string[]).includes(value)
+    ? (value as EventsSliderBgStr)
+    : null;
+}
+
 export interface StrapiEvent {
   id: number;
   documentId: string;
@@ -177,6 +193,10 @@ export interface StrapiEvent {
   title: string;
   teaser: string;
   date_label: string;
+  /** Enumeration: в схеме репозитория — `statusPlan`; можно назвать поле в CMS и `statusCode` */
+  statusPlan?: 'planned' | 'past';
+  statusCode?: 'planned' | 'past';
+  /** Старое имя поля в Strapi, если ещё не мигрировали на `statusPlan` */
   status?: 'planned' | 'past';
   body: unknown;
   accent_index?: number;

@@ -4,11 +4,18 @@ import Header from '../components/Header.astro';
 import BottomBar from '../components/BottomBar/BottomBar';
 import PhotoGrid from '../components/PhotoGrid/PhotoGrid';
 import ClubValues from '../components/ClubValues.astro';
-import EventsSlider from '../components/PlansSlider/PlansSlider';
+import EventsSlider from '../components/EventsSlider/EventsSlider';
 import {
-  fetchStrapi, strapiMedia, getAccentColor,
-  type StrapiGalleryPhoto, type StrapiClubValue, type StrapiEvent,
+  fetchStrapi,
+  strapiMedia,
+  getAccentColor,
+  parseEventsSliderBg,
+  type StrapiGalleryPhoto,
+  type StrapiClubValue,
+  type StrapiEvent,
+  type StrapiGallerySettings,
 } from '../lib/strapi';
+import type { BgVariant } from '../components/EventsSlider/EventsSlider';
 
 // ─── Gallery photos ──────────────────────────────────────
 
@@ -43,11 +50,10 @@ try {
 
 interface SliderEvent {
   id: string;
-  emoji: string;
   title: string;
   teaser: string;
   date: string;
-  status: 'planned' | 'past';
+  statusCode: 'planned' | 'past';
   media: { type: 'image' | 'video'; src: string; alt?: string }[];
   accentIndex: number;
 }
@@ -58,11 +64,10 @@ try {
   const raw = await fetchStrapi<StrapiEvent[]>('events?populate=media&sort=order:asc');
   const all = raw.map((ev): SliderEvent => ({
     id: ev.slug || ev.documentId,
-    emoji: ev.emoji || '📌',
     title: ev.title,
     teaser: ev.teaser || '',
     date: ev.date_label || '',
-    status: ev.status || 'past',
+    statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
     media: (ev.media || []).map((m) => ({
       type: 'image' as const,
       src: strapiMedia(m.url),
@@ -70,10 +75,21 @@ try {
     })),
     accentIndex: ev.accent_index ?? 0,
   }));
-  planned = all.filter((e) => e.status === 'planned');
-  past = all.filter((e) => e.status === 'past');
+  planned = all.filter((e) => e.statusCode === 'planned');
+  past = all.filter((e) => e.statusCode === 'past');
 } catch (e) {
   console.error('Strapi events:', e);
+}
+
+// ─── Фон слайдера событий (Strapi Single Type `gallery-settings`, поле `events_slider_bg`) ─
+
+let eventsSliderBg: BgVariant = 'glow';
+try {
+  const settings = await fetchStrapi<StrapiGallerySettings>('gallery-settings');
+  const parsed = parseEventsSliderBg(settings?.events_slider_bg);
+  if (parsed) eventsSliderBg = parsed;
+} catch (e) {
+  console.error('Strapi gallery-settings:', e);
 }
 ---
 
@@ -81,6 +97,20 @@ try {
   <Header />
 
   <main class="main-content">
+
+    <span class="section-label">События</span>
+    {(planned.length > 0 || past.length > 0) && (
+      <section class="events-section">
+        <EventsSlider client:load planned={planned} past={past} bgVariant={eventsSliderBg} />
+      </section>
+    )}
+
+    <span class="section-label">Наши ценности</span>
+    {clubValues.length > 0 && (
+      <section class="club-section">
+        <ClubValues values={clubValues} />
+      </section>
+    )}
 
     {galleryPhotos.length > 0 && (
       <section class="club-section">
@@ -92,13 +122,6 @@ try {
         </div>
         <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
       </section>
-    )}
-    
-    <span class="section-label">Наши ценности</span>
-    {clubValues.length > 0 && <ClubValues values={clubValues} />}
-
-    {(planned.length > 0 || past.length > 0) && (
-      <EventsSlider client:load planned={planned} past={past} bgVariant="diagonal" />
     )}
 
   </main>
@@ -114,23 +137,43 @@ try {
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: 7.5rem;
-  }
-
-  .club-section {
-    margin-bottom: 3rem;
-  }
-
-  .section-header {
-    margin-bottom: 2rem;
+    --section-label-gap: 1.25rem;
+    --section-stack-gap: 2.5rem;
   }
 
   .section-label {
     font-size: 1rem;
-    font-weight: 900;    
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 3px;
     color: var(--color-icon-gallery);
-    margin-bottom: 0.75rem;
+  }
+
+  /* Подписи, идущие сразу под <main>: одинаковый отступ сверху и снизу */
+  .main-content > .section-label {
+    display: block;
+    margin-block: var(--section-label-gap);
+  }
+
+  .main-content > .section-label:first-child {
+    margin-top: 0;
+  }
+
+  /* Подпись внутри блока с заголовком — свои интервалы, без дублирования margin-block */
+  .section-header .section-label {
+    margin: 0 0 0.75rem;
+  }
+
+  .club-section {
+    margin-bottom: var(--section-stack-gap);
+  }
+
+  .club-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
   }
 
   .section-title {
@@ -144,6 +187,11 @@ try {
   .accent-word {
     color: var(--color-red-accent);
     font-style: italic;
+  }
+
+  /* Убираем лишний верхний отступ у слайдера: на странице уже есть .section-label */
+  .events-section {
+    --events-slider-margin-top: 0;
   }
 
   @media (min-width: 481px) {

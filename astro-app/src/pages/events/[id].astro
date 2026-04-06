@@ -2,6 +2,7 @@
 import Layout from '../../components/Layout.astro';
 import Header from '../../components/Header.astro';
 import BottomBar from '../../components/BottomBar/BottomBar';
+import EventMediaGallery from '../../components/EventMediaGallery/EventMediaGallery';
 import { fetchStrapi, strapiMedia, renderBlocks, type StrapiEvent } from '../../lib/strapi';
 
 const { id } = Astro.params;
@@ -28,7 +29,7 @@ if (!event) {
 }
 
 const accent = accentColors[(event.accent_index ?? 0) % 4];
-const isPast = (event.status || 'past') === 'past';
+const isPast = (event.statusCode ?? event.statusPlan ?? event.status ?? 'past') === 'past';
 const bodyHtml = renderBlocks(event.body);
 const media = (event.media || []).map((m) => ({
   src: strapiMedia(m.url),
@@ -39,8 +40,8 @@ const media = (event.media || []).map((m) => ({
 <Layout title={`${event.title} — Pantera`}>
   <Header />
 
-  <main class="event-page">
-    <a href="/galareya" class="back-link">← Назад к галерее</a>
+  <main class="main-content">
+    <a href="/galareya" class="back-link" data-astro-prefetch="hover">← Назад к галерее</a>
 
     <div class="event-header">
       <div class="event-meta">
@@ -49,37 +50,32 @@ const media = (event.media || []).map((m) => ({
         </span>
         <span class="event-date">{event.date_label}</span>
       </div>
-      {event.emoji && <span class="event-emoji">{event.emoji}</span>}
       <h1 class="event-title">{event.title}</h1>
     </div>
 
     {media.length > 0 && (
       <div class="media-section">
-        <div class="media-slider">
-          {media.map((m) => (
-            <img src={m.src} alt={m.alt} loading="lazy" />
-          ))}
-        </div>
+        <EventMediaGallery client:load media={media} />
         {media.length > 1 && <div class="media-hint">← листай →</div>}
       </div>
     )}
 
     <div class="event-body" set:html={bodyHtml} />
 
-    <a href="/galareya" class="bottom-back">← Все события</a>
+    <a href="/galareya" class="bottom-back" data-astro-prefetch="hover">← Все события</a>
   </main>
 
   <BottomBar client:load currentPath="/galareya" />
 </Layout>
 
 <style define:vars={{ accent }}>
-  .event-page {
+  .main-content {
     flex: 1;
     padding: 1.5rem 1rem;
     padding-top: calc(var(--header-height) + 1.5rem);
-    max-width: 720px;
+    max-width: 100%;
     margin: 0 auto;
-    padding-bottom: 7rem;
+    padding-bottom: 7.5rem;
   }
 
   .back-link {
@@ -141,31 +137,7 @@ const media = (event.media || []).map((m) => ({
   }
 
   .media-section {
-    margin: 0 -1rem 2rem;
-  }
-
-  .media-slider {
-    display: flex;
-    gap: 0.75rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding: 0 1rem;
-    scrollbar-width: none;
-  }
-
-  .media-slider::-webkit-scrollbar {
-    display: none;
-  }
-
-  .media-slider img,
-  .media-slider video {
-    flex: 0 0 85%;
-    height: 240px;
-    object-fit: cover;
-    border-radius: 1rem;
-    scroll-snap-align: center;
-    display: block;
+    margin: 0 -1rem 2rem
   }
 
   .media-hint {
@@ -226,8 +198,8 @@ const media = (event.media || []).map((m) => ({
   }
 
   @media (min-width: 481px) {
-    .event-page {
-      padding: 2rem 1.5rem;
+    .main-content {
+      padding: 2rem 1.5rem 7rem;
       padding-top: calc(var(--header-height) + 2rem);
     }
 
@@ -239,21 +211,12 @@ const media = (event.media || []).map((m) => ({
       margin-left: -1.5rem;
       margin-right: -1.5rem;
     }
-
-    .media-slider {
-      padding: 0 1.5rem;
-    }
-
-    .media-slider img,
-    .media-slider video {
-      flex: 0 0 70%;
-      height: 300px;
-    }
   }
 
   @media (min-width: 1024px) {
-    .event-page {
-      padding: 2.5rem 1.5rem;
+    .main-content {
+      max-width: 1100px;
+      padding: 2.5rem 1.5rem 8rem;
       padding-top: calc(var(--header-height) + 2.5rem);
     }
 
@@ -261,14 +224,14 @@ const media = (event.media || []).map((m) => ({
       font-size: 3rem;
     }
 
-    .media-slider img,
-    .media-slider video {
-      flex: 0 0 60%;
-      height: 360px;
-    }
-
     .event-body :global(p) {
       font-size: 1.05rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .main-content {
+      max-width: 1200px;
     }
   }
 </style>

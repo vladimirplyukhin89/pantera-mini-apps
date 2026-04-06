@@ -13,6 +13,16 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
+  /**
+   * Prefetch работает вместе с `<ClientRouter />` (View Transitions): страницы
+   * подгружаются заранее, переход по внутренним `<a>` остаётся без полной перезагрузки.
+   * @see https://docs.astro.build/en/guides/prefetch/
+   */
+  prefetch: {
+    prefetchAll: true,
+    /** Карусели и длинные страницы: ссылки подгружаются по мере появления во вьюпорте */
+    defaultStrategy: 'viewport',
+  },
   integrations: [react()],
   vite: {
     resolve: {

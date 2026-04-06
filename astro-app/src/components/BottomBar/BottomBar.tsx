@@ -73,6 +73,7 @@ const BottomBar = ({ currentPath }: BottomBarProps) => {
         <a
           key={item.path}
           href={item.path}
+          data-astro-prefetch="hover"
           onClick={(e) => handleNavigation(e, item.path)}
           className={`${styles.bottomBarItem} ${isActive(item.path) ? styles.bottomBarItemActive : ''}`}
         >

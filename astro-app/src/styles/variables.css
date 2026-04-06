@@ -26,6 +26,7 @@
   --color-bg-overlay-cream: rgba(255, 248, 231, 0.2);
   --color-overlay-dark-strong: rgba(0, 0, 0, 0.5);
   --color-header-overlay: rgba(0, 0, 0, 0.3);
+  --color-accent-blue-overlay: rgba(114, 179, 244, 0.3);
 
   /* Тени */
   --color-shadow-text: rgba(0, 0, 0, 0.3);
@@ -38,7 +39,7 @@
 
   /* Цвета иконок */
   --color-icon-home: #9c27b0;
-  --color-icon-gallery: #ff8c00;
+  --color-icon-gallery: rgb(255, 140, 0);
   --color-icon-contacts: #4caf50;
 
   /* Высота header */

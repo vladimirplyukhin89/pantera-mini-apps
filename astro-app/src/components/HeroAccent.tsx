@@ -9,7 +9,7 @@ const HeroAccent = ({ linkTo = '/sportsmen', className = '' }: HeroAccentProps) 
   const iconSize = 40;
 
   return (
-    <a href={linkTo} className={className} aria-label="Перейти">
+    <a href={linkTo} className={className} aria-label="Перейти" data-astro-prefetch="hover">
       <ImPointRight size={iconSize} />
     </a>
   );

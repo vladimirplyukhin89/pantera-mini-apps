@@ -18,7 +18,7 @@ const isHomePage = Astro.url.pathname === '/';
           height={40}
         />
       ) : (
-        <a href="/" class="logo-link" aria-label="На главную">
+        <a href="/" class="logo-link" aria-label="На главную" data-astro-prefetch="hover">
           <Image
             src="/images/svg/white_logo.svg"
             alt="Logo"
