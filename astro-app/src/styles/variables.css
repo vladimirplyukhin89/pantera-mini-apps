@@ -19,9 +19,11 @@
   --color-bg-white: #ffffff;
   --color-bg-cream: #fff8e7;
   --color-bg-dark: rgba(0, 0, 0, 0.8);
+  --color-bg-purple: rgba(156, 39, 176, 0.3);
   --color-bg-orange: rgba(230, 96, 0, 0.8);
   --color-overlay-dark: rgba(0, 0, 0, 0.3);
   --color-bg-overlay-white: rgba(255, 255, 255, 0.9);
+  --color-bg-overlay-cream: rgba(255, 248, 231, 0.2);
   --color-overlay-dark-strong: rgba(0, 0, 0, 0.5);
   --color-header-overlay: rgba(0, 0, 0, 0.3);
 

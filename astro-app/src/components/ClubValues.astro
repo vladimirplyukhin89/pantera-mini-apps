@@ -10,58 +10,18 @@ interface Props {
   values?: ValueItem[];
 }
 
-const defaultValues: ValueItem[] = [
-  {
-    photo: '/images/jpg/07.jpg',
-    title: 'Дисциплина',
-    description: 'Без неё — никуда. Первое, чему учат в зале.',
-    accent: 'var(--color-red-accent)',
-  },
-  {
-    photo: '/images/jpg/09.jpg',
-    title: 'Сила духа',
-    description: 'Тело сдаётся раньше, чем голова. Мы тренируем и то, и другое.',
-    accent: 'var(--color-turquoise-panther)',
-  },
-  {
-    photo: '/images/jpg/36.jpg',
-    title: 'Команда',
-    description: 'Один боец — сильный. Команда — непобедима.',
-    accent: 'var(--color-icon-gallery)',
-  },
-  {
-    photo: '/images/jpg/03.jpg',
-    title: 'Характер',
-    description: 'Не тот крут, кто бьёт сильно. А тот, кто встаёт после.',
-    accent: 'var(--color-icon-home)',
-  },
-  {
-    photo: '/images/jpg/37.jpg',
-    title: 'Уважение',
-    description: 'К сопернику, к тренеру, к залу. Основа всего.',
-    accent: 'var(--color-icon-contacts)',
-  },
-  {
-    photo: '/images/jpg/01.jpg',
-    title: 'Упорство',
-    description: 'Талант — это 10%. Остальные 90 — пот и повторения.',
-    accent: 'var(--color-red-accent)',
-  },
-];
-
-const { values = defaultValues } = Astro.props;
+const { values } = Astro.props;
 ---
 
 <section class="values-section">
   <div class="values-header">
-    <span class="values-label">Наши ценности</span>
     <h2 class="values-title">
-      Не просто тренировки — <span class="values-accent">философия</span>
+      Не просто тренировки — <span class="values-accent">добрая морось</span>
     </h2>
   </div>
 
   <div class="values-grid">
-    {values.map((value) => (
+    {values?.map((value) => (
       <div class="value-card">
         <img src={value.photo} alt={value.title} loading="lazy" />
         <div class="value-overlay">

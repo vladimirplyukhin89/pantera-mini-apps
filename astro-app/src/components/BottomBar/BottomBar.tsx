@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ImCool, ImCamera, ImPowerCord as ImPowerCode } from 'react-icons/im';
+import { ImCool, ImCamera, ImPointDown } from 'react-icons/im';
 import styles from './BottomBar.module.css';
 
 interface BottomBarProps {
@@ -16,7 +16,7 @@ const navItems: NavItem[] = [
   {
     path: '/',
     label: 'Главная',
-    icon: <ImPowerCode className={`${styles.icon} ${styles.iconHome}`} />,
+    icon: <ImPointDown className={`${styles.icon} ${styles.iconHome}`} />,
   },
   {
     path: '/galareya',

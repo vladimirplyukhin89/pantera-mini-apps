@@ -14,16 +14,12 @@ interface Props {
 }
 
 const {
-  photo = '/images/jpg/sportsman_01.jpg',
-  label = 'Наш спортсмен (не ваш на#уй)',
-  name = 'Сева, Моряк Попай',
-  quote = '«Воля и дисциплина важнее таланта.»',
-  stats = [
-    { value: '2', label: 'Боёв' },
-    { value: '2', label: 'Побед' },
-    { value: '1', label: 'KO' },
-  ],
-  badge = 'Данные скоро появятся из Strapi',
+  photo,
+  label,
+  name,
+  quote,
+  stats,
+  badge,
 } = Astro.props;
 ---
 
@@ -37,7 +33,7 @@ const {
     <h2 class="athlete-name">{name}</h2>
     <p class="athlete-quote">{quote}</p>
     <div class="athlete-stats">
-      {stats.map((stat, i) => (
+      {stats?.map((stat, i) => (
         <>
           {i > 0 && <div class="stat-divider" />}
           <div class="stat">
@@ -91,8 +87,8 @@ const {
   }
 
   .athlete-label {
-    font-size: 0.7rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--color-turquoise-panther);
@@ -154,7 +150,7 @@ const {
   }
 
   .athlete-badge {
-    font-size: 0.75rem;
+    font-size: 0.95rem;
     font-weight: 500;
     color: var(--color-text-gray);
     background: rgba(255, 255, 255, 0.04);
@@ -182,6 +178,13 @@ const {
     }
   }
 
+  @media (min-width: 769px) {
+    .athlete-label {
+      font-size: 1.1rem;
+      margin-bottom: auto;
+    }
+  }
+
   @media (min-width: 1024px) {
     .athlete-card {
       display: grid;
@@ -191,11 +194,11 @@ const {
     .athlete-photo {
       height: 100%;
       min-height: 400px;
+      max-height: 600px;
     }
 
     .athlete-gradient {
       height: 100%;
-      background: linear-gradient(to right, transparent 0%, #111 99%);
     }
 
     .athlete-info {

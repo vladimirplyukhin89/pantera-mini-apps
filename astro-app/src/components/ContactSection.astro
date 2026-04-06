@@ -22,25 +22,21 @@ interface Props {
 
 const {
   title = 'Мы на связи',
-  subtitle = 'Заходи, пиши, звони — мы рады всем',
+  subtitle = 'Заходи, пиши, звони — находимся, не теряемся',
   contacts = [
     { icon: '📍', label: 'Адрес', value: 'Тюмень, ул. М. Горького, 68/4' },
-    { icon: '📞', label: 'Телефон', value: '+7 (929) 256-14-95', href: 'tel:+79991234567' },
+    { icon: '📞', label: 'Телефон', value: '+7 (929) 256-14-95', href: 'tel:+79292561495' },
     { icon: '⏰', label: 'График', value: 'Пн, Ср: 18:00 - 21:00, Сб: 13:00' },
   ],
-  socials = [
-    { name: 'Telegram', url: '#', icon: '✈️' },
-    { name: 'Instagram', url: '#', icon: '📸' },
-    { name: 'VK', url: '#', icon: '💬' },
-  ],
-  quote = '«Не бойся начать — бойся не попробовать.»',
+  socials,
+  quote = '«Не бойся начать — бойся не начать.»',
 } = Astro.props;
 ---
 
 <section class="contact-section">
   <div class="contact-inner">
     <div class="contact-header">
-      <span class="contact-label">Контакты</span>
+
       <h2 class="contact-title">{title}</h2>
       <p class="contact-subtitle">{subtitle}</p>
     </div>
@@ -62,8 +58,8 @@ const {
     </div>
 
     <div class="socials-row">
-      {socials.map((s) => (
-        <a href={s.url} class="social-link" target="_blank" rel="noopener noreferrer" aria-label={s.name}>
+      {socials?.map((s) => (
+        <a href={s.url} class="social-link" data-social={s.name.toLowerCase()} target="_blank" rel="noopener noreferrer" aria-label={s.name}>
           <span class="social-icon">{s.icon}</span>
           <span class="social-name">{s.name}</span>
         </a>
@@ -78,13 +74,10 @@ const {
 
 <style>
   .contact-section {
-    margin-top: 3rem;
+    margin-top: 2.1rem;
     border-radius: 1.5rem;
     overflow: hidden;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 100%, rgba(77, 137, 124, 0.1) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 80% 0%, rgba(216, 76, 76, 0.06) 0%, transparent 60%),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.3) 100%);
+    background: var(--color-bg-purple);
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
@@ -133,7 +126,7 @@ const {
     align-items: flex-start;
     gap: 0.75rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--color-bg-overlay-cream);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 0.75rem;
     transition: background 0.2s ease, border-color 0.2s ease;
@@ -162,7 +155,7 @@ const {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: var(--color-text-gray);
+    color: var(--color-text-white);
   }
 
   .contact-card-value {
@@ -194,8 +187,8 @@ const {
     align-items: center;
     gap: 0.5rem;
     padding: 0.6rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid var(--_social-color, rgba(255, 255, 255, 0.1));
     border-radius: 2rem;
     text-decoration: none;
     color: var(--color-text-cream);
@@ -204,14 +197,24 @@ const {
     transition:
       background 0.2s ease,
       border-color 0.2s ease,
+      box-shadow 0.2s ease,
       transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .social-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: color-mix(in srgb, var(--_social-color, #fff) 12%, transparent);
+    border-color: var(--_social-color, rgba(255, 255, 255, 0.2));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--_social-color, transparent) 20%, transparent);
     transform: translateY(-2px);
   }
+
+  .social-link[data-social="telegram"] { --_social-color: var(--color-accent-blue); }
+  .social-link[data-social="vk"]       { --_social-color: var(--color-turquoise-panther); }
+  .social-link[data-social="insta"],
+  .social-link[data-social="instagram"] { --_social-color: var(--color-icon-gallery); }
+  .social-link[data-social="youtube"]   { --_social-color: var(--color-red-accent); }
+  .social-link[data-social="whatsapp"]  { --_social-color: var(--color-icon-contacts); }
+  .social-link[data-social="tiktok"]    { --_social-color: var(--color-icon-home); }
 
   .social-icon {
     font-size: 1.1rem;

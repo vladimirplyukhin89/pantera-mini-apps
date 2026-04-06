@@ -85,7 +85,7 @@ try {
     {galleryPhotos.length > 0 && (
       <section class="club-section">
         <div class="section-header">
-          <div class="section-label">О нашем клубе</div>
+          <span class="section-label">О нашем клубе</span>
           <h1 class="section-title">
             Место, где <span class="accent-word">характер</span> закаляется
           </h1>
@@ -93,7 +93,8 @@ try {
         <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
       </section>
     )}
-
+    
+    <span class="section-label">Наши ценности</span>
     {clubValues.length > 0 && <ClubValues values={clubValues} />}
 
     {(planned.length > 0 || past.length > 0) && (
@@ -112,7 +113,7 @@ try {
     padding-top: calc(var(--header-height) + 1.5rem);
     max-width: 100%;
     margin: 0 auto;
-    padding-bottom: 7rem;
+    padding-bottom: 7.5rem;
   }
 
   .club-section {
@@ -124,8 +125,8 @@ try {
   }
 
   .section-label {
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 900;    
     text-transform: uppercase;
     letter-spacing: 3px;
     color: var(--color-icon-gallery);

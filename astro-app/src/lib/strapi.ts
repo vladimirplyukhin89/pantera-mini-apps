@@ -101,15 +101,15 @@ export function renderBlocks(blocks: unknown): string {
 // ─── Social icon mapping ─────────────────────────────────
 
 const socialIcons: Record<string, string> = {
-  telegram: '✈️',
-  instagram: '📸',
-  insta: '📸',
-  vk: '💬',
+  telegram: '📩',
+  instagram: '📷',
+  insta: '📷',
+  vk: '💠',
   youtube: '▶️',
-  whatsapp: '📱',
-  tiktok: '🎵',
-  twitter: '🐦',
-  x: '🐦',
+  whatsapp: '💬',
+  tiktok: '♪',
+  twitter: '𝕏',
+  x: '𝕏',
 };
 
 export function getSocialIcon(name: string): string {
