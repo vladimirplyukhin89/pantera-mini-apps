@@ -23,18 +23,22 @@ const { photos = defaultPhotos } = Astro.props;
 ---
 
 <div class="photo-grid">
-  {photos.map((photo) => (
-    <div class:list={[
-      'grid-item',
-      { 'grid-item-tall': photo.variant === 'tall' },
-      { 'grid-item-wide': photo.variant === 'wide' },
-    ]}>
-      <img src={photo.src} alt={photo.alt} loading="lazy" />
-      <div class="grid-overlay">
-        <span class="grid-tag">{photo.tag}</span>
+  {
+    photos.map((photo) => (
+      <div
+        class:list={[
+          'grid-item',
+          { 'grid-item-tall': photo.variant === 'tall' },
+          { 'grid-item-wide': photo.variant === 'wide' },
+        ]}
+      >
+        <img src={photo.src} alt={photo.alt} loading="lazy" />
+        <div class="grid-overlay">
+          <span class="grid-tag">{photo.tag}</span>
+        </div>
       </div>
-    </div>
-  ))}
+    ))
+  }
 </div>
 
 <style>
@@ -63,11 +67,7 @@ const { photos = defaultPhotos } = Astro.props;
   .grid-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.6) 0%,
-      transparent 50%
-    );
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 50%);
     display: flex;
     align-items: flex-end;
     padding: 0.75rem;

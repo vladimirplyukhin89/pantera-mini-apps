@@ -41,17 +41,19 @@ function VideoModal({ src, onClose }: { src: string; onClose: () => void }) {
     <div className={styles.modalBackdrop} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <button className={styles.modalClose} onClick={onClose} aria-label="Закрыть">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
-        <video
-          className={styles.modalVideo}
-          src={src}
-          controls
-          autoPlay
-          playsInline
-        />
+        <video className={styles.modalVideo} src={src} controls autoPlay playsInline />
       </div>
     </div>
   );

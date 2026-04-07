@@ -36,39 +36,49 @@ const {
 <section class="contact-section">
   <div class="contact-inner">
     <div class="contact-header">
-
       <h2 class="contact-title">{title}</h2>
       <p class="contact-subtitle">{subtitle}</p>
     </div>
 
     <div class="contact-grid">
-      {contacts.map((c) => (
-        <div class="contact-card">
-          <span class="contact-icon">{c.icon}</span>
-          <div class="contact-card-body">
-            <span class="contact-card-label">{c.label}</span>
-            {c.href ? (
-              <a href={c.href} class="contact-card-value contact-link">{c.value}</a>
-            ) : (
-              <span class="contact-card-value">{c.value}</span>
-            )}
+      {
+        contacts.map((c) => (
+          <div class="contact-card">
+            <span class="contact-icon">{c.icon}</span>
+            <div class="contact-card-body">
+              <span class="contact-card-label">{c.label}</span>
+              {c.href ? (
+                <a href={c.href} class="contact-card-value contact-link">
+                  {c.value}
+                </a>
+              ) : (
+                <span class="contact-card-value">{c.value}</span>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      }
     </div>
 
     <div class="socials-row">
-      {socials?.map((s) => (
-        <a href={s.url} class="social-link" data-social={s.name.toLowerCase()} target="_blank" rel="noopener noreferrer" aria-label={s.name}>
-          <span class="social-icon">{s.icon}</span>
-          <span class="social-name">{s.name}</span>
-        </a>
-      ))}
+      {
+        socials?.map((s) => (
+          <a
+            href={s.url}
+            class="social-link"
+            data-social={s.name.toLowerCase()}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={s.name}
+          >
+            <span class="social-icon">{s.icon}</span>
+            <span class="social-name">{s.name}</span>
+          </a>
+        ))
+      }
     </div>
 
-    {quote && (
-      <p class="contact-quote">{quote}</p>
-    )}
+    {quote && <p class="contact-quote">{quote}</p>}
   </div>
 </section>
 
@@ -129,7 +139,9 @@ const {
     background: var(--color-bg-overlay-cream);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 0.75rem;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .contact-card:hover {
@@ -208,13 +220,25 @@ const {
     transform: translateY(-2px);
   }
 
-  .social-link[data-social="telegram"] { --_social-color: var(--color-accent-blue); }
-  .social-link[data-social="vk"]       { --_social-color: var(--color-turquoise-panther); }
-  .social-link[data-social="insta"],
-  .social-link[data-social="instagram"] { --_social-color: var(--color-icon-gallery); }
-  .social-link[data-social="youtube"]   { --_social-color: var(--color-red-accent); }
-  .social-link[data-social="whatsapp"]  { --_social-color: var(--color-icon-contacts); }
-  .social-link[data-social="tiktok"]    { --_social-color: var(--color-icon-home); }
+  .social-link[data-social='telegram'] {
+    --_social-color: var(--color-accent-blue);
+  }
+  .social-link[data-social='vk'] {
+    --_social-color: var(--color-turquoise-panther);
+  }
+  .social-link[data-social='insta'],
+  .social-link[data-social='instagram'] {
+    --_social-color: var(--color-icon-gallery);
+  }
+  .social-link[data-social='youtube'] {
+    --_social-color: var(--color-red-accent);
+  }
+  .social-link[data-social='whatsapp'] {
+    --_social-color: var(--color-icon-contacts);
+  }
+  .social-link[data-social='tiktok'] {
+    --_social-color: var(--color-icon-home);
+  }
 
   .social-icon {
     font-size: 1.1rem;

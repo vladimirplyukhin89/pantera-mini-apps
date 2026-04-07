@@ -13,14 +13,7 @@ interface Props {
   badge?: string;
 }
 
-const {
-  photo,
-  label,
-  name,
-  quote,
-  stats,
-  badge,
-} = Astro.props;
+const { photo, label, name, quote, stats, badge } = Astro.props;
 ---
 
 <div class="athlete-card">
@@ -33,15 +26,17 @@ const {
     <h2 class="athlete-name">{name}</h2>
     <p class="athlete-quote">{quote}</p>
     <div class="athlete-stats">
-      {stats?.map((stat, i) => (
-        <>
-          {i > 0 && <div class="stat-divider" />}
-          <div class="stat">
-            <span class="stat-value">{stat.value}</span>
-            <span class="stat-label">{stat.label}</span>
-          </div>
-        </>
-      ))}
+      {
+        stats?.map((stat, i) => (
+          <>
+            {i > 0 && <div class="stat-divider" />}
+            <div class="stat">
+              <span class="stat-value">{stat.value}</span>
+              <span class="stat-label">{stat.label}</span>
+            </div>
+          </>
+        ))
+      }
     </div>
     {badge && <div class="athlete-badge">{badge}</div>}
   </div>

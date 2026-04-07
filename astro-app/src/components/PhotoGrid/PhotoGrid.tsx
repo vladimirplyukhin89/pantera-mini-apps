@@ -43,7 +43,8 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setLightboxIndex(null);
-      if (e.key === 'ArrowRight') setLightboxIndex((i) => (i !== null && i < photos.length - 1 ? i + 1 : i));
+      if (e.key === 'ArrowRight')
+        setLightboxIndex((i) => (i !== null && i < photos.length - 1 ? i + 1 : i));
       if (e.key === 'ArrowLeft') setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
     };
 
@@ -88,14 +89,21 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
 
       {lightboxIndex !== null && (
         <div className={styles.lightboxOverlay} onClick={() => setLightboxIndex(null)}>
-          <button className={styles.lightboxClose} onClick={() => setLightboxIndex(null)} aria-label="Закрыть">
+          <button
+            className={styles.lightboxClose}
+            onClick={() => setLightboxIndex(null)}
+            aria-label="Закрыть"
+          >
             ✕
           </button>
 
           {lightboxIndex > 0 && (
             <button
               className={`${styles.lightboxNav} ${styles.lightboxPrev}`}
-              onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex(lightboxIndex - 1);
+              }}
               aria-label="Предыдущее фото"
             >
               ‹
@@ -109,7 +117,10 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
           {lightboxIndex < photos.length - 1 && (
             <button
               className={`${styles.lightboxNav} ${styles.lightboxNext}`}
-              onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex(lightboxIndex + 1);
+              }}
               aria-label="Следующее фото"
             >
               ›

@@ -16,10 +16,12 @@ const {
   bgMobile,
   bgDesktop,
 } = Astro.props;
-
 ---
 
-<section class="hero-section" style={`--bg-mobile: url('${bgMobile}'); --bg-desktop: url('${bgDesktop}')`}>
+<section
+  class="hero-section"
+  style={`--bg-mobile: url('${bgMobile}'); --bg-desktop: url('${bgDesktop}')`}
+>
   <div class="hero-overlay"></div>
 
   <div class="hero-content">

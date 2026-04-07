@@ -3,7 +3,13 @@ import Layout from '../../components/Layout.astro';
 import Header from '../../components/Header.astro';
 import BottomBar from '../../components/BottomBar/BottomBar';
 import EventMediaGallery from '../../components/EventMediaGallery/EventMediaGallery';
-import { fetchStrapi, strapiMedia, isVideoMedia, renderBlocks, type StrapiEvent } from '../../lib/strapi';
+import {
+  fetchStrapi,
+  strapiMedia,
+  isVideoMedia,
+  renderBlocks,
+  type StrapiEvent,
+} from '../../lib/strapi';
 
 const { id } = Astro.params;
 
@@ -16,9 +22,7 @@ const accentColors = [
 
 let event: StrapiEvent | null = null;
 try {
-  const raw = await fetchStrapi<StrapiEvent[]>(
-    `events?filters[slug][$eq]=${id}&populate=*`
-  );
+  const raw = await fetchStrapi<StrapiEvent[]>(`events?filters[slug][$eq]=${id}&populate=*`);
   if (raw.length > 0) event = raw[0];
 } catch (e) {
   console.error('Strapi event fetch:', e);
@@ -33,7 +37,7 @@ const isPast = (event.statusCode ?? event.statusPlan ?? event.status ?? 'past') 
 const bodyHtml = renderBlocks(event.body);
 const videoCoverUrl = event.video_cover?.url ? strapiMedia(event.video_cover.url) : undefined;
 const media = (event.media || []).map((m) => ({
-  type: isVideoMedia(m) ? 'video' as const : 'image' as const,
+  type: isVideoMedia(m) ? ('video' as const) : ('image' as const),
   src: strapiMedia(m.url),
   alt: m.alternativeText || '',
   ...(isVideoMedia(m) && videoCoverUrl ? { poster: videoCoverUrl } : {}),
@@ -56,12 +60,14 @@ const media = (event.media || []).map((m) => ({
       <h1 class="event-title">{event.title}</h1>
     </div>
 
-    {media.length > 0 && (
-      <div class="media-section">
-        <EventMediaGallery client:load media={media} />
-        {media.length > 1 && <div class="media-hint">← листай →</div>}
-      </div>
-    )}
+    {
+      media.length > 0 && (
+        <div class="media-section">
+          <EventMediaGallery client:load media={media} />
+          {media.length > 1 && <div class="media-hint">← листай →</div>}
+        </div>
+      )
+    }
 
     <div class="event-body" set:html={bodyHtml} />
 
@@ -140,7 +146,7 @@ const media = (event.media || []).map((m) => ({
   }
 
   .media-section {
-    margin: 0 -1rem 2rem
+    margin: 0 -1rem 2rem;
   }
 
   .media-hint {
@@ -192,7 +198,9 @@ const media = (event.media || []).map((m) => ({
     padding: 0.6rem 1.25rem;
     border: 1px solid var(--accent);
     border-radius: 2rem;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease;
   }
 
   .bottom-back:hover {

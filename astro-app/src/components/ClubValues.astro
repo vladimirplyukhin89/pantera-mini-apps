@@ -25,19 +25,24 @@ const { values, bgVariant = 'salad' } = Astro.props;
   </div>
 
   <div class="values-grid">
-    {values?.map((value) => (
-      <div class="value-card">
-        <img src={value.photo} alt={value.title} loading="lazy" />
-        <div class="value-overlay">
-          <div class="value-content">
-            <span class="value-tag" style={`--tag-accent: ${value.accent || 'var(--color-red-accent)'}`}>
-              {value.title}
-            </span>
-            <p class="value-description">{value.description}</p>
+    {
+      values?.map((value) => (
+        <div class="value-card">
+          <img src={value.photo} alt={value.title} loading="lazy" />
+          <div class="value-overlay">
+            <div class="value-content">
+              <span
+                class="value-tag"
+                style={`--tag-accent: ${value.accent || 'var(--color-red-accent)'}`}
+              >
+                {value.title}
+              </span>
+              <p class="value-description">{value.description}</p>
+            </div>
           </div>
         </div>
-      </div>
-    ))}
+      ))
+    }
   </div>
 </section>
 

@@ -63,7 +63,9 @@ const EventCard = ({ event }: { event: EventItem }) => {
       >
         <div className={styles.cardMedia}>
           {thumb ? (
-            <div className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.plannedImg : ''}`}>
+            <div
+              className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.plannedImg : ''}`}
+            >
               <img
                 src={thumb.src}
                 alt={thumb.alt}
@@ -117,9 +119,7 @@ const EventsSlider = ({ planned, past, bgVariant = 'glow' }: EventsSliderProps) 
   <div className={`${styles.section}  ${bgClassMap[bgVariant]}`}>
     {past.length > 0 && (
       <>
-        <div
-          className={`${styles.sectionHeader}`}
-        >
+        <div className={`${styles.sectionHeader}`}>
           <h2 className={styles.sectionTitle}>Прошедшие</h2>
           <span className={`${styles.sectionTag} ${styles.tagPast}`}>архив</span>
         </div>
@@ -138,7 +138,6 @@ const EventsSlider = ({ planned, past, bgVariant = 'glow' }: EventsSliderProps) 
         {planned.length > 2 && <div className={styles.cardHint}>← листай →</div>}
       </>
     )}
-
   </div>
 );
 

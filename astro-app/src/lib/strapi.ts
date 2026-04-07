@@ -68,8 +68,7 @@ function renderChildren(children: RichTextNode[]): string {
       if (child.type === 'text') return renderInline(child);
       if (child.type === 'link')
         return `<a href="${child.url || '#'}">${renderChildren(child.children || [])}</a>`;
-      if (child.type === 'list-item')
-        return `<li>${renderChildren(child.children || [])}</li>`;
+      if (child.type === 'list-item') return `<li>${renderChildren(child.children || [])}</li>`;
       return renderChildren(child.children || []);
     })
     .join('');
@@ -77,7 +76,12 @@ function renderChildren(children: RichTextNode[]): string {
 
 export function renderBlocks(blocks: unknown): string {
   if (!blocks || !Array.isArray(blocks)) {
-    return typeof blocks === 'string' ? blocks.split('\n\n').map((p) => `<p>${p}</p>`).join('') : '';
+    return typeof blocks === 'string'
+      ? blocks
+          .split('\n\n')
+          .map((p) => `<p>${p}</p>`)
+          .join('')
+      : '';
   }
 
   return blocks

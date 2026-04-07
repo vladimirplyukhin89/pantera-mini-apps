@@ -22,7 +22,9 @@ import type { BgVariant } from '../components/EventsSlider/EventsSlider';
 
 let galleryPhotos: { src: string; alt: string; variant?: 'tall' | 'wide' }[] = [];
 try {
-  const raw = await fetchStrapi<StrapiGalleryPhoto[]>('gallery-photos?populate=image&sort=order:asc');
+  const raw = await fetchStrapi<StrapiGalleryPhoto[]>(
+    'gallery-photos?populate=image&sort=order:asc'
+  );
   galleryPhotos = raw.map((p) => ({
     src: strapiMedia(p.image?.url),
     alt: p.alt || '',
@@ -64,20 +66,22 @@ let planned: SliderEvent[] = [];
 let past: SliderEvent[] = [];
 try {
   const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=order:asc');
-  const all = raw.map((ev): SliderEvent => ({
-    id: ev.slug || ev.documentId,
-    title: ev.title,
-    teaser: ev.teaser || '',
-    date: ev.date_label || '',
-    statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
-    media: (ev.media || []).map((m) => ({
-      type: isVideoMedia(m) ? 'video' as const : 'image' as const,
-      src: strapiMedia(m.url),
-      alt: m.alternativeText || '',
-    })),
-    videoCover: ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : undefined,
-    accentIndex: ev.accent_index ?? 0,
-  }));
+  const all = raw.map(
+    (ev): SliderEvent => ({
+      id: ev.slug || ev.documentId,
+      title: ev.title,
+      teaser: ev.teaser || '',
+      date: ev.date_label || '',
+      statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
+      media: (ev.media || []).map((m) => ({
+        type: isVideoMedia(m) ? ('video' as const) : ('image' as const),
+        src: strapiMedia(m.url),
+        alt: m.alternativeText || '',
+      })),
+      videoCover: ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : undefined,
+      accentIndex: ev.accent_index ?? 0,
+    })
+  );
   planned = all.filter((e) => e.statusCode === 'planned');
   past = all.filter((e) => e.statusCode === 'past');
 } catch (e) {
@@ -100,42 +104,44 @@ try {
   <Header />
 
   <main class="main-content">
+    {
+      (planned.length > 0 || past.length > 0) && (
+        <>
+          <span class="section-label">События</span>
+          <section class="events-section">
+            <EventsSlider client:load planned={planned} past={past} bgVariant={eventsSliderBg} />
+          </section>
+        </>
+      )
+    }
 
-    {(planned.length > 0 || past.length > 0) && (
-      <>
-        <span class="section-label">События</span>
-        <section class="events-section">
-          <EventsSlider client:load planned={planned} past={past} bgVariant={eventsSliderBg} />
-        </section>
-      </>
-    )}
+    {
+      galleryPhotos.length > 0 && (
+        <>
+          <span class="section-label">О нашем клубе</span>
+          <section class="club-section">
+            <div class="section-header">
+              <h1 class="section-title">
+                Место, где <span class="accent-word">характер</span> закаляется
+              </h1>
+              <p class="section-subtitle">Если я упал - не радуйся, я просто шнурки проверял</p>
+            </div>
+            <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
+          </section>
+        </>
+      )
+    }
 
-    {galleryPhotos.length > 0 && (
-      <>
-        <span class="section-label">О нашем клубе</span>
-        <section class="club-section">
-          <div class="section-header">
-            <h1 class="section-title">
-              Место, где <span class="accent-word">характер</span> закаляется
-            </h1>
-            <p class="section-subtitle">
-              Если я упал - не радуйся, я просто шнурки проверял
-            </p>
-          </div>
-          <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
-        </section>
-      </>
-    )}
-
-    {clubValues.length > 0 && (
-      <>
-        <span class="section-label">Наши ценности</span>
-        <section class="club-section">
-          <ClubValues values={clubValues} />
-        </section>
-      </>
-    )}
-
+    {
+      clubValues.length > 0 && (
+        <>
+          <span class="section-label">Наши ценности</span>
+          <section class="club-section">
+            <ClubValues values={clubValues} />
+          </section>
+        </>
+      )
+    }
   </main>
 
   <BottomBar client:load currentPath="/gallery" />
@@ -170,7 +176,6 @@ try {
   .main-content > .section-label:first-child {
     margin-top: 0;
   }
-
 
   .section-header .section-label {
     margin: 0 0 0.75rem;
