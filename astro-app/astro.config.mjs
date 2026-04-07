@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,9 +10,7 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   output: 'server',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  adapter: vercel(),
   /**
    * Prefetch работает вместе с `<ClientRouter />` (View Transitions): страницы
    * подгружаются заранее, переход по внутренним `<a>` остаётся без полной перезагрузки.

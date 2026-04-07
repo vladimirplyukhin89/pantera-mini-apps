@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-frontend:
+    name: Astro — lint & build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: astro-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: astro-app/package-lock.json
+
+      - run: npm ci
+
+      - name: Prettier check
+        run: npm run format:check
+
+      - name: Type check
+        run: npx astro check
+
+      - name: Build
+        run: npm run build
+        env:
+          STRAPI_URL: ${{ secrets.STRAPI_URL }}
+          STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN }}
+
+  check-backend:
+    name: Strapi — build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: strapi-cms
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: strapi-cms/package-lock.json
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
