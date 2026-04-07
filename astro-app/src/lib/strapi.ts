@@ -32,6 +32,12 @@ export function strapiMedia(url: string | null | undefined): string {
   return `${STRAPI_URL}${url}`;
 }
 
+export function isVideoMedia(m: StrapiImage): boolean {
+  if (m.mime) return m.mime.startsWith('video/');
+  const ext = (m.ext || m.url || '').split('.').pop()?.toLowerCase();
+  return ['mp4', 'webm', 'ogg', 'mov'].includes(ext || '');
+}
+
 // ─── Rich Text block renderer ────────────────────────────
 
 interface RichTextNode {
@@ -139,6 +145,8 @@ export interface StrapiImage {
   alternativeText?: string;
   width?: number;
   height?: number;
+  mime?: string;
+  ext?: string;
 }
 
 export interface StrapiAthlete {
@@ -202,6 +210,7 @@ export interface StrapiEvent {
   accent_index?: number;
   order?: number;
   media?: StrapiImage[];
+  video_cover?: StrapiImage;
 }
 
 export interface StrapiHero {

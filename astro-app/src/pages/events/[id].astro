@@ -3,7 +3,7 @@ import Layout from '../../components/Layout.astro';
 import Header from '../../components/Header.astro';
 import BottomBar from '../../components/BottomBar/BottomBar';
 import EventMediaGallery from '../../components/EventMediaGallery/EventMediaGallery';
-import { fetchStrapi, strapiMedia, renderBlocks, type StrapiEvent } from '../../lib/strapi';
+import { fetchStrapi, strapiMedia, isVideoMedia, renderBlocks, type StrapiEvent } from '../../lib/strapi';
 
 const { id } = Astro.params;
 
@@ -17,7 +17,7 @@ const accentColors = [
 let event: StrapiEvent | null = null;
 try {
   const raw = await fetchStrapi<StrapiEvent[]>(
-    `events?filters[slug][$eq]=${id}&populate=media`
+    `events?filters[slug][$eq]=${id}&populate=*`
   );
   if (raw.length > 0) event = raw[0];
 } catch (e) {
@@ -31,9 +31,12 @@ if (!event) {
 const accent = accentColors[(event.accent_index ?? 0) % 4];
 const isPast = (event.statusCode ?? event.statusPlan ?? event.status ?? 'past') === 'past';
 const bodyHtml = renderBlocks(event.body);
+const videoCoverUrl = event.video_cover?.url ? strapiMedia(event.video_cover.url) : undefined;
 const media = (event.media || []).map((m) => ({
+  type: isVideoMedia(m) ? 'video' as const : 'image' as const,
   src: strapiMedia(m.url),
   alt: m.alternativeText || '',
+  ...(isVideoMedia(m) && videoCoverUrl ? { poster: videoCoverUrl } : {}),
 }));
 ---
 

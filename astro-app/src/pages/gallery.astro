@@ -8,6 +8,7 @@ import EventsSlider from '../components/EventsSlider/EventsSlider';
 import {
   fetchStrapi,
   strapiMedia,
+  isVideoMedia,
   getAccentColor,
   parseEventsSliderBg,
   type StrapiGalleryPhoto,
@@ -55,13 +56,14 @@ interface SliderEvent {
   date: string;
   statusCode: 'planned' | 'past';
   media: { type: 'image' | 'video'; src: string; alt?: string }[];
+  videoCover?: string;
   accentIndex: number;
 }
 
 let planned: SliderEvent[] = [];
 let past: SliderEvent[] = [];
 try {
-  const raw = await fetchStrapi<StrapiEvent[]>('events?populate=media&sort=order:asc');
+  const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=order:asc');
   const all = raw.map((ev): SliderEvent => ({
     id: ev.slug || ev.documentId,
     title: ev.title,
@@ -69,10 +71,11 @@ try {
     date: ev.date_label || '',
     statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
     media: (ev.media || []).map((m) => ({
-      type: 'image' as const,
+      type: isVideoMedia(m) ? 'video' as const : 'image' as const,
       src: strapiMedia(m.url),
       alt: m.alternativeText || '',
     })),
+    videoCover: ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : undefined,
     accentIndex: ev.accent_index ?? 0,
   }));
   planned = all.filter((e) => e.statusCode === 'planned');

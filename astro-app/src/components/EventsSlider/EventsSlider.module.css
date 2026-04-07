@@ -135,6 +135,7 @@
 .cardThumb {
   height: 100%;
   width: 100%;
+  position: relative;
 }
 
 .cardThumb img {
@@ -152,6 +153,22 @@
 .cardPlaceholder {
   min-height: 4rem;
   background: linear-gradient(135deg, rgba(77, 137, 124, 0.25), rgba(216, 76, 76, 0.15));
+}
+
+.videoIndicator {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  color: var(--color-text-cream);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Info strip: anchored bottom, expands upward on hover */
