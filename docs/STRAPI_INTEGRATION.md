@@ -36,7 +36,7 @@
 
 ### 2. `gallery-photo` — Collection Type
 
-Фотографии для сетки на странице «Галерея» (`/galareya`).
+Фотографии для сетки на странице «Галерея» (`/gallery`).
 
 | Поле       | Тип               | Описание                                       |
 | ---------- | ------------------ | ---------------------------------------------- |
@@ -45,9 +45,29 @@
 | `variant`  | Enumeration        | `default` / `tall` / `wide` — layout в сетке   |
 | `order`    | Integer            | Порядок отображения                             |
 
-**Используется в**: `galareya.astro` → `PhotoGrid.tsx`
+**Используется в**: `gallery.astro` → `PhotoGrid.tsx`
 
 **Пагинация**: PhotoGrid поддерживает infinite scroll. Strapi отдаёт все записи; пагинация на клиенте.
+
+---
+
+### 2a. `gallery-settings` — Single Type
+
+Настройки внешнего вида страницы «Галерея» (`/gallery`).
+
+| Поле                 | Тип           | Описание                                                                 |
+| -------------------- | ------------- | ------------------------------------------------------------------------ |
+| `events_slider_bg`   | Enumeration   | Фон блока слайдера событий: `glow`, `diagonal`, `mesh` |
+
+Значения совпадают с вариантами в `EventsSlider` (`bgVariant`). Это **не** поле у отдельного события — один фон на весь слайдер на странице.
+
+- **`mesh`** — нейтральный фон по умолчанию (смешанные пятна без явного голубого/оранжевого доминирования).
+- **`diagonal`** — более **оранжевый** тон (акцент `--color-bg-orange`).
+- **`glow`** — более **голубой** тон (акцент `--color-accent-blue-overlay`).
+
+**Используется в**: `gallery.astro` → проп `bgVariant` у `EventsSlider`.
+
+Если Single Type ещё не создан или запрос к API падает, используется фон по умолчанию: **`mesh`**.
 
 ---
 
@@ -82,17 +102,26 @@
 | `title`       | Short text          | Название события                                        |
 | `teaser`      | Long text           | Краткое описание (для карточки в слайдере)              |
 | `date_label`  | Short text          | Текстовая метка даты (`Скоро`, `Февраль 2026`)         |
-| `status`      | Enumeration         | `planned` / `past`                                      |
+| `statusPlan`  | Enumeration         | `planned` / `past` — планируемое vs прошедшее          |
 | `body`        | Rich text           | Полное описание события (Markdown / HTML)               |
 | `media`       | Media (multiple)    | Фото и видео — обязательны для `past`, опционально для `planned` |
 | `accent_index`| Integer (0-3)       | Индекс акцентного цвета                                |
 | `order`       | Integer             | Порядок в слайдере                                      |
 
 **Используется в**:
-- `galareya.astro` → `EventsSlider` (карточки в слайдере)
+- `gallery.astro` → `EventsSlider` (карточки в слайдере)
 - `events/[id].astro` (страница события)
 
 **Важно**: Для прошедших событий (`past`) поле `media` обязательно (минимум 1 фото/видео). Для планируемых — опционально.
+
+**Как попадают «будущие» события в слайдер на галерее**
+
+1. В админке Strapi откройте коллекцию **Event** и создайте запись (или отредактируйте существующую).
+2. Установите **`statusPlan` = `planned`** — тогда событие попадёт в блок **«Что впереди»** на `/gallery` (клиентский `EventsSlider` получает массив `planned` из `gallery.astro`; в коде это поле мапится в `statusCode`).
+3. Заполните **`title`**, **`teaser`**, **`date_label`** (текст на карточке), при необходимости **`media`**, **`slug`** (или сгенерируйте из UID), **`order`** для сортировки.
+4. Сохраните и опубликуйте. Сайт при запросе `GET /api/events?populate=media&sort=order:asc` подтягивает все события; фронт делит их на `planned` и `past` по полю **`statusPlan`** (в объектах для слайдера — `statusCode`).
+
+Если **`planned`** не заполнено, блок «Что впереди» не показывается (если есть только `past`, виден только блок «Прошедшие»).
 
 ---
 
@@ -154,7 +183,7 @@
 | Страница         | Route              | Content Types                                        |
 | ---------------- | ------------------- | ---------------------------------------------------- |
 | Главная          | `/`                 | `hero`                                               |
-| Галерея          | `/galareya`         | `gallery-photo`, `club-value`, `event`               |
+| Галерея          | `/gallery`         | `gallery-photo`, `club-value`, `event`               |
 | Событие          | `/events/[slug]`    | `event` (один по slug)                               |
 | Спортсмены       | `/sportsmen`        | `athlete`, `contact-info`, `social-link`             |
 
@@ -189,7 +218,7 @@ export async function fetchStrapi<T>(endpoint: string): Promise<T> {
 
 ```astro
 ---
-// src/pages/galareya.astro
+// src/pages/gallery.astro
 import { fetchStrapi } from '../lib/strapi';
 
 const photos = await fetchStrapi('gallery-photos?sort=order:asc&populate=image');
@@ -209,7 +238,7 @@ const { slug } = Astro.params;
 const events = await fetchStrapi(`events?filters[slug][$eq]=${slug}&populate=media`);
 const event = events[0];
 
-if (!event) return Astro.redirect('/galareya');
+if (!event) return Astro.redirect('/gallery');
 ---
 ```
 
