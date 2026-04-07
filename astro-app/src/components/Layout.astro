@@ -1,5 +1,6 @@
 ---
 import { ClientRouter, fade } from 'astro:transitions';
+import YandexMetrika from './YandexMetrika.astro';
 import '../styles/variables.css';
 import '../styles/fonts.css';
 
@@ -18,6 +19,8 @@ const { title = 'Pantera Shop' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/images" />
     <meta name="generator" content={Astro.generator} />
+    <YandexMetrika counterId={108433630} />
+
     <!-- View Transitions: клиентская навигация без полной перезагрузки для внутренних ссылок -->
     <ClientRouter />
     <title>{title}</title>
