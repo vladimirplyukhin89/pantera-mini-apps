@@ -1,0 +1,37 @@
+---
+import Layout from '../components/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomBar from '../components/BottomBar/BottomBar';
+import HeroSection from '../components/HeroSection.astro';
+
+Astro.response.status = 404;
+
+const bg404 = '/images/jpg/404.jpg';
+---
+
+<Layout title="Страница не найдена — Pantera">
+  <main class="main-content">
+    <HeroSection
+      title="404"
+      description="Такой страницы нет, братик — на главную?"
+      ctaLink="/"
+      bgMobile={bg404}
+      bgDesktop={bg404}
+    />
+    <Header />
+  </main>
+
+  <BottomBar client:only="react" />
+</Layout>
+
+<style>
+  .main-content {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+  }
+</style>
