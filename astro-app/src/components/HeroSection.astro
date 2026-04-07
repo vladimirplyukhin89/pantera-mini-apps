@@ -10,11 +10,11 @@ interface Props {
 }
 
 const {
-  title,
+  title = 'Пссс,',
   description = 'Тут ребзя бокс раздаёт',
   ctaLink = '/gallery',
-  bgMobile,
-  bgDesktop,
+  bgMobile = '/images/jpg/hero-bg-mobile.jpg',
+  bgDesktop = '/images/jpg/hero-bg-desktop.jpg',
 } = Astro.props;
 ---
 
