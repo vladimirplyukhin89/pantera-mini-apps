@@ -13,6 +13,10 @@ interface EventMediaGalleryProps {
   media: MediaItem[];
 }
 
+function isSvgImageSrc(src: string) {
+  return /\.svg(\?|$)/i.test(src);
+}
+
 function PlayButton({ onClick }: { onClick: () => void }) {
   return (
     <button className={styles.playOverlay} onClick={onClick} aria-label="Воспроизвести видео">
@@ -83,6 +87,7 @@ export default function EventMediaGallery({ media }: EventMediaGalleryProps) {
                         <img
                           src={m.poster}
                           alt={m.alt}
+                          className={isSvgImageSrc(m.poster) ? styles.slideImageSvg : undefined}
                           loading={i === 0 ? 'eager' : 'lazy'}
                           decoding="async"
                           draggable={false}
@@ -105,6 +110,7 @@ export default function EventMediaGallery({ media }: EventMediaGalleryProps) {
                     <img
                       src={m.src}
                       alt={m.alt}
+                      className={isSvgImageSrc(m.src) ? styles.slideImageSvg : undefined}
                       loading={i === 0 ? 'eager' : 'lazy'}
                       decoding="async"
                       draggable={false}

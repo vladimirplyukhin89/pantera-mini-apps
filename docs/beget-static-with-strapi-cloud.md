@@ -108,7 +108,7 @@ npm run build
 - [x] Strapi Cloud живой, админка доступна.
 - [х] Создан read-only API token.
 - [x] В `astro-app/.env` указаны `STRAPI_URL` и `STRAPI_TOKEN` от Cloud.
-- [] `npm run build` выполняется без ошибок доступа к API.
+- [x] `npm run build` выполняется без ошибок доступа к API.
 - [ ] Содержимое `astro-app/dist/` загружено в корень сайта на Beget.
 - [ ] Проверены основные страницы после деплоя.
 - [ ] Настроен GitHub Actions деплой (опционально, но желательно).

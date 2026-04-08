@@ -12,6 +12,11 @@ interface NavItem {
   icon: ReactElement;
 }
 
+function normalizePath(p: string) {
+  const trimmed = p.replace(/\/+$/, '');
+  return trimmed === '' ? '/' : trimmed;
+}
+
 const navItems: NavItem[] = [
   {
     path: '/',
@@ -33,32 +38,33 @@ const navItems: NavItem[] = [
 const BottomBar = ({ currentPath }: BottomBarProps) => {
   const [path, setPath] = useState(() => {
     if (typeof window !== 'undefined') {
-      return currentPath || window.location.pathname;
+      return currentPath ?? window.location.pathname;
     }
-    return currentPath || '/';
+    return currentPath ?? '/';
   });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const handleLocationChange = () => {
-      setPath(window.location.pathname);
+    const syncPath = () => {
+      setPath(currentPath ?? window.location.pathname);
     };
 
-    window.addEventListener('popstate', handleLocationChange);
-    document.addEventListener('astro:page-load', handleLocationChange);
+    syncPath();
+    window.addEventListener('popstate', syncPath);
+    document.addEventListener('astro:page-load', syncPath);
 
     return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      document.removeEventListener('astro:page-load', handleLocationChange);
+      window.removeEventListener('popstate', syncPath);
+      document.removeEventListener('astro:page-load', syncPath);
     };
-  }, []);
+  }, [currentPath]);
 
-  const isActive = (itemPath: string) => path === itemPath;
-  const isHomePage = path === '/';
+  const isActive = (itemPath: string) => normalizePath(path) === normalizePath(itemPath);
+  const isHomePage = normalizePath(path) === '/';
 
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, navPath: string) => {
-    if (navPath === window.location.pathname) {
+    if (normalizePath(navPath) === normalizePath(window.location.pathname)) {
       e.preventDefault();
       return;
     }

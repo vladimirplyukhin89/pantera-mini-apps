@@ -9,7 +9,8 @@
   border-radius: 2rem;
   display: flex;
   justify-content: space-around;
-  align-items: center;
+  align-items: stretch;
+  gap: 0.25rem;
   padding: 0.5rem;
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
   z-index: 100;
@@ -27,16 +28,16 @@
   justify-content: center;
   text-decoration: none;
   color: var(--color-text-cream);
-  padding: clamp(5px, 0.5rem, 1rem) clamp(5px, 0.75rem, 1.5rem);
+  padding: 0.4rem 0.35rem;
   transition:
     color 0.2s,
     border-radius 0.2s;
   flex: 1;
+  min-width: 0;
+  min-height: 3.5rem;
   border-radius: 1rem;
-  width: 3rem;
-  height: 3rem;
-  max-width: 3rem;
-  max-height: 3rem;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -46,7 +47,7 @@
   }
 
   .bottomBarItem:hover .label {
-    font-size: 0.65rem;
+    font-size: 0.82rem;
     margin-top: 0.125rem;
     line-height: 1;
   }
@@ -74,9 +75,18 @@
   .bottomBarItem:has(.iconSportsmen):hover .label {
     color: var(--color-icon-contacts);
   }
+
+  .bottomBarItemActive:hover .icon {
+    color: var(--color-red-accent);
+  }
+
+  .bottomBarItemActive:hover .label {
+    color: var(--color-red-accent);
+  }
 }
 
-.bottomBarItemActive {
+/* Активная вкладка: красный акцент для подписи и иконки */
+.bottomBarItemActive .label {
   color: var(--color-red-accent);
 }
 
@@ -84,12 +94,16 @@
   width: 22px;
   height: 22px;
   margin-bottom: 0.25rem;
-  transition: color 0.2s;
+  transition:
+    color 0.2s,
+    transform 0.2s;
   color: var(--color-bg-cream);
+  flex-shrink: 0;
 }
 
 .bottomBarItemActive .icon {
-  margin-bottom: 0.125rem;
+  margin-bottom: 0.2rem;
+  color: var(--color-red-accent);
 }
 
 .iconHome,
@@ -99,15 +113,12 @@
 }
 
 .label {
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
   transition: color 0.2s;
-  line-height: 1;
-}
-
-.bottomBarItemActive .label {
-  font-size: 0.65rem;
-  margin-top: 0.125rem;
+  line-height: 1.15;
+  text-align: center;
+  word-break: break-word;
 }
 
 @media (min-width: 481px) {
@@ -115,6 +126,11 @@
     width: 85%;
     bottom: 4%;
     padding: 0.625rem 0.5rem;
+  }
+
+  .bottomBarItem {
+    padding: 0.45rem 0.5rem;
+    min-height: 3.75rem;
   }
 
   .icon {
@@ -129,22 +145,18 @@
   }
 
   .bottomBarItem:hover .label {
-    font-size: 0.7rem;
+    font-size: 0.88rem;
     margin-top: 0.125rem;
   }
 
   .bottomBarItemActive .icon {
     width: 24px;
     height: 24px;
-    margin-bottom: 0.125rem;
+    margin-bottom: 0.2rem;
   }
 
   .label {
-    font-size: 0.75rem;
-  }
-
-  .bottomBarItemActive .label {
-    font-size: 0.7rem;
+    font-size: 0.88rem;
   }
 }
 
@@ -155,6 +167,10 @@
     padding: 0.75rem 0.5rem;
   }
 
+  .bottomBarItem {
+    min-height: 4rem;
+  }
+
   .icon {
     width: 26px;
     height: 26px;
@@ -167,20 +183,16 @@
   }
 
   .bottomBarItem:hover .label {
-    font-size: 0.75rem;
+    font-size: 0.95rem;
   }
 
   .bottomBarItemActive .icon {
     width: 26px;
     height: 26px;
-    margin-bottom: 0.125rem;
+    margin-bottom: 0.2rem;
   }
 
   .label {
-    font-size: 0.875rem;
-  }
-
-  .bottomBarItemActive .label {
-    font-size: 0.75rem;
+    font-size: 0.95rem;
   }
 }
