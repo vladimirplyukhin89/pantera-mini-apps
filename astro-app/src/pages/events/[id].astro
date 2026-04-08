@@ -16,9 +16,7 @@ export async function getStaticPaths() {
     const events = await fetchStrapi<StrapiEvent[]>(
       'events?fields=slug&sort=order:asc&pagination[pageSize]=200'
     );
-    return events
-      .filter((e) => e.slug)
-      .map((e) => ({ params: { id: e.slug } }));
+    return events.filter((e) => e.slug).map((e) => ({ params: { id: e.slug } }));
   } catch (e) {
     console.error('Strapi events list for SSG:', e);
     return [];
