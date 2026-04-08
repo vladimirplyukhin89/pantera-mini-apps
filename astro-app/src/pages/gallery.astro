@@ -10,13 +10,10 @@ import {
   strapiMedia,
   isVideoMedia,
   getAccentColor,
-  parseEventsSliderBg,
   type StrapiGalleryPhoto,
   type StrapiClubValue,
   type StrapiEvent,
-  type StrapiGallerySettings,
 } from '../lib/strapi';
-import type { BgVariant } from '../components/EventsSlider/EventsSlider';
 
 // ─── Gallery photos ──────────────────────────────────────
 
@@ -87,17 +84,6 @@ try {
 } catch (e) {
   console.error('Strapi events:', e);
 }
-
-// ─── Фон слайдера событий ──────────────────────────────────────────────
-
-let eventsSliderBg: BgVariant = 'glow';
-try {
-  const settings = await fetchStrapi<StrapiGallerySettings>('gallery-settings');
-  const parsed = parseEventsSliderBg(settings?.events_slider_bg);
-  if (parsed) eventsSliderBg = parsed;
-} catch (e) {
-  console.error('Strapi gallery-settings:', e);
-}
 ---
 
 <Layout title="Галерея - Pantera">
@@ -109,7 +95,7 @@ try {
         <>
           <span class="section-label">События</span>
           <section class="events-section">
-            <EventsSlider client:load planned={planned} past={past} bgVariant={eventsSliderBg} />
+            <EventsSlider client:load planned={planned} past={past} />
           </section>
         </>
       )

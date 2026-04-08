@@ -126,7 +126,7 @@
 }
 
 .cardMedia {
-  flex: 0 0 75%;
+  flex: 0 0 78%;
   min-height: 0;
   position: relative;
   overflow: hidden;
@@ -188,7 +188,7 @@
   background: linear-gradient(
     to top,
     rgba(8, 10, 14, 0.95) 0%,
-    rgba(8, 10, 14, 0.75) 55%,
+    rgba(8, 10, 14, 0.75) 85%,
     transparent 100%
   );
   transition: max-height 0.55s cubic-bezier(0.22, 1, 0.32, 1);
@@ -235,7 +235,7 @@
   text-align: center;
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--color-text-gray);
+  color: var(--color-bg-cream);
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-top: 0.75rem;

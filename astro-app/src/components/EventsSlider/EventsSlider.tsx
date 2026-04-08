@@ -1,5 +1,4 @@
 import useEmblaCarousel from 'embla-carousel-react';
-import type { EventsSliderBgStr } from '../../lib/strapi';
 import '../../styles/section-backgrounds.css';
 import styles from './EventsSlider.module.css';
 
@@ -20,20 +19,10 @@ export interface EventItem {
   accentIndex: number;
 }
 
-export type BgVariant = EventsSliderBgStr;
-
 interface EventsSliderProps {
   planned: EventItem[];
   past: EventItem[];
-  bgVariant?: BgVariant;
 }
-
-const bgClassMap: Record<BgVariant, string> = {
-  glow: 'u-bg-glow',
-  diagonal: 'u-bg-diagonal',
-  mesh: 'u-bg-mesh',
-  salad: 'u-bg-salad',
-};
 
 function getCardThumbnail(event: EventItem): { src: string; alt: string } | null {
   if (event.videoCover) {
@@ -115,8 +104,8 @@ function EventCarousel({ events }: { events: EventItem[] }) {
   );
 }
 
-const EventsSlider = ({ planned, past, bgVariant = 'glow' }: EventsSliderProps) => (
-  <div className={`${styles.section}  ${bgClassMap[bgVariant]}`}>
+const EventsSlider = ({ planned, past }: EventsSliderProps) => (
+  <div className={`${styles.section}  u-bg-glow`}>
     {past.length > 0 && (
       <>
         <div className={`${styles.sectionHeader}`}>
