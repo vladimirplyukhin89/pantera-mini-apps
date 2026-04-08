@@ -11,6 +11,20 @@ import {
   type StrapiEvent,
 } from '../../lib/strapi';
 
+export async function getStaticPaths() {
+  try {
+    const events = await fetchStrapi<StrapiEvent[]>(
+      'events?fields=slug&sort=order:asc&pagination[pageSize]=200'
+    );
+    return events
+      .filter((e) => e.slug)
+      .map((e) => ({ params: { id: e.slug } }));
+  } catch (e) {
+    console.error('Strapi events list for SSG:', e);
+    return [];
+  }
+}
+
 const { id } = Astro.params;
 
 const accentColors = [

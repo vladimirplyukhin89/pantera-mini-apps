@@ -11,7 +11,6 @@
     "format:check": "prettier --check \"src/**/*.{astro,ts,tsx,css,json}\""
   },
   "dependencies": {
-    "@astrojs/vercel": "^9.0.5",
     "@astrojs/react": "^4.4.2",
     "astro": "^5.16.6",
     "embla-carousel-react": "^8.6.0",

@@ -47,7 +47,9 @@ Jobs запускаются параллельно.
 | `STRAPI_URL` | URL Strapi Cloud | `https://xxx.strapiapp.com` |
 | `STRAPI_TOKEN` | API-токен из Strapi Cloud | из Strapi Admin → Settings → API Tokens |
 
-Эти секреты нужны для `npm run build` в Astro (SSR-сборка делает запросы к Strapi).
+Эти секреты нужны для `npm run build` в Astro (сборка SSG ходит в Strapi за контентом).
+
+**Автопересборка и выкладка на Beget** (после публикации в Strapi): workflow [`.github/workflows/rebuild-static.yml`](../.github/workflows/rebuild-static.yml). Секреты `BEGET_FTP_*`, переменная `BEGET_FTP_DEPLOY` и webhook описаны в [beget-full-migration.md](./beget-full-migration.md) (раздел 6).
 
 ---
 

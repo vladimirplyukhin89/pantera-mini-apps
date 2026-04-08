@@ -1,0 +1,1 @@
+const o="_bottomBar_1k7xj_1",t="_bottomBarBlurred_1k7xj_18",_="_bottomBarItem_1k7xj_23",e="_icon_1k7xj_43",c="_label_1k7xj_48",n="_iconHome_1k7xj_54",r="_iconGallery_1k7xj_58",m="_iconSportsmen_1k7xj_62",a="_bottomBarItemActive_1k7xj_79",s={bottomBar:o,bottomBarBlurred:t,bottomBarItem:_,icon:e,label:c,iconHome:n,iconGallery:r,iconSportsmen:m,bottomBarItemActive:a};export{s};

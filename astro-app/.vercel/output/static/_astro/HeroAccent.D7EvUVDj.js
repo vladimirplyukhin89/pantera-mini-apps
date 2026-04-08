@@ -1,0 +1,1 @@
+import{j as r}from"./jsx-runtime.D_zvdyIk.js";import{c as o}from"./index.Du9Zu3lB.js";import"./index.BmW6Ki2V.js";const c=({linkTo:t="/sportsmen",className:e=""})=>r.jsx("a",{href:t,className:e,"aria-label":"Перейти","data-astro-prefetch":"hover",children:r.jsx(o,{size:40})});export{c as default};

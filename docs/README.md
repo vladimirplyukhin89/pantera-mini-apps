@@ -14,12 +14,16 @@ cd strapi-cms && npm install && npm run develop
 # → http://localhost:1337/admin
 ```
 
-Для связки нужны переменные окружения в `astro-app/.env`:
+Для связки нужны переменные окружения в `astro-app/.env` (шаблон: `astro-app/.env.example`):
 
 ```
 STRAPI_URL=http://localhost:1337
 STRAPI_TOKEN=<API token из Strapi>
 ```
+
+**Сборка (`npm run build`)** без этих переменных будет ходить на `localhost:1337`; если Strapi не запущен, появятся ошибки `ECONNREFUSED` и страницы соберутся без данных. Подробнее: [beget-migration-ssg.md](./beget-migration-ssg.md).
+
+Полный перенос сайта и Strapi на платный Beget (домен + поддомен CMS): [beget-full-migration.md](./beget-full-migration.md).
 
 ## Структура проекта
 

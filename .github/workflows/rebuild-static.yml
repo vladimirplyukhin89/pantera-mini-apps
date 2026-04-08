@@ -1,0 +1,73 @@
+# Пересборка статического фронта и опциональная выкладка на Beget по FTP.
+# Запуск: GitHub → Actions → «Rebuild static site» (workflow_dispatch)
+#   или внешний POST .../dispatches с event_type: strapi_publish (см. docs/beget-full-migration.md).
+#
+# Чтобы после сборки автоматически выкладывать файлы на Beget:
+#   Settings → Secrets and variables → Actions → Variables → New repository variable:
+#     BEGET_FTP_DEPLOY = true
+#   и задайте секреты BEGET_FTP_* (таблица в docs/beget-full-migration.md).
+
+name: Rebuild static site
+
+on:
+  repository_dispatch:
+    types: [strapi_publish]
+  workflow_dispatch:
+
+concurrency:
+  group: rebuild-static-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: astro-app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: astro-app/package-lock.json
+
+      - run: npm ci
+
+      - name: Build Astro (SSG)
+        run: npm run build
+        env:
+          STRAPI_URL: ${{ secrets.STRAPI_URL }}
+          STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN }}
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: astro-dist
+          path: astro-app/dist/
+
+  deploy:
+    needs: build
+    if: vars.BEGET_FTP_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: astro-dist
+          path: dist
+
+      - name: Deploy to Beget (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.BEGET_FTP_HOST }}
+          username: ${{ secrets.BEGET_FTP_USER }}
+          password: ${{ secrets.BEGET_FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ${{ secrets.BEGET_FTP_REMOTE_DIR }}
+          dangerous-clean-slate: false
