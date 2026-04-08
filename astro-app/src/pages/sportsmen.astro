@@ -13,58 +13,65 @@ import {
   type StrapiSocialLink,
 } from '../lib/strapi';
 
-// ─── Athletes ────────────────────────────────────────────
+const [athletes, contactPropsInitial, socialsRaw] = await Promise.all([
+  (async (): Promise<StrapiAthlete[]> => {
+    try {
+      const raw = await fetchStrapi<StrapiAthlete[]>('athletes?populate=photo&sort=order:asc');
+      return Array.isArray(raw) ? raw : [];
+    } catch (e) {
+      console.error('Strapi athletes:', e);
+      return [];
+    }
+  })(),
+  (async (): Promise<Record<string, unknown>> => {
+    try {
+      const raw = await fetchStrapi<StrapiContactInfo>('contact-info');
+      if (!raw) return {};
+      const contacts = [];
+      if (raw.address) contacts.push({ icon: '📍', label: 'Адрес', value: raw.address });
+      if (raw.phone)
+        contacts.push({
+          icon: '📞',
+          label: 'Телефон',
+          value: raw.phone,
+          href: `tel:${raw.phone.replace(/\D/g, '')}`,
+        });
+      if (raw.email)
+        contacts.push({ icon: '✉️', label: 'Email', value: raw.email, href: `mailto:${raw.email}` });
+      if (raw.schedule) contacts.push({ icon: '⏰', label: 'График', value: raw.schedule });
 
-let athletes: StrapiAthlete[] = [];
-try {
-  athletes = await fetchStrapi<StrapiAthlete[]>('athletes?populate=photo&sort=order:asc');
-} catch (e) {
-  console.error('Strapi athletes:', e);
-}
+      return {
+        ...(raw.title ? { title: raw.title } : {}),
+        ...(raw.subtitle ? { subtitle: raw.subtitle } : {}),
+        contacts,
+        ...(raw.quote ? { quote: raw.quote } : {}),
+      };
+    } catch (e) {
+      console.error('Strapi contact-info:', e);
+      return {};
+    }
+  })(),
+  (async (): Promise<StrapiSocialLink[] | null> => {
+    try {
+      const raw = await fetchStrapi<StrapiSocialLink[]>('social-links?sort=order:asc');
+      return Array.isArray(raw) ? raw : null;
+    } catch (e) {
+      console.error('Strapi social-links:', e);
+      return null;
+    }
+  })(),
+]);
 
-// ─── Contact info ────────────────────────────────────────
-
-let contactProps: Record<string, unknown> = {};
-try {
-  const raw = await fetchStrapi<StrapiContactInfo>('contact-info');
-  if (raw) {
-    const contacts = [];
-    if (raw.address) contacts.push({ icon: '📍', label: 'Адрес', value: raw.address });
-    if (raw.phone)
-      contacts.push({
-        icon: '📞',
-        label: 'Телефон',
-        value: raw.phone,
-        href: `tel:${raw.phone.replace(/\D/g, '')}`,
-      });
-    if (raw.email)
-      contacts.push({ icon: '✉️', label: 'Email', value: raw.email, href: `mailto:${raw.email}` });
-    if (raw.schedule) contacts.push({ icon: '⏰', label: 'График', value: raw.schedule });
-
-    contactProps = {
-      ...(raw.title ? { title: raw.title } : {}),
-      ...(raw.subtitle ? { subtitle: raw.subtitle } : {}),
-      contacts,
-      ...(raw.quote ? { quote: raw.quote } : {}),
-    };
-  }
-} catch (e) {
-  console.error('Strapi contact-info:', e);
-}
-
-// ─── Social links ────────────────────────────────────────
-
-try {
-  const raw = await fetchStrapi<StrapiSocialLink[]>('social-links?sort=order:asc');
-  if (raw.length > 0) {
-    contactProps.socials = raw.map((s) => ({
+let contactProps: Record<string, unknown> = contactPropsInitial;
+if (socialsRaw && socialsRaw.length > 0) {
+  contactProps = {
+    ...contactProps,
+    socials: socialsRaw.map((s) => ({
       name: s.name,
       url: s.url,
       icon: s.icon || getSocialIcon(s.name),
-    }));
-  }
-} catch (e) {
-  console.error('Strapi social-links:', e);
+    })),
+  };
 }
 ---
 

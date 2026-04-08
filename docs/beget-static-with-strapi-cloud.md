@@ -90,6 +90,11 @@ npm run build
 - **`fetch failed` при `npm run build`**  
   Проверьте `STRAPI_URL`/`STRAPI_TOKEN` и доступность `https://<cloud>/api/...`.
 
+- **`Strapi 503: Service Unavailable` в логе**  
+  У Strapi Cloud бывают кратковременные простои или «прогрев». Код Astro при 502/503/429 делает одну повторную попытку с короткой паузой; если ошибка сохраняется — проверьте админку Cloud и командой  
+  `curl -I "https://<ваш-проект>.strapiapp.com/api/hero?populate=*"`  
+  убедитесь, что API отвечает, затем снова запустите `npm run build`.
+
 - **Сборка `Complete`, но контент пустой**  
   В проекте ошибки API частично перехватываются, поэтому сборка может не падать, но страницы собираются без данных. Нужно устранить доступ к API и пересобрать.
 
@@ -102,8 +107,8 @@ npm run build
 
 - [x] Strapi Cloud живой, админка доступна.
 - [х] Создан read-only API token.
-- [ ] В `astro-app/.env` указаны `STRAPI_URL` и `STRAPI_TOKEN` от Cloud.
-- [ ] `npm run build` выполняется без ошибок доступа к API.
+- [x] В `astro-app/.env` указаны `STRAPI_URL` и `STRAPI_TOKEN` от Cloud.
+- [] `npm run build` выполняется без ошибок доступа к API.
 - [ ] Содержимое `astro-app/dist/` загружено в корень сайта на Beget.
 - [ ] Проверены основные страницы после деплоя.
 - [ ] Настроен GitHub Actions деплой (опционально, но желательно).

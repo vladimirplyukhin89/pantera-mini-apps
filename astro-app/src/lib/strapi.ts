@@ -1,5 +1,15 @@
-const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
+const STRAPI_URL_RAW = import.meta.env.STRAPI_URL || 'http://localhost:1337';
+const STRAPI_URL = STRAPI_URL_RAW.replace(/\/+$/, '');
 const STRAPI_TOKEN = import.meta.env.STRAPI_TOKEN || '';
+const STRAPI_FETCH_TIMEOUT_ENV = import.meta.env.STRAPI_FETCH_TIMEOUT_MS;
+/** Лимит ожидания ответа API при SSG (мс). Не задано — 30_000; `0` — без таймаута. */
+const STRAPI_FETCH_TIMEOUT_MS =
+  STRAPI_FETCH_TIMEOUT_ENV === undefined || STRAPI_FETCH_TIMEOUT_ENV === ''
+    ? 30_000
+    : (() => {
+        const n = Number(STRAPI_FETCH_TIMEOUT_ENV);
+        return Number.isFinite(n) && n >= 0 ? n : 30_000;
+      })();
 
 interface StrapiResponse<T> {
   data: T;
@@ -14,16 +24,55 @@ function getStrapiHeaders(): HeadersInit {
   return headers;
 }
 
+const RETRYABLE_STATUS = new Set([502, 503, 429]);
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetriableConnectionError(e: unknown): boolean {
+  if (e instanceof Error && e.name === 'AbortError') return true;
+  if (e instanceof DOMException && e.name === 'TimeoutError') return true;
+  if (e instanceof TypeError) {
+    return /fetch|network|econnreset|etimedout|enotfound|econnrefused|certificate/i.test(e.message);
+  }
+  return false;
+}
+
+function withFetchTimeout(init: RequestInit): RequestInit {
+  if (!STRAPI_FETCH_TIMEOUT_MS) return init;
+  return { ...init, signal: AbortSignal.timeout(STRAPI_FETCH_TIMEOUT_MS) };
+}
+
 export async function fetchStrapi<T>(endpoint: string): Promise<T> {
   const url = `${STRAPI_URL}/api/${endpoint}`;
-  const res = await fetch(url, { headers: getStrapiHeaders() });
+  /** Одна повторная попытка при кратковременных 502/503/429 и сетевых сбоях. */
+  const maxAttempts = 2;
 
-  if (!res.ok) {
-    throw new Error(`Strapi ${res.status}: ${res.statusText} — ${url}`);
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const init = withFetchTimeout({ headers: getStrapiHeaders() });
+    try {
+      const res = await fetch(url, init);
+      if (!res.ok && RETRYABLE_STATUS.has(res.status) && attempt < maxAttempts - 1) {
+        await delay(500 * (attempt + 1));
+        continue;
+      }
+      if (!res.ok) {
+        throw new Error(`Strapi ${res.status}: ${res.statusText} — ${url}`);
+      }
+
+      const json: StrapiResponse<T> = await res.json();
+      return json.data;
+    } catch (e) {
+      if (isRetriableConnectionError(e) && attempt < maxAttempts - 1) {
+        await delay(500 * (attempt + 1));
+        continue;
+      }
+      throw e;
+    }
   }
 
-  const json: StrapiResponse<T> = await res.json();
-  return json.data;
+  throw new Error(`Strapi: не удалось загрузить ${url}`);
 }
 
 export function strapiMedia(url: string | null | undefined): string {
