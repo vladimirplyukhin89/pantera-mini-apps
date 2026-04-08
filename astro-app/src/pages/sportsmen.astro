@@ -37,7 +37,12 @@ const [athletes, contactPropsInitial, socialsRaw] = await Promise.all([
           href: `tel:${raw.phone.replace(/\D/g, '')}`,
         });
       if (raw.email)
-        contacts.push({ icon: '✉️', label: 'Email', value: raw.email, href: `mailto:${raw.email}` });
+        contacts.push({
+          icon: '✉️',
+          label: 'Email',
+          value: raw.email,
+          href: `mailto:${raw.email}`,
+        });
       if (raw.schedule) contacts.push({ icon: '⏰', label: 'График', value: raw.schedule });
 
       return {
