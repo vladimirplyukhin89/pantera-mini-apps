@@ -6,6 +6,9 @@ import HeroSection from '../components/HeroSection.astro';
 import { fetchStrapi, strapiMedia, type StrapiHero } from '../lib/strapi';
 
 let heroProps: Record<string, string> = {};
+let metaDescription =
+  'Pantera — боксёрский клуб в Тюмени: тренировки, события и атмосфера, которую не перепутать.';
+let metaImage: string | undefined;
 try {
   const raw = await fetchStrapi<StrapiHero>('hero?populate=*');
   if (raw) {
@@ -16,13 +19,22 @@ try {
       ...(raw.bg_mobile?.url ? { bgMobile: strapiMedia(raw.bg_mobile.url) } : {}),
       ...(raw.bg_desktop?.url ? { bgDesktop: strapiMedia(raw.bg_desktop.url) } : {}),
     };
+    if (raw.description) {
+      const plain = raw.description
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (plain) metaDescription = plain.length > 160 ? `${plain.slice(0, 157)}…` : plain;
+    }
+    const og = raw.bg_desktop?.url || raw.bg_mobile?.url;
+    if (og) metaImage = strapiMedia(og);
   }
 } catch (e) {
   console.error('Strapi hero:', e);
 }
 ---
 
-<Layout title="Главная - Pantera">
+<Layout title="Главная - Pantera" description={metaDescription} image={metaImage}>
   <main class="main-content">
     <HeroSection {...heroProps} />
     <Header />

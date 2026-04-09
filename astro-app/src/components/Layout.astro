@@ -5,25 +5,61 @@ import '../styles/variables.css';
 import '../styles/fonts.css';
 
 interface Props {
+  /** Заголовок вкладки и og:title */
   title?: string;
+  /** Meta description и og:description (до ~160 символов для сниппета) */
+  description?: string;
+  /** Полный URL картинки для OG/Telegram (лучше jpg/png с вашего или Strapi CDN) */
+  image?: string;
+  /** Запрет индексации (например 404) */
+  noindex?: boolean;
 }
 
-const { title = 'Pantera Shop' } = Astro.props;
+const SITE_DEFAULT = 'https://pantera-boxing.ru';
+const siteUrl = Astro.site ?? new URL(SITE_DEFAULT);
+const {
+  title = 'Pantera',
+  description = 'Pantera — клуб бокса и доброй мороси.',
+  image,
+  noindex = false,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+const absolutePageUrl = canonicalURL.href;
+const defaultOgImage = new URL('/images/hero-bg-desktop.jpg', siteUrl).href;
+const ogImage = image?.trim() || defaultOgImage;
 ---
 
 <!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Pantera — клуб бокса" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/images" />
     <meta name="generator" content={Astro.generator} />
     <YandexMetrika counterId={108433630} />
 
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={absolutePageUrl} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Pantera" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={absolutePageUrl} />
+    <meta property="og:image" content={ogImage} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href="/images/svg/white_logo.svg" />
+
     <!-- View Transitions: клиентская навигация без полной перезагрузки для внутренних ссылок -->
     <ClientRouter />
-    <title>{title}</title>
   </head>
   <body>
     <div class="app-container" transition:animate={fade({ duration: '0.22s' })}>

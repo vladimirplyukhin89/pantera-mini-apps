@@ -25,6 +25,23 @@ STRAPI_TOKEN=<API token из Strapi>
 
 **Перенос админки и API со Strapi Cloud на поддомен Beget** (пошагово): [strapi-cloud-to-beget.md](./strapi-cloud-to-beget.md).
 
+### SEO и превью ссылок (Google, соцсети)
+
+Прод-домен задан в `astro-app/astro.config.mjs` (`site`). Компонент `Layout.astro` выводит `<title>`, `meta description`, `canonical`, Open Graph и Twitter Card.
+
+**Что заполнять в Strapi (без отдельных SEO-полей):**
+
+| Тип контента | Поля в админке | Как используется на сайте |
+|--------------|----------------|---------------------------|
+| **Hero** (single) | **Description** | Текст для meta description главной (обрезается ~до 160 символов; простой текст или HTML — теги снимаются). |
+| | **Фон (desktop)** / **Фон (mobile)** | Картинка для превью ссылки при шаринге главной (приоритет desktop, иначе mobile). Абсолютный URL берётся из медиа Strapi. |
+| **Event** | **Teaser** | Meta description и `og:description` на странице события (`/events/…`). Желательно 1–2 коротких предложения, до ~160 символов. |
+| | **Video cover** или первое **изображение** в **Media** | Картинка для превью ссылки события (если нет — подставляется дефолт с сайта). |
+
+Страницы `/gallery`, `/sportsmen`, `/shop` используют **фиксированные** описания в коде; при желании позже можно вынести тексты в Single Type «SEO» или настройки в Strapi.
+
+После деплоя превью можно проверить в [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/).
+
 ---
 
 ## Деплой: статика на Beget + Strapi в Cloud

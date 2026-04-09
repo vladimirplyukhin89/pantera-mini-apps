@@ -7,9 +7,16 @@ import HeroSection from '../components/HeroSection.astro';
 Astro.response.status = 404;
 
 const bg404 = '/images/jpg/404.jpg';
+const site = Astro.site ?? new URL('https://pantera-boxing.ru');
+const og404 = new URL(bg404, site).href;
 ---
 
-<Layout title="Страница не найдена — Pantera">
+<Layout
+  title="Страница не найдена — Pantera"
+  description="Такой страницы нет. Вернитесь на главную Pantera или откройте галерею и команду."
+  image={og404}
+  noindex
+>
   <main class="main-content">
     <HeroSection
       title="404"

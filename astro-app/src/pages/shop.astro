@@ -5,25 +5,27 @@ import BottomBar from '../components/BottomBar/BottomBar';
 import { Image } from 'astro:assets';
 ---
 
-<Layout title="Мерч - Pantera">
-  <Header />
+<Layout
+  title="Мерч - Pantera"
+  description="Фирменный мерч боксёрского клуба Pantera. Скоро здесь — следите за обновлениями."
+/>
+<Header />
 
-  <main class="main-content">
-    <div class="shop-center">
-      <p class="shop-text">У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.</p>
-      <Image
-        src="/images/svg/white_logo.svg"
-        alt="Pantera"
-        class="shop-logo"
-        loading="eager"
-        width={260}
-        height={260}
-      />
-    </div>
-  </main>
+<main class="main-content">
+  <div class="shop-center">
+    <p class="shop-text">У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.</p>
+    <Image
+      src="/images/svg/white_logo.svg"
+      alt="Pantera"
+      class="shop-logo"
+      loading="eager"
+      width={260}
+      height={260}
+    />
+  </div>
+</main>
 
-  <BottomBar client:load currentPath="/shop" />
-</Layout>
+<BottomBar client:load currentPath="/shop" />
 
 <style>
   .main-content {

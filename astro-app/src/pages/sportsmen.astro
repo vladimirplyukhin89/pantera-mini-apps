@@ -80,47 +80,49 @@ if (socialsRaw && socialsRaw.length > 0) {
 }
 ---
 
-<Layout title="Наша команда - Pantera">
-  <Header />
+<Layout
+  title="Наша команда - Pantera"
+  description="Команда Pantera: люди клуба. Контакты клуба и соцсети — всегда на связи."
+/>
+<Header />
 
-  <main class="main-content">
-    {
-      athletes.length > 0 && (
-        <div class="page-header">
-          <span class="page-label">Команда</span>
-          <h1 class="page-title">Наши люди</h1>
-          <p class="page-subtitle">Люди, которые делают Pantera — ведь это не только зал</p>
-        </div>
-      )
-    }
+<main class="main-content">
+  {
+    athletes.length > 0 && (
+      <div class="page-header">
+        <span class="page-label">Команда</span>
+        <h1 class="page-title">Наши люди</h1>
+        <p class="page-subtitle">Люди, которые делают Pantera — ведь это не только зал</p>
+      </div>
+    )
+  }
 
-    {
-      athletes.map((a) => (
-        <section class="athlete-section">
-          <AthleteCard
-            photo={strapiMedia(a.photo?.url)}
-            label={a.label}
-            name={a.name}
-            quote={a.quote}
-            stats={a.stats}
-            badge={a.badge}
-          />
-        </section>
-      ))
-    }
+  {
+    athletes.map((a) => (
+      <section class="athlete-section">
+        <AthleteCard
+          photo={strapiMedia(a.photo?.url)}
+          label={a.label}
+          name={a.name}
+          quote={a.quote}
+          stats={a.stats}
+          badge={a.badge}
+        />
+      </section>
+    ))
+  }
 
-    {
-      socialsRaw != null && socialsRaw.length > 0 && (
-        <section class="socials-section">
-          <span class="page-label">Контакты</span>
-          <ContactSection {...contactProps} />
-        </section>
-      )
-    }
-  </main>
+  {
+    socialsRaw != null && socialsRaw.length > 0 && (
+      <section class="socials-section">
+        <span class="page-label">Контакты</span>
+        <ContactSection {...contactProps} />
+      </section>
+    )
+  }
+</main>
 
-  <BottomBar client:load currentPath="/sportsmen" />
-</Layout>
+<BottomBar client:load currentPath="/sportsmen" />
 
 <style>
   .main-content {

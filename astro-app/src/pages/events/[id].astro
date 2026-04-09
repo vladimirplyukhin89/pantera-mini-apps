@@ -54,9 +54,29 @@ const media = (event.media || []).map((m) => ({
   alt: m.alternativeText || '',
   ...(isVideoMedia(m) && videoCoverUrl ? { poster: videoCoverUrl } : {}),
 }));
+
+const teaserPlain = event.teaser
+  .replace(/<[^>]*>/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+const metaDescription =
+  teaserPlain.length > 160
+    ? `${teaserPlain.slice(0, 157)}…`
+    : teaserPlain || `${event.title} — событие боксёрского клуба Pantera, Тюмень.`;
+
+let metaImage: string | undefined;
+if (event.video_cover?.url) metaImage = strapiMedia(event.video_cover.url);
+else {
+  for (const m of event.media || []) {
+    if (!isVideoMedia(m) && m.url) {
+      metaImage = strapiMedia(m.url);
+      break;
+    }
+  }
+}
 ---
 
-<Layout title={`${event.title} — Pantera`}>
+<Layout title={`${event.title} — Pantera`} description={metaDescription} image={metaImage}>
   <Header />
 
   <main class="main-content">

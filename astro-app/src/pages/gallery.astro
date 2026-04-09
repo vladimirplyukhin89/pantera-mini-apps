@@ -86,52 +86,54 @@ try {
 }
 ---
 
-<Layout title="Галерея - Pantera">
-  <Header />
+<Layout
+  title="Галерея - Pantera"
+  description="События Pantera, фотогалерея клуба и то, зачем мы собираемся — бокс и люди."
+/>
+<Header />
 
-  <main class="main-content">
-    {
-      (planned.length > 0 || past.length > 0) && (
-        <>
-          <span class="section-label">События</span>
-          <section class="events-section">
-            <EventsSlider client:load planned={planned} past={past} />
-          </section>
-        </>
-      )
-    }
+<main class="main-content">
+  {
+    (planned.length > 0 || past.length > 0) && (
+      <>
+        <span class="section-label">События</span>
+        <section class="events-section">
+          <EventsSlider client:load planned={planned} past={past} />
+        </section>
+      </>
+    )
+  }
 
-    {
-      galleryPhotos.length > 0 && (
-        <>
-          <span class="section-label">О нашем клубе</span>
-          <section class="club-section">
-            <div class="section-header">
-              <h1 class="section-title">
-                Место, где <span class="accent-word">характер</span> закаляется
-              </h1>
-              <p class="section-subtitle">Если я упал - не радуйся, я просто шнурки проверял</p>
-            </div>
-            <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
-          </section>
-        </>
-      )
-    }
+  {
+    galleryPhotos.length > 0 && (
+      <>
+        <span class="section-label">О нашем клубе</span>
+        <section class="club-section">
+          <div class="section-header">
+            <h1 class="section-title">
+              Место, где <span class="accent-word">характер</span> закаляется
+            </h1>
+            <p class="section-subtitle">Если я упал - не радуйся, я просто шнурки проверял</p>
+          </div>
+          <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
+        </section>
+      </>
+    )
+  }
 
-    {
-      clubValues.length > 0 && (
-        <>
-          <span class="section-label">Наши ценности</span>
-          <section class="club-section">
-            <ClubValues values={clubValues} />
-          </section>
-        </>
-      )
-    }
-  </main>
+  {
+    clubValues.length > 0 && (
+      <>
+        <span class="section-label">Наши ценности</span>
+        <section class="club-section">
+          <ClubValues values={clubValues} />
+        </section>
+      </>
+    )
+  }
+</main>
 
-  <BottomBar client:load currentPath="/gallery" />
-</Layout>
+<BottomBar client:load currentPath="/gallery" />
 
 <style>
   .main-content {
