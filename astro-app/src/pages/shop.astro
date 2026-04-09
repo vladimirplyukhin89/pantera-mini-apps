@@ -8,24 +8,25 @@ import { Image } from 'astro:assets';
 <Layout
   title="Мерч - Pantera"
   description="Фирменный мерч боксёрского клуба Pantera. Скоро здесь — следите за обновлениями."
-/>
-<Header />
+>
+  <Header />
 
-<main class="main-content">
-  <div class="shop-center">
-    <p class="shop-text">У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.</p>
-    <Image
-      src="/images/svg/white_logo.svg"
-      alt="Pantera"
-      class="shop-logo"
-      loading="eager"
-      width={260}
-      height={260}
-    />
-  </div>
-</main>
+  <main class="main-content">
+    <div class="shop-center">
+      <p class="shop-text">У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.</p>
+      <Image
+        src="/images/svg/white_logo.svg"
+        alt="Pantera"
+        class="shop-logo"
+        loading="eager"
+        width={260}
+        height={260}
+      />
+    </div>
+  </main>
 
-<BottomBar client:load currentPath="/shop" />
+  <BottomBar client:load currentPath="/shop" />
+</Layout>
 
 <style>
   .main-content {
