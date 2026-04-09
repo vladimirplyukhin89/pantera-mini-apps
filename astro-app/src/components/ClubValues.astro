@@ -63,9 +63,7 @@ const { values, bgVariant = 'salad' } = Astro.props;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          entry.target.classList.add('value-card--visible');
-          observer.unobserve(entry.target);
+          entry.target.classList.toggle('value-card--visible', entry.isIntersecting);
         }
       },
       { rootMargin: '0px 0px -12% 0px', threshold: 0.12 }

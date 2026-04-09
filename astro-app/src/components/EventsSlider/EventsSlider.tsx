@@ -47,13 +47,13 @@ const EventCard = ({ event }: { event: EventItem }) => {
     <div className={styles.emblaSlide}>
       <a
         href={`/events/${event.id}`}
-        className={`${styles.card} ${styles[`cardAccent${event.accentIndex % 4}`]}`}
+        className={`${styles.card} ${styles[`cardAccent${event.accentIndex % 4}`]} ${event.statusCode === 'past' ? styles.cardPast : ''}`}
         data-astro-prefetch="viewport"
       >
         <div className={styles.cardMedia}>
           {thumb ? (
             <div
-              className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.plannedImg : ''}`}
+              className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.plannedImg : ''} ${event.statusCode === 'past' ? styles.pastThumb : ''}`}
             >
               <img
                 src={thumb.src}

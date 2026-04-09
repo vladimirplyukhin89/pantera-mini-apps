@@ -141,8 +141,9 @@
   position: fixed;
   top: 1rem;
   right: 1rem;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
+  background: rgba(216, 76, 76, 0.88);
+  background: color-mix(in srgb, var(--color-red-accent) 82%, rgba(0, 0, 0, 0.22));
+  border: 1px solid rgba(255, 255, 255, 0.22);
   color: var(--color-text-cream);
   width: 40px;
   height: 40px;
@@ -160,7 +161,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .lightboxClose:hover {
-    background: rgba(255, 255, 255, 0.28);
+    background: color-mix(in srgb, var(--color-red-accent) 92%, white 6%);
     transform: scale(1.1);
   }
 }
@@ -169,8 +170,9 @@
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
+  background: rgba(216, 76, 76, 0.88);
+  background: color-mix(in srgb, var(--color-red-accent) 82%, rgba(0, 0, 0, 0.22));
+  border: 1px solid rgba(255, 255, 255, 0.22);
   color: var(--color-text-cream);
   width: 44px;
   height: 44px;
@@ -196,8 +198,22 @@
 
 @media (hover: hover) and (pointer: fine) {
   .lightboxNav:hover {
-    background: rgba(255, 255, 255, 0.28);
+    background: color-mix(in srgb, var(--color-red-accent) 92%, white 6%);
     transform: translateY(-50%) scale(1.1);
+  }
+}
+
+@media (max-width: 480px), (pointer: coarse) {
+  .lightboxClose {
+    background: color-mix(in srgb, var(--color-red-accent) 90%, rgba(0, 0, 0, 0.12));
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  .lightboxNav {
+    background: color-mix(in srgb, var(--color-red-accent) 90%, rgba(0, 0, 0, 0.12));
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   }
 }
 

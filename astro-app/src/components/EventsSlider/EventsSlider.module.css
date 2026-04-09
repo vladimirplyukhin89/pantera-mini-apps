@@ -150,6 +150,33 @@
   object-fit: contain !important;
 }
 
+@media (max-width: 480px) {
+  .cardPast .cardMedia {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .pastThumb {
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 100%;
+    flex: 0 1 auto;
+  }
+
+  .pastThumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
 .cardPlaceholder {
   min-height: 4rem;
   background: linear-gradient(135deg, rgba(77, 137, 124, 0.25), rgba(216, 76, 76, 0.15));
