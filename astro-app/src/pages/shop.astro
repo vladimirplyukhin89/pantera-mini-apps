@@ -25,7 +25,7 @@ import { Image } from 'astro:assets';
     </div>
   </main>
 
-  <BottomBar client:load currentPath="/shop" />
+  <BottomBar client:load transition:persist="bottom-bar" currentPath="/shop" />
 </Layout>
 
 <style>

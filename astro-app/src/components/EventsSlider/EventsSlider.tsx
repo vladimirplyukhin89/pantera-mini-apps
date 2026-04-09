@@ -47,21 +47,15 @@ const EventCard = ({ event }: { event: EventItem }) => {
     <div className={styles.emblaSlide}>
       <a
         href={`/events/${event.id}`}
-        className={`${styles.card} ${styles[`cardAccent${event.accentIndex % 4}`]} ${event.statusCode === 'past' ? styles.cardPast : ''}`}
+        className={`${styles.card} ${styles[`cardAccent${event.accentIndex % 4}`]} ${event.statusCode === 'planned' ? styles.cardPlanned : ''}`}
         data-astro-prefetch="viewport"
       >
         <div className={styles.cardMedia}>
           {thumb ? (
             <div
-              className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.plannedImg : ''} ${event.statusCode === 'past' ? styles.pastThumb : ''}`}
+              className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.thumbPlanned : styles.thumbPast}`}
             >
-              <img
-                src={thumb.src}
-                alt={thumb.alt}
-                loading="lazy"
-                decoding="async"
-                className={event.statusCode === 'planned' ? styles.plannedImg : ''}
-              />
+              <img src={thumb.src} alt={thumb.alt} loading="lazy" decoding="async" />
               {hasVideo(event) && (
                 <div className={styles.videoIndicator} aria-label="Содержит видео">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

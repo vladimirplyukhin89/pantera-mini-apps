@@ -58,11 +58,11 @@ const ogImage = image?.trim() || defaultOgImage;
 
     <link rel="icon" type="image/svg+xml" href="/images/svg/white_logo.svg" />
 
-    <!-- View Transitions: клиентская навигация без полной перезагрузки для внутренних ссылок -->
-    <ClientRouter />
+    <!-- ClientRouter: fallback swap — без «симуляции» анимаций на клиентах без View Transitions (меньше работы на слабых CPU). -->
+    <ClientRouter fallback="swap" />
   </head>
   <body>
-    <div class="app-container" transition:animate={fade({ duration: '0.22s' })}>
+    <div class="app-container" transition:animate={fade({ duration: '0.16s' })}>
       <slot />
     </div>
   </body>

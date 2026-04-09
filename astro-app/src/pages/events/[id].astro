@@ -80,7 +80,7 @@ else {
   <Header />
 
   <main class="main-content">
-    <a href="/gallery" class="back-link" data-astro-prefetch="hover">← Назад к галерее</a>
+    <a href="/gallery" class="back-link">← Назад к галерее</a>
 
     <div class="event-header">
       <div class="event-meta">
@@ -103,10 +103,10 @@ else {
 
     <div class="event-body" set:html={bodyHtml} />
 
-    <a href="/gallery" class="bottom-back" data-astro-prefetch="hover">← Все события</a>
+    <a href="/gallery" class="bottom-back">← Все события</a>
   </main>
 
-  <BottomBar client:load currentPath="/gallery" />
+  <BottomBar client:load transition:persist="bottom-bar" currentPath="/gallery" />
 </Layout>
 
 <style define:vars={{ accent }}>

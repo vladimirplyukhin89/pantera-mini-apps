@@ -43,19 +43,15 @@ const navItems: NavItem[] = [
 ];
 
 const BottomBar = ({ currentPath }: BottomBarProps) => {
-  const [path, setPath] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return currentPath ?? window.location.pathname;
-    }
-    return currentPath ?? '/';
-  });
+  // При transition:persist остров не перемонтируется и props не обновляются — активную вкладку берём только из URL.
+  const [path, setPath] = useState(() =>
+    typeof window !== 'undefined' ? window.location.pathname : (currentPath ?? '/')
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const syncPath = () => {
-      setPath(currentPath ?? window.location.pathname);
-    };
+    const syncPath = () => setPath(window.location.pathname);
 
     syncPath();
     window.addEventListener('popstate', syncPath);
@@ -65,7 +61,7 @@ const BottomBar = ({ currentPath }: BottomBarProps) => {
       window.removeEventListener('popstate', syncPath);
       document.removeEventListener('astro:page-load', syncPath);
     };
-  }, [currentPath]);
+  }, []);
 
   const isActive = (itemPath: string) => normalizePath(path) === normalizePath(itemPath);
   const isHomePage = normalizePath(path) === '/';
@@ -86,7 +82,6 @@ const BottomBar = ({ currentPath }: BottomBarProps) => {
         <a
           key={item.path}
           href={item.path}
-          data-astro-prefetch="hover"
           onClick={(e) => handleNavigation(e, item.path)}
           className={`${styles.bottomBarItem} ${isActive(item.path) ? styles.bottomBarItemActive : ''}`}
         >

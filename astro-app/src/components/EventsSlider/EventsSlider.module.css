@@ -133,51 +133,56 @@
 }
 
 .cardThumb {
-  height: 100%;
   width: 100%;
   position: relative;
 }
 
 .cardThumb img {
+  display: block;
+}
+
+/* Запланированные: превью SVG — фиксированное поле 16∶9, картинка целиком (contain). */
+.cardPlanned .cardMedia {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.thumbPlanned {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 100%;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.thumbPlanned img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  display: block;
-  object-position: top;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Прошедшие: JPG — заполняем область превью (cover). */
+.thumbPast {
+  height: 100%;
+  width: 100%;
+}
+
+.thumbPast img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-}
-
-.plannedImg {
-  object-fit: contain !important;
-}
-
-@media (max-width: 480px) {
-  .cardPast .cardMedia {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 0;
-  }
-
-  .pastThumb {
-    position: relative;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    max-height: 100%;
-    flex: 0 1 auto;
-  }
-
-  .pastThumb img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
+  object-position: center;
 }
 
 .cardPlaceholder {
+  height: 100%;
   min-height: 4rem;
   background: linear-gradient(135deg, rgba(77, 137, 124, 0.25), rgba(216, 76, 76, 0.15));
 }
