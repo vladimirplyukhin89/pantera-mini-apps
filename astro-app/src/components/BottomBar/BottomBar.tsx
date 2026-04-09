@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import { ImCool, ImCamera } from 'react-icons/im';
-import { PiTShirtBold } from "react-icons/pi";
-import { GoHomeFill } from "react-icons/go";
+import { PiTShirtBold } from 'react-icons/pi';
+import { GoHomeFill } from 'react-icons/go';
 import styles from './BottomBar.module.css';
 
 interface BottomBarProps {

@@ -18,7 +18,7 @@
 |------------|------------|
 | `astro-app/` | Фронтенд — Astro SSR + React-острова |
 | `strapi-cms/` | CMS — Strapi 5, Content Types, REST API |
-| `docs/` | Подробная документация проекта |
+| `docs/` | Документация: обзор, деплой, CI; миграция CMS — [strapi-cloud-to-beget.md](docs/strapi-cloud-to-beget.md) |
 
 ## Быстрый старт
 
@@ -37,4 +37,5 @@ STRAPI_URL=http://localhost:1337
 STRAPI_TOKEN=<API token из Strapi>
 ```
 
-Подробнее — в [docs/README.md](docs/README.md).
+Подробнее — в [docs/README.md](docs/README.md).  
+Миграция админки Strapi со Strapi Cloud на поддомен Beget: [docs/strapi-cloud-to-beget.md](docs/strapi-cloud-to-beget.md).

@@ -1,6 +1,8 @@
-# Перенос сайта и Strapi на Beget (тариф «Блог» и аналоги)
+# Миграция Strapi: со Strapi Cloud на поддомен Beget
 
-Инструкция описывает размещение **статического фронтенда (Astro, SSG)** на основном домене и **Strapi 5 (сайт + админка)** на **поддомене** одного аккаунта Beget. Актуальные кнопки и названия разделов в панели могут слегка отличаться — ориентируйтесь на [базу знаний Beget](https://beget.com/ru/kb).
+> **Текущая схема:** статика Astro на Beget, CMS и API в Strapi Cloud — коротко описано в [README этого каталога](./README.md) (раздел «Деплой»).
+
+Ниже — **полный перенос**: **Strapi 5** (API и админка) на поддомен Beget (например `admin.pantera-boxing.ru`), сборка Astro против этого API и отключение Strapi Cloud. Речь о размещении **статического фронтенда (Astro SSG)** на основном домене и CMS на **поддомене** одного аккаунта Beget. Актуальные кнопки в панели могут отличаться — ориентируйтесь на [базу знаний Beget](https://beget.com/ru/kb).
 
 **Важно.** Strapi — тяжёлое Node.js‑приложение. На **виртуальном хостинге** возможны лимиты по памяти и времени сборки. Если после шагов ниже админка падает с ошибкой нехватки памяти — рассмотрите **VPS Beget** под CMS. Тариф **«Блог»** подходит для старта, если в описании тарифа на момент покупки есть **SSH, MySQL, Node.js** (на Beget Node обычно запускают в **Docker‑окружении** по SSH — см. [настройку Node.js](https://beget.com/ru/kb/how-to/web-apps/node-js)).
 
@@ -327,7 +329,7 @@ http_response_code($code >= 200 && $code < 300 ? 204 : 502);
 - Частые сохранения в админке будут часто дергать GitHub и FTP — при необходимости в Strapi ограничьте типы контента или события webhook только **Publish**, а не каждое автосохранение (если доступно в вашей версии).
 - Альтернатива FTP — **SFTP/rsync по SSH** из отдельного job (другой action и секреты).
 
-Подробности по основному CI: [CI.md](./CI.md), по SSG: [beget-migration-ssg.md](./beget-migration-ssg.md).
+Подробности по CI и деплою статики: [README.md](./README.md) (разделы «CI/CD» и «Деплой»).
 
 ---
 
@@ -353,7 +355,7 @@ http_response_code($code >= 200 && $code < 300 ? 204 : 502);
 - [Домены и поддомены](https://beget.com/ru/kb/manual/domeny-i-poddomeny)
 - [Strapi: документация](https://docs.strapi.io)
 - [GitHub: repository_dispatch](https://docs.github.com/en/rest/repos/repos#create-a-repository-dispatch-event)
-- Внутри репозитория: [`.github/workflows/rebuild-static.yml`](../.github/workflows/rebuild-static.yml), [beget-migration-ssg.md](./beget-migration-ssg.md), [CI.md](./CI.md)
+- Внутри репозитория: [`.github/workflows/rebuild-static.yml`](../.github/workflows/rebuild-static.yml), [docs/README.md](./README.md)
 
 ---
 

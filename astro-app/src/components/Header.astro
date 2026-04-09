@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { FaCode } from "react-icons/fa";
+import { FaCode } from 'react-icons/fa';
 
 const isHomePage = Astro.url.pathname === '/';
 ---
@@ -11,7 +11,7 @@ const isHomePage = Astro.url.pathname === '/';
       isHomePage ? (
         <Image
           src="/images/svg/white_logo.svg"
-          alt="Logo"
+          alt="Logo Pantera"
           class="logo-image"
           fetchpriority="high"
           loading="eager"
@@ -22,7 +22,7 @@ const isHomePage = Astro.url.pathname === '/';
         <a href="/" class="logo-link" aria-label="На главную" data-astro-prefetch="hover">
           <Image
             src="/images/svg/white_logo.svg"
-            alt="Logo"
+            alt="Logo Pantera"
             class="logo-image"
             fetchpriority="high"
             loading="eager"
@@ -80,11 +80,17 @@ const isHomePage = Astro.url.pathname === '/';
   .logo-link {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     line-height: 0;
     text-decoration: none;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition:
       opacity 0.2s,
-      transform 0.2s;
+      transform 0.2s,
+      filter 0.2s;
   }
 
   .header-version {
@@ -119,8 +125,8 @@ const isHomePage = Astro.url.pathname === '/';
 
   @media (hover: hover) and (pointer: fine) {
     .logo-link:hover {
-      opacity: 0.8;
       transform: scale(1.05);
+      filter: brightness(1.08);
     }
   }
 

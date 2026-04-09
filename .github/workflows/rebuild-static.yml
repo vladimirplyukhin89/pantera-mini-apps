@@ -1,11 +1,11 @@
 # Пересборка статического фронта и опциональная выкладка на Beget по FTP.
 # Запуск: GitHub → Actions → «Rebuild static site» (workflow_dispatch)
-#   или внешний POST .../dispatches с event_type: strapi_publish (см. docs/beget-full-migration.md).
+#   или внешний POST .../dispatches с event_type: strapi_publish (см. docs/strapi-cloud-to-beget.md).
 #
 # Чтобы после сборки автоматически выкладывать файлы на Beget:
 #   Settings → Secrets and variables → Actions → Variables → New repository variable:
 #     BEGET_FTP_DEPLOY = true
-#   и задайте секреты BEGET_FTP_* (таблица в docs/beget-full-migration.md).
+#   и задайте секреты BEGET_FTP_* (таблица в docs/strapi-cloud-to-beget.md).
 
 name: Rebuild static site
 

@@ -109,12 +109,14 @@ if (socialsRaw && socialsRaw.length > 0) {
       ))
     }
 
-    {socialsRaw != null && socialsRaw.length > 0 && (
-      <section class="socials-section">
-        <span class="page-label">Контакты</span>
-        <ContactSection {...contactProps} />
-      </section>
-    )}
+    {
+      socialsRaw != null && socialsRaw.length > 0 && (
+        <section class="socials-section">
+          <span class="page-label">Контакты</span>
+          <ContactSection {...contactProps} />
+        </section>
+      )
+    }
   </main>
 
   <BottomBar client:load currentPath="/sportsmen" />
