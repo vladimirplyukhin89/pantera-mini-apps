@@ -28,7 +28,7 @@
   --color-header-overlay: rgba(0, 0, 0, 0.3);
   --color-accent-blue-overlay: rgba(0, 48, 95, 0.3);
   --color-bg-accent-green: rgba(8, 255, 162, 0.8);
-  --color-bg-accent-purple: rgba(204, 71, 216, 0.6);
+  --color-bg-accent-purple: rgba(255, 05, 255, 0.2);
 
   /* Тени */
   --color-shadow-text: rgba(0, 0, 0, 0.3);
@@ -43,6 +43,7 @@
   --color-icon-home: #9c27b0;
   --color-icon-gallery: rgb(255, 140, 0);
   --color-icon-contacts: #4caf50;
+  --color-icon-shop: #114880;
 
   /* Высота header */
   --header-height: 64px;

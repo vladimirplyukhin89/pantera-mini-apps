@@ -1,6 +1,6 @@
 .bottomBar {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 05, 255, 0.1);
   width: 90%;
   position: fixed;
   bottom: 3%;
@@ -17,8 +17,8 @@
 }
 
 .bottomBarBlurred {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
 }
 
 .bottomBarItem {
@@ -64,6 +64,10 @@
     color: var(--color-icon-contacts);
   }
 
+  .bottomBarItem:hover .iconShop {
+    color: var(--color-icon-shop);
+  }
+
   .bottomBarItem:has(.iconHome):hover .label {
     color: var(--color-icon-home);
   }
@@ -74,6 +78,10 @@
 
   .bottomBarItem:has(.iconSportsmen):hover .label {
     color: var(--color-icon-contacts);
+  }
+
+  .bottomBarItem:has(.iconShop):hover .label {
+    color: var(--color-icon-shop);
   }
 
   .bottomBarItemActive:hover .icon {
@@ -108,7 +116,8 @@
 
 .iconHome,
 .iconGallery,
-.iconSportsmen {
+.iconSportsmen,
+.iconShop {
   transition: color 0.2s;
 }
 

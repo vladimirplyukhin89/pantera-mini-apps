@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ImCool, ImCamera, ImPointDown } from 'react-icons/im';
+import { ImCool, ImCamera } from 'react-icons/im';
+import { PiTShirtBold } from "react-icons/pi";
+import { GoHomeFill } from "react-icons/go";
 import styles from './BottomBar.module.css';
 
 interface BottomBarProps {
@@ -21,7 +23,7 @@ const navItems: NavItem[] = [
   {
     path: '/',
     label: 'Главная',
-    icon: <ImPointDown className={`${styles.icon} ${styles.iconHome}`} />,
+    icon: <GoHomeFill className={`${styles.icon} ${styles.iconHome}`} />,
   },
   {
     path: '/gallery',
@@ -30,8 +32,13 @@ const navItems: NavItem[] = [
   },
   {
     path: '/sportsmen',
-    label: 'Спортсмены',
+    label: 'Команда',
     icon: <ImCool className={`${styles.icon} ${styles.iconSportsmen}`} />,
+  },
+  {
+    path: '/shop',
+    label: 'Мерч',
+    icon: <PiTShirtBold className={`${styles.icon} ${styles.iconShop}`} />,
   },
 ];
 

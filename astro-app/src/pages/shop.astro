@@ -1,0 +1,90 @@
+---
+import Layout from '../components/Layout.astro';
+import Header from '../components/Header.astro';
+import BottomBar from '../components/BottomBar/BottomBar';
+import { Image } from 'astro:assets';
+---
+
+<Layout title="Мерч - Pantera">
+  <Header />
+
+  <main class="main-content">
+    <div class="shop-center">
+      <p class="shop-text">
+        У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.
+      </p>
+      <Image
+        src="/images/svg/white_logo.svg"
+        alt="Pantera"
+        class="shop-logo"
+        loading="eager"
+        width={260}
+        height={260}
+      />
+    </div>
+  </main>
+
+  <BottomBar client:load currentPath="/shop" />
+</Layout>
+
+<style>
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    padding-top: calc(var(--header-height) + 1.5rem);
+    padding-bottom: 7.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+    min-height: 100%;
+  }
+
+  .shop-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.75rem;
+    padding: 1rem 0;
+  }
+
+  .shop-text {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--color-text-cream-alpha);
+    max-width: 26rem;
+    margin: 0;
+  }
+
+  .shop-logo {
+    display: block;
+    width: min(200px, 72vw);
+    height: auto;
+  }
+
+  @media (min-width: 481px) {
+    .main-content {
+      padding: 2rem 1.5rem 7.5rem;
+      padding-top: calc(var(--header-height) + 2rem);
+    }
+
+    .shop-text {
+      font-size: 1.125rem;
+    }
+
+    .shop-logo {
+      width: min(240px, 50vw);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .shop-text {
+      font-size: 1.1875rem;
+      max-width: 32rem;
+    }
+  }
+</style>

@@ -80,7 +80,7 @@ if (socialsRaw && socialsRaw.length > 0) {
 }
 ---
 
-<Layout title="Наши спортсмены - Pantera">
+<Layout title="Наша команда - Pantera">
   <Header />
 
   <main class="main-content">
@@ -88,8 +88,8 @@ if (socialsRaw && socialsRaw.length > 0) {
       athletes.length > 0 && (
         <div class="page-header">
           <span class="page-label">Команда</span>
-          <h1 class="page-title">Наши спортсмены</h1>
-          <p class="page-subtitle">Люди, которые делают Pantera — это не только зал</p>
+          <h1 class="page-title">Наши люди</h1>
+          <p class="page-subtitle">Люди, которые делают Pantera — ведь это не только зал</p>
         </div>
       )
     }
@@ -109,8 +109,12 @@ if (socialsRaw && socialsRaw.length > 0) {
       ))
     }
 
-    <span class="page-label">Контакты</span>
-    <ContactSection {...contactProps} />
+    {socialsRaw != null && socialsRaw.length > 0 && (
+      <section class="socials-section">
+        <span class="page-label">Контакты</span>
+        <ContactSection {...contactProps} />
+      </section>
+    )}
   </main>
 
   <BottomBar client:load currentPath="/sportsmen" />

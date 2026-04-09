@@ -1,4 +1,6 @@
 ---
+import { ContactSocialIcon } from './ContactSocialIcon';
+
 interface ContactItem {
   icon: string;
   label: string;
@@ -9,7 +11,8 @@ interface ContactItem {
 interface Social {
   name: string;
   url: string;
-  icon: string;
+  /** Fallback emoji/символ для сетей без React-иконки */
+  icon?: string;
 }
 
 interface Props {
@@ -21,15 +24,11 @@ interface Props {
 }
 
 const {
-  title = 'Мы на связи',
-  subtitle = 'Заходи, пиши, звони — находимся, не теряемся',
-  contacts = [
-    { icon: '📍', label: 'Адрес', value: 'Тюмень, ул. М. Горького, 68/4' },
-    { icon: '📞', label: 'Телефон', value: '+7 (929) 256-14-95', href: 'tel:+79292561495' },
-    { icon: '⏰', label: 'График', value: 'Пн, Ср: 18:00 - 21:00, Сб: 13:00' },
-  ],
+  title,
+  subtitle,
+  contacts,
   socials,
-  quote = '«Не бойся начать — бойся не начать.»',
+  quote,
 } = Astro.props;
 ---
 
@@ -42,7 +41,7 @@ const {
 
     <div class="contact-grid">
       {
-        contacts.map((c) => (
+        contacts?.map((c) => (
           <div class="contact-card">
             <span class="contact-icon">{c.icon}</span>
             <div class="contact-card-body">
@@ -71,7 +70,7 @@ const {
             rel="noopener noreferrer"
             aria-label={s.name}
           >
-            <span class="social-icon">{s.icon}</span>
+            <ContactSocialIcon name={s.name} icon={s.icon} />
             <span class="social-name">{s.name}</span>
           </a>
         ))
@@ -245,6 +244,13 @@ const {
     line-height: 1;
   }
 
+  .social-link :global(.social-svg-icon) {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+  }
+
   .contact-quote {
     text-align: center;
     font-size: 0.95rem;
@@ -268,6 +274,13 @@ const {
 
     .contact-grid {
       grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .social-link :global(.social-svg-icon) {
+      width: 2rem;
+      height: 2rem;
     }
   }
 

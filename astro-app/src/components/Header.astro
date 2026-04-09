@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { FaCode } from "react-icons/fa";
 
 const isHomePage = Astro.url.pathname === '/';
 ---
@@ -32,7 +33,10 @@ const isHomePage = Astro.url.pathname === '/';
       )
     }
     <h1 class="title">Pantera</h1>
-    <div class="header-spacer"></div>
+    <div class="header-version" title="Версия сайта 1.1">
+      <FaCode className="code-icon" />
+      <span class="version-text">версия 1.1</span>
+    </div>
   </div>
 </header>
 
@@ -83,8 +87,34 @@ const isHomePage = Astro.url.pathname === '/';
       transform 0.2s;
   }
 
-  .header-spacer {
-    width: 60px;
+  .header-version {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.55rem 0.3rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(255, 248, 231, 0.12);
+    border: 1px solid rgba(255, 248, 231, 0.22);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  }
+
+  .header-version :global(.code-icon) {
+    display: block;
+    width: 0.95rem;
+    height: 0.95rem;
+    flex-shrink: 0;
+    color: var(--color-turquoise-panther);
+    opacity: 0.95;
+  }
+
+  .version-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+    color: var(--color-text-cream-alpha);
+    line-height: 1;
+    white-space: nowrap;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -106,6 +136,20 @@ const isHomePage = Astro.url.pathname === '/';
     .title {
       font-size: 2rem;
       font-weight: 900;
+    }
+
+    .header-version {
+      gap: 0.4rem;
+      padding: 0.35rem 0.65rem 0.35rem 0.5rem;
+    }
+
+    .header-version :global(.code-icon) {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+
+    .version-text {
+      font-size: 0.7rem;
     }
   }
 
