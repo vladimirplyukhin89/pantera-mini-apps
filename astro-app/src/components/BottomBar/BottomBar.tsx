@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   {
     path: '/shop',
     label: 'Мерч',
-    icon: <PiTShirtBold className={`${styles.icon} ${styles.iconShop}`} />, 
+    icon: <PiTShirtBold className={`${styles.icon} ${styles.iconShop}`} />,
   },
 ];
 

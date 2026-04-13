@@ -31,8 +31,7 @@ try {
   const built = await Promise.all(
     raw.map(async (p) => {
       const remoteSrc = strapiMedia(p.image?.url);
-      const variant =
-        p.variant === 'tall' || p.variant === 'wide' ? p.variant : undefined;
+      const variant = p.variant === 'tall' || p.variant === 'wide' ? p.variant : undefined;
       const common = {
         alt: p.alt || '',
         ...(variant ? { variant } : {}),
@@ -41,9 +40,7 @@ try {
       return { src: await optimizeStrapiImage800(remoteSrc, 'gallery'), ...common };
     })
   );
-  galleryPhotos = built.filter(
-    (x): x is GalleryPhoto => x !== null && x !== undefined
-  );
+  galleryPhotos = built.filter((x): x is GalleryPhoto => x !== null && x !== undefined);
 } catch (e) {
   console.error('Strapi gallery-photos:', e);
 }

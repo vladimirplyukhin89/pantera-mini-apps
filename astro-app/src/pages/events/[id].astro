@@ -60,9 +60,7 @@ const media = await Promise.all(
   (event.media || []).map(async (m) => {
     const remoteSrc = strapiMedia(m.url);
     const video = isVideoMedia(m);
-    const src = video
-      ? remoteSrc
-      : await optimizeStrapiImage800(remoteSrc, `event media (${id})`);
+    const src = video ? remoteSrc : await optimizeStrapiImage800(remoteSrc, `event media (${id})`);
     return {
       type: video ? ('video' as const) : ('image' as const),
       src,
