@@ -11,12 +11,13 @@ export default defineConfig({
   site: 'https://pantera-boxing.ru',
   output: 'static',
   /**
-   * Prefetch работает вместе с `<ClientRouter />` (View Transitions): страницы
-   * подгружаются заранее, переход по внутренним `<a>` остаётся без полной перезагрузки.
+   * View Transitions по умолчанию включают prefetch для всех ссылок — трафик и конкуренция
+   * с картинками на первом экране. Оставляем prefetch только у ссылок с data-astro-prefetch.
+   * Стратегия по умолчанию — hover (нижняя панель и т.д.); у карточек событий стоит viewport.
    * @see https://docs.astro.build/en/guides/prefetch/
    */
   prefetch: {
-    prefetchAll: true,
+    prefetchAll: false,
     defaultStrategy: 'hover',
   },
   integrations: [react()],

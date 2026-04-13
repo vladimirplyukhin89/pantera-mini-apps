@@ -6,8 +6,17 @@ export async function optimizeStrapiImage800(
   logContext: string
 ): Promise<string> {
   if (!remoteSrc) return remoteSrc;
+  // SVG не гоняем через sharp/webp; для remote raster без размеров в CMS нужен inferSize.
+  if (/\.svg(\?|$)/i.test(remoteSrc)) return remoteSrc;
   try {
-    return (await getImage({ src: remoteSrc, width: 800, format: 'webp' })).src;
+    return (
+      await getImage({
+        src: remoteSrc,
+        width: 800,
+        format: 'webp',
+        inferSize: true,
+      })
+    ).src;
   } catch (e) {
     console.error(`getImage ${logContext}:`, e);
     return remoteSrc;
