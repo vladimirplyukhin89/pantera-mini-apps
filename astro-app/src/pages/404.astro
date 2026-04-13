@@ -28,7 +28,7 @@ const og404 = new URL(bg404, site).href;
     <Header />
   </main>
 
-  <BottomBar client:only="react" transition:persist="bottom-bar" />
+  <BottomBar client:load transition:persist transition:name="bottom-bar" />
 </Layout>
 
 <style>

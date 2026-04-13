@@ -31,7 +31,13 @@ const {
     </div>
 
     <div class="hero-accent">
-      <HeroAccent client:load linkTo={ctaLink} className="hero-icon" />
+      <HeroAccent
+        client:load
+        transition:persist
+        transition:name="hero-accent"
+        linkTo={ctaLink}
+        className="hero-icon"
+      />
     </div>
   </div>
 </section>

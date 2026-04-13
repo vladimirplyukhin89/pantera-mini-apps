@@ -1,5 +1,5 @@
 ---
-import { ClientRouter, fade } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import YandexMetrika from './YandexMetrika.astro';
 import '../styles/variables.css';
 import '../styles/fonts.css';
@@ -36,7 +36,8 @@ const ogImage = image?.trim() || defaultOgImage;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <YandexMetrika counterId={108433630} />
+
+    {/* TODO: <YandexMetrika counterId={108433630} /> add after testing Yandex Metrika */}
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -58,11 +59,10 @@ const ogImage = image?.trim() || defaultOgImage;
 
     <link rel="icon" type="image/svg+xml" href="/images/svg/white_logo.svg" />
 
-    <!-- ClientRouter: fallback swap — без «симуляции» анимаций на клиентах без View Transitions (меньше работы на слабых CPU). -->
-    <ClientRouter fallback="swap" />
+    <ClientRouter />
   </head>
   <body>
-    <div class="app-container" transition:animate={fade({ duration: '0.16s' })}>
+    <div class="app-container">
       <slot />
     </div>
   </body>
