@@ -14,19 +14,36 @@ import {
   type StrapiClubValue,
   type StrapiEvent,
 } from '../lib/strapi';
+import { optimizeStrapiImage800 } from '../lib/strapiImages';
 
 // ─── Gallery photos ──────────────────────────────────────
+type GalleryPhoto = {
+  src: string;
+  alt: string;
+  variant?: 'tall' | 'wide';
+};
 
-let galleryPhotos: { src: string; alt: string; variant?: 'tall' | 'wide' }[] = [];
+let galleryPhotos: GalleryPhoto[] = [];
 try {
   const raw = await fetchStrapi<StrapiGalleryPhoto[]>(
     'gallery-photos?populate=image&sort=order:asc'
   );
-  galleryPhotos = raw.map((p) => ({
-    src: strapiMedia(p.image?.url),
-    alt: p.alt || '',
-    ...(p.variant && p.variant !== 'default' ? { variant: p.variant } : {}),
-  }));
+  const built = await Promise.all(
+    raw.map(async (p) => {
+      const remoteSrc = strapiMedia(p.image?.url);
+      const variant =
+        p.variant === 'tall' || p.variant === 'wide' ? p.variant : undefined;
+      const common = {
+        alt: p.alt || '',
+        ...(variant ? { variant } : {}),
+      };
+      if (!remoteSrc) return null;
+      return { src: await optimizeStrapiImage800(remoteSrc, 'gallery'), ...common };
+    })
+  );
+  galleryPhotos = built.filter(
+    (x): x is GalleryPhoto => x !== null && x !== undefined
+  );
 } catch (e) {
   console.error('Strapi gallery-photos:', e);
 }
@@ -63,20 +80,36 @@ let planned: SliderEvent[] = [];
 let past: SliderEvent[] = [];
 try {
   const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=order:asc');
-  const all = raw.map(
-    (ev): SliderEvent => ({
-      id: ev.slug || ev.documentId,
-      title: ev.title,
-      teaser: ev.teaser || '',
-      date: ev.date_label || '',
-      statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
-      media: (ev.media || []).map((m) => ({
-        type: isVideoMedia(m) ? ('video' as const) : ('image' as const),
-        src: strapiMedia(m.url),
-        alt: m.alternativeText || '',
-      })),
-      videoCover: ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : undefined,
-      accentIndex: ev.accent_index ?? 0,
+  const all = await Promise.all(
+    raw.map(async (ev): Promise<SliderEvent> => {
+      const media = await Promise.all(
+        (ev.media || []).map(async (m) => {
+          const remoteSrc = strapiMedia(m.url);
+          const video = isVideoMedia(m);
+          const src = video
+            ? remoteSrc
+            : await optimizeStrapiImage800(remoteSrc, `events media (${ev.slug || ev.documentId})`);
+          return {
+            type: video ? ('video' as const) : ('image' as const),
+            src,
+            alt: m.alternativeText || '',
+          };
+        })
+      );
+      const coverRaw = ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : '';
+      const videoCover = coverRaw
+        ? await optimizeStrapiImage800(coverRaw, `events cover (${ev.slug || ev.documentId})`)
+        : undefined;
+      return {
+        id: ev.slug || ev.documentId,
+        title: ev.title,
+        teaser: ev.teaser || '',
+        date: ev.date_label || '',
+        statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
+        media,
+        videoCover,
+        accentIndex: ev.accent_index ?? 0,
+      };
     })
   );
   planned = all.filter((e) => e.statusCode === 'planned');
@@ -105,6 +138,17 @@ try {
     }
 
     {
+      clubValues.length > 0 && (
+        <>
+          <span class="section-label">Наши ценности</span>
+          <section class="club-section">
+            <ClubValues values={clubValues} />
+          </section>
+        </>
+      )
+    }
+
+    {
       galleryPhotos.length > 0 && (
         <>
           <span class="section-label">О нашем клубе</span>
@@ -115,25 +159,14 @@ try {
               </h1>
               <p class="section-subtitle">Если я упал - не радуйся, я просто шнурки проверял</p>
             </div>
-            <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
-          </section>
-        </>
-      )
-    }
-
-    {
-      clubValues.length > 0 && (
-        <>
-          <span class="section-label">Наши ценности</span>
-          <section class="club-section">
-            <ClubValues values={clubValues} />
+            <PhotoGrid client:visible photos={galleryPhotos} perPage={8} />
           </section>
         </>
       )
     }
   </main>
 
-  <BottomBar client:load transition:persist="bottom-bar" currentPath="/gallery" />
+  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/gallery" />
 </Layout>
 
 <style>

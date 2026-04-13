@@ -11,6 +11,7 @@ interface BottomBarProps {
 interface NavItem {
   path: string;
   label: string;
+  prefetch?: true | false;
   icon: ReactElement;
 }
 
@@ -38,7 +39,7 @@ const navItems: NavItem[] = [
   {
     path: '/shop',
     label: 'Мерч',
-    icon: <PiTShirtBold className={`${styles.icon} ${styles.iconShop}`} />,
+    icon: <PiTShirtBold className={`${styles.icon} ${styles.iconShop}`} />, 
   },
 ];
 
@@ -80,6 +81,7 @@ const BottomBar = ({ currentPath }: BottomBarProps) => {
     >
       {navItems.map((item) => (
         <a
+          data-astro-prefetch
           key={item.path}
           href={item.path}
           onClick={(e) => handleNavigation(e, item.path)}

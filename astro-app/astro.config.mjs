@@ -17,10 +17,28 @@ export default defineConfig({
    */
   prefetch: {
     prefetchAll: true,
-    /** Карусели и длинные страницы: ссылки подгружаются по мере появления во вьюпорте */
-    defaultStrategy: 'viewport',
+    defaultStrategy: 'hover',
   },
   integrations: [react()],
+  image: {
+    // Список разрешенных доменов для компонента <Image /> и getImage()
+    domains: [
+      '://cloudinary.com', // Если Strapi Cloud использует Cloudinary (стандарт)
+      'strapi.io',          // На всякий случай для системных ресурсов
+      '://strapiapp.com' // Ваш уникальный адрес в Strapi Cloud
+    ],
+    // Если картинки лежат по сложным путям, можно использовать remotePatterns
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.strapiapp.com', // Разрешает любые поддомены Strapi
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cloudinary.com',
+      },
+    ],
+  },
   vite: {
     resolve: {
       alias: {
