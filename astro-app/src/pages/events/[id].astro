@@ -13,7 +13,6 @@ import {
 import { isPastEventPage } from '../../lib/eventAt';
 import { absoluteImageForOg, optimizeStrapiImage800 } from '../../lib/strapiImages';
 
-
 export async function getStaticPaths() {
   try {
     const events = await fetchStrapi<StrapiEvent[]>(
