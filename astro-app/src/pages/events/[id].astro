@@ -107,12 +107,16 @@ else {
     </div>
 
     {
-      media.length > 0 && (
+      media.length > 0 ? (
         <div class="media-section">
           <EventMediaGallery client:load media={media} />
           {media.length > 1 && <div class="media-hint">← листай →</div>}
         </div>
-      )
+      ) : (
+      <div class="media-section">
+          <p class="media-hint">Какие-то проблемки с данными, уже шаманим</p>
+        </div>
+        )
     }
 
     <div class="event-body" set:html={bodyHtml} />

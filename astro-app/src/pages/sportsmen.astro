@@ -97,13 +97,15 @@ if (socialsRaw && socialsRaw.length > 0) {
 
   <main class="main-content">
     {
-      athletes.length > 0 && (
+      athletes.length > 0 ? (
         <div class="page-header">
           <span class="page-label">Команда</span>
           <h1 class="page-title">Наши люди</h1>
           <p class="page-subtitle">Люди, которые делают Pantera — ведь это не только зал</p>
         </div>
-      )
+      ) : <div class="page-header">
+          <p class="page-subtitle">Какие-то проблемки с данными, уже шаманим</p>
+        </div>
     }
 
     {
