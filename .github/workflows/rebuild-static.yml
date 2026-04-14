@@ -1,11 +1,10 @@
-# Пересборка статического фронта и опциональная выкладка на Beget по FTP.
+# Пересборка статического фронта и опциональная выкладка на Beget (FTP или SSH/rsync).
 # Запуск: GitHub → Actions → «Rebuild static site» (workflow_dispatch)
 #   или внешний POST .../dispatches с event_type: strapi_publish (см. docs/strapi-cloud-to-beget.md).
 #
 # Чтобы после сборки автоматически выкладывать файлы на Beget:
-#   Settings → Secrets and variables → Actions → Variables → New repository variable:
-#     BEGET_FTP_DEPLOY = true
-#   и задайте секреты BEGET_FTP_* (таблица в docs/strapi-cloud-to-beget.md).
+#   Settings → Variables: BEGET_FTP_DEPLOY = true
+#   и либо секреты BEGET_FTP_* (FTP), либо BEGET_DEPLOY_METHOD = ssh и секреты BEGET_SSH_* (см. docs/github-actions-beget-autodeploy.md).
 
 name: Rebuild static site
 
@@ -13,6 +12,9 @@ on:
   repository_dispatch:
     types: [strapi_publish]
   workflow_dispatch:
+  # Ежедневная пересборка: planned/past в слайдере считаются при SSG — без нового билда после полуночи блоки не обновятся.
+  schedule:
+    - cron: '0 3 * * *'
 
 concurrency:
   group: rebuild-static-${{ github.ref }}
@@ -52,7 +54,7 @@ jobs:
 
   deploy:
     needs: build
-    if: vars.BEGET_FTP_DEPLOY == 'true'
+    if: vars.BEGET_DEPLOY == 'true' || vars.BEGET_FTP_DEPLOY == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -62,7 +64,24 @@ jobs:
           name: astro-dist
           path: dist
 
+      - name: Set up SSH
+        if: vars.BEGET_DEPLOY_METHOD == 'ssh'
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BEGET_SSH_KEY }}
+
+      - name: Deploy to Beget (SSH / rsync)
+        if: vars.BEGET_DEPLOY_METHOD == 'ssh'
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.BEGET_SSH_HOST }}" >> ~/.ssh/known_hosts
+          rsync -avz --delete \
+            -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=yes" \
+            ./dist/ \
+            "${{ secrets.BEGET_SSH_USER }}@${{ secrets.BEGET_SSH_HOST }}:${{ secrets.BEGET_SSH_REMOTE_DIR }}"
+
       - name: Deploy to Beget (FTP)
+        if: vars.BEGET_DEPLOY_METHOD != 'ssh'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.BEGET_FTP_HOST }}

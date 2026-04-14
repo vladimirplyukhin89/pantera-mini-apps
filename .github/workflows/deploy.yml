@@ -38,6 +38,13 @@ jobs:
           STRAPI_URL: ${{ secrets.STRAPI_URL }}
           STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN }}
 
+      - name: Upload dist for Beget deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && (vars.BEGET_DEPLOY == 'true' || vars.BEGET_FTP_DEPLOY == 'true')
+        uses: actions/upload-artifact@v4
+        with:
+          name: astro-dist
+          path: astro-app/dist/
+
   check-backend:
     name: Strapi — build
     runs-on: ubuntu-latest
@@ -57,3 +64,43 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  deploy-beget:
+    name: Deploy Astro to Beget
+    needs: [check-frontend, check-backend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && (vars.BEGET_DEPLOY == 'true' || vars.BEGET_FTP_DEPLOY == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: astro-dist
+          path: dist
+
+      # Переменная BEGET_DEPLOY_METHOD: не задана или `ftp` — FTP; `ssh` — rsync по SSH (см. docs/github-actions-beget-autodeploy.md).
+      - name: Set up SSH
+        if: vars.BEGET_DEPLOY_METHOD == 'ssh'
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BEGET_SSH_KEY }}
+
+      - name: Deploy to Beget (SSH / rsync)
+        if: vars.BEGET_DEPLOY_METHOD == 'ssh'
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.BEGET_SSH_HOST }}" >> ~/.ssh/known_hosts
+          rsync -avz --delete \
+            -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=yes" \
+            ./dist/ \
+            "${{ secrets.BEGET_SSH_USER }}@${{ secrets.BEGET_SSH_HOST }}:${{ secrets.BEGET_SSH_REMOTE_DIR }}"
+
+      - name: Deploy to Beget (FTP)
+        if: vars.BEGET_DEPLOY_METHOD != 'ssh'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.BEGET_FTP_HOST }}
+          username: ${{ secrets.BEGET_FTP_USER }}
+          password: ${{ secrets.BEGET_FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ${{ secrets.BEGET_FTP_REMOTE_DIR }}
+          dangerous-clean-slate: false
