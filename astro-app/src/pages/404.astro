@@ -1,7 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar/BottomBar';
+import BottomBar from '../components/BottomBar/BottomBarIsland.astro';
 import HeroSection from '../components/HeroSection.astro';
 
 Astro.response.status = 404;
@@ -28,7 +28,7 @@ const og404 = new URL(bg404, site).href;
     <Header />
   </main>
 
-  <BottomBar client:load transition:persist transition:name="bottom-bar" />
+  <BottomBar />
 </Layout>
 
 <style>

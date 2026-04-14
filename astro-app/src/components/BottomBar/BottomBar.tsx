@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react';
+import { useSyncExternalStore, type ReactElement } from 'react';
 import { ImCool, ImCamera } from 'react-icons/im';
 import { PiTShirtBold } from 'react-icons/pi';
 import { GoHomeFill } from 'react-icons/go';
@@ -18,6 +18,24 @@ interface NavItem {
 function normalizePath(p: string) {
   const trimmed = p.replace(/\/+$/, '');
   return trimmed === '' ? '/' : trimmed;
+}
+
+/** Страницы событий логически относятся к разделу «Галерея» (как currentPath на events/[id].astro). */
+function resolvePathForNav(pathname: string) {
+  const n = normalizePath(pathname);
+  if (n.startsWith('/events/')) return '/gallery';
+  return n;
+}
+
+function subscribeNavPath(onChange: () => void) {
+  window.addEventListener('popstate', onChange);
+  document.addEventListener('astro:after-swap', onChange);
+  document.addEventListener('astro:page-load', onChange);
+  return () => {
+    window.removeEventListener('popstate', onChange);
+    document.removeEventListener('astro:after-swap', onChange);
+    document.removeEventListener('astro:page-load', onChange);
+  };
 }
 
 const navItems: NavItem[] = [
@@ -44,25 +62,13 @@ const navItems: NavItem[] = [
 ];
 
 const BottomBar = ({ currentPath }: BottomBarProps) => {
-  // При transition:persist остров не перемонтируется и props не обновляются — активную вкладку берём только из URL.
-  const [path, setPath] = useState(() =>
-    typeof window !== 'undefined' ? window.location.pathname : (currentPath ?? '/')
+  // При transition:persist остров не перемонтируется и props не обновляются — путь берём из URL + lifecycle Astro.
+  // after-swap: история уже обновлена; page-load иногда недостаточен/порядок отличается для части переходов.
+  const path = useSyncExternalStore(
+    subscribeNavPath,
+    () => resolvePathForNav(window.location.pathname),
+    () => resolvePathForNav(currentPath ?? '/')
   );
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const syncPath = () => setPath(window.location.pathname);
-
-    syncPath();
-    window.addEventListener('popstate', syncPath);
-    document.addEventListener('astro:page-load', syncPath);
-
-    return () => {
-      window.removeEventListener('popstate', syncPath);
-      document.removeEventListener('astro:page-load', syncPath);
-    };
-  }, []);
 
   const isActive = (itemPath: string) => normalizePath(path) === normalizePath(itemPath);
   const isHomePage = normalizePath(path) === '/';

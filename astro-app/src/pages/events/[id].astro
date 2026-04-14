@@ -1,7 +1,7 @@
 ---
 import Layout from '../../components/Layout.astro';
 import Header from '../../components/Header.astro';
-import BottomBar from '../../components/BottomBar/BottomBar';
+import BottomBar from '../../components/BottomBar/BottomBarIsland.astro';
 import EventMediaGallery from '../../components/EventMediaGallery/EventMediaGallery';
 import {
   fetchStrapi,
@@ -124,7 +124,7 @@ else {
     <a href="/gallery" class="bottom-back" data-astro-prefetch="viewport">← Все события</a>
   </main>
 
-  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/gallery" />
+  <BottomBar currentPath="/gallery" />
 </Layout>
 
 <style define:vars={{ accent }}>
