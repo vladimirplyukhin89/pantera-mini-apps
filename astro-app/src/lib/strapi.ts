@@ -87,6 +87,58 @@ export function isVideoMedia(m: StrapiImage): boolean {
   return ['mp4', 'webm', 'ogg', 'mov'].includes(ext || '');
 }
 
+/** Ссылка из Strapi (YouTube/Vimeo/Rutube/VK и т.д.) → URL для iframe. Не распознано — null. */
+export function parseEmbedVideoIframeSrc(raw: string | null | undefined): string | null {
+  const s = raw?.trim();
+  if (!s) return null;
+
+  const iframeSrc = s.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  let urlStr = iframeSrc ? iframeSrc[1] : s;
+  if (!/^https?:\/\//i.test(urlStr)) urlStr = `https://${urlStr}`;
+
+  let u: URL;
+  try {
+    u = new URL(urlStr);
+  } catch {
+    return null;
+  }
+
+  const host = u.hostname.replace(/^www\./, '');
+
+  if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com') {
+    if (u.pathname.startsWith('/embed/')) return `${u.origin}${u.pathname}${u.search}`;
+    const v = u.searchParams.get('v');
+    if (v) return `https://www.youtube.com/embed/${encodeURIComponent(v)}`;
+    const shorts = u.pathname.match(/^\/shorts\/([^/?]+)/);
+    if (shorts) return `https://www.youtube.com/embed/${encodeURIComponent(shorts[1])}`;
+    return null;
+  }
+  if (host === 'youtu.be') {
+    const id = u.pathname.replace(/^\//, '').split('/')[0];
+    if (id) return `https://www.youtube.com/embed/${encodeURIComponent(id)}`;
+    return null;
+  }
+
+  if (host === 'vimeo.com') {
+    const m = u.pathname.match(/^\/(\d+)/);
+    if (m) return `https://player.vimeo.com/video/${m[1]}`;
+    return null;
+  }
+  if (host === 'player.vimeo.com') return urlStr;
+
+  if (host === 'rutube.ru') {
+    if (u.pathname.startsWith('/play/embed/')) return urlStr;
+    const m = u.pathname.match(/\/video\/([a-zA-Z0-9]+)/);
+    if (m) return `https://rutube.ru/play/embed/${m[1]}`;
+    return null;
+  }
+
+  if (host === 'vk.com' && u.pathname.includes('video_ext.php')) return urlStr;
+  if (host === 'vkvideo.ru') return urlStr;
+
+  return null;
+}
+
 // ─── Rich Text block renderer ────────────────────────────
 
 interface RichTextNode {
@@ -250,6 +302,8 @@ export interface StrapiEvent {
   order?: number;
   media?: StrapiImage[];
   video_cover?: StrapiImage;
+  /** Ссылка на ролик (YouTube, Vimeo, Rutube, VK и т.д.) для встраивания на странице события */
+  embed_video_url?: string | null;
 }
 
 export interface StrapiHero {
