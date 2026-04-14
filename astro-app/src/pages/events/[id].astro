@@ -7,6 +7,7 @@ import {
   fetchStrapi,
   strapiMedia,
   isVideoMedia,
+  parseEmbedVideoIframeSrc,
   renderBlocks,
   type StrapiEvent,
 } from '../../lib/strapi';
@@ -15,8 +16,9 @@ import { absoluteImageForOg, optimizeStrapiImage800 } from '../../lib/strapiImag
 
 export async function getStaticPaths() {
   try {
+    // Список как на gallery.astro — узкий `fields=slug` + `sort=event_at` давал пустой список / ошибку API.
     const events = await fetchStrapi<StrapiEvent[]>(
-      'events?fields=slug&sort=event_at:asc&pagination[pageSize]=200'
+      'events?populate=*&sort=order:asc&pagination[pageSize]=200'
     );
     return events.filter((e) => e.slug).map((e) => ({ params: { id: e.slug } }));
   } catch (e) {
@@ -36,7 +38,9 @@ const accentColors = [
 
 let event: StrapiEvent | null = null;
 try {
-  const raw = await fetchStrapi<StrapiEvent[]>(`events?filters[slug][$eq]=${id}&populate=*`);
+  const raw = await fetchStrapi<StrapiEvent[]>(
+    `events?filters[slug][$eq]=${encodeURIComponent(id!)}&populate=*`
+  );
   if (raw.length > 0) event = raw[0];
 } catch (e) {
   console.error('Strapi event fetch:', e);
@@ -49,6 +53,8 @@ if (!event) {
 const accent = accentColors[(event.accent_index ?? 0) % 4];
 const isPast = isPastEventPage(event, new Date());
 const bodyHtml = renderBlocks(event.body);
+
+const embedIframeSrc = parseEmbedVideoIframeSrc(event.embed_video_url);
 
 const siteUrl = Astro.site ?? new URL('https://pantera-boxing.ru');
 
@@ -103,6 +109,23 @@ else {
       </div>
       <h1 class="event-title">{event.title}</h1>
     </div>
+
+    {
+      embedIframeSrc && (
+        <div class="embed-video-wrap">
+          <div class="embed-video-inner">
+            <iframe
+              class="embed-video-iframe"
+              src={embedIframeSrc}
+              title="Видео события"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            />
+          </div>
+        </div>
+      )
+    }
 
     {
       media.length > 0 && (
@@ -189,6 +212,29 @@ else {
     line-height: 1.15;
   }
 
+  .embed-video-wrap {
+    margin: 0 -1rem 2rem;
+  }
+
+  .embed-video-inner {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+
+  .embed-video-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
   .media-section {
     margin: 0 -1rem 2rem;
   }
@@ -260,6 +306,11 @@ else {
 
     .event-title {
       font-size: 2.75rem;
+    }
+
+    .embed-video-wrap {
+      margin-left: -1.5rem;
+      margin-right: -1.5rem;
     }
 
     .media-section {
