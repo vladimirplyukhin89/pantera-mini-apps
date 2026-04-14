@@ -8,7 +8,6 @@ import {
   fetchAllEventsForStaticPaths,
   strapiMedia,
   isVideoMedia,
-  parseEmbedVideoIframeSrc,
   renderBlocks,
   type StrapiEvent,
 } from '../../lib/strapi';
@@ -52,8 +51,6 @@ if (!event) {
 const accent = accentColors[(event.accent_index ?? 0) % 4];
 const isPast = isPastEventPage(event, new Date());
 const bodyHtml = renderBlocks(event.body);
-
-const embedIframeSrc = parseEmbedVideoIframeSrc(event.embed_video_url);
 
 const siteUrl = Astro.site ?? new URL('https://pantera-boxing.ru');
 
@@ -108,23 +105,6 @@ else {
       </div>
       <h1 class="event-title">{event.title}</h1>
     </div>
-
-    {
-      embedIframeSrc && (
-        <div class="embed-video-wrap">
-          <div class="embed-video-inner">
-            <iframe
-              class="embed-video-iframe"
-              src={embedIframeSrc}
-              title="Видео события"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            />
-          </div>
-        </div>
-      )
-    }
 
     {
       media.length > 0 && (

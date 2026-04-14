@@ -149,8 +149,8 @@ export async function fetchStrapi<T>(endpoint: string): Promise<T> {
  * События для SSG: `pageSize` не должен превышать `rest.maxLimit` в Strapi (у нас до 100).
  * Берём 25 — совпадает с дефолтным лимитом Strapi, меньший JSON на запрос; при большом числе событий делаем несколько страниц.
  */
-const EVENTS_PAGE_SIZE = 25;
-const EVENTS_LIST_MAX_PAGES = 500;
+const EVENTS_PAGE_SIZE = 20;
+const EVENTS_LIST_MAX_PAGES = 100;
 
 export async function fetchAllEventsForStaticPaths(): Promise<StrapiEvent[]> {
   const out: StrapiEvent[] = [];
