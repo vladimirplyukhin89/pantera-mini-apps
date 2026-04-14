@@ -22,13 +22,7 @@ const { photo, label, name, quote, stats, badge } = Astro.props;
   <div class="athlete-photo">
     {
       photo ? (
-        <Image
-          src={photo}
-          width={800}
-          height={800}
-          alt={name ?? ''}
-          loading="lazy"
-        />
+        <Image src={photo} width={800} height={800} alt={name ?? ''} loading="lazy" />
       ) : (
         <div class="athlete-photo-placeholder" aria-hidden="true" />
       )
