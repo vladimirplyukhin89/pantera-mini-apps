@@ -16,6 +16,75 @@ interface StrapiResponse<T> {
   meta: Record<string, unknown>;
 }
 
+/**
+ * Strapi v4 заворачивал поля в `attributes`, связи/media — в `{ data: ... }`.
+ * Strapi 5 отдаёт плоский объект. Нормализуем к одному виду (как v5), чтобы Astro всегда видел `title`, `slug`, `media` и т.д.
+ */
+function isStrapiRelationDataWrapper(o: Record<string, unknown>): boolean {
+  if (!('data' in o)) return false;
+  const keys = Object.keys(o);
+  if (keys.length === 1) return true;
+  return keys.length === 2 && keys.includes('meta');
+}
+
+/**
+ * Strapi v4: `attributes` на записи; связи — узкая обёртка `{ data }` / `{ data, meta }`.
+ * Не трогаем произвольные объекты с полем `data` (например блоки в `body`).
+ */
+function unwrapStrapiValue(value: unknown): unknown {
+  if (value === null || value === undefined) return value;
+  if (typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map(unwrapStrapiValue);
+
+  const o = value as Record<string, unknown>;
+
+  if (isStrapiRelationDataWrapper(o)) {
+    if (o.data === null) return null;
+    if (Array.isArray(o.data)) return o.data.map((item) => flattenStrapiEntry(item));
+    return flattenStrapiEntry(o.data);
+  }
+
+  if ('attributes' in o && o.attributes !== null && typeof o.attributes === 'object') {
+    return flattenStrapiEntry(value);
+  }
+
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(o)) {
+    out[k] = unwrapStrapiValue(v);
+  }
+  return out;
+}
+
+function flattenStrapiEntry(entry: unknown): Record<string, unknown> {
+  if (entry === null || typeof entry !== 'object') return {};
+  const e = entry as Record<string, unknown>;
+
+  if ('attributes' in e && e.attributes !== null && typeof e.attributes === 'object') {
+    const attrs = e.attributes as Record<string, unknown>;
+    const base: Record<string, unknown> = {};
+    if ('id' in e) base.id = e.id;
+    if ('documentId' in e) base.documentId = e.documentId;
+    for (const [k, v] of Object.entries(attrs)) {
+      base[k] = unwrapStrapiValue(v);
+    }
+    return base;
+  }
+
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(e)) {
+    out[k] = unwrapStrapiValue(v);
+  }
+  return out;
+}
+
+function normalizeStrapiPayload<T>(data: unknown): T {
+  if (data === null || data === undefined) return data as T;
+  if (Array.isArray(data)) {
+    return data.map((item) => flattenStrapiEntry(item)) as T;
+  }
+  return flattenStrapiEntry(data) as T;
+}
+
 function getStrapiHeaders(): HeadersInit {
   const headers: HeadersInit = { 'Content-Type': 'application/json' };
   if (STRAPI_TOKEN) {
@@ -25,6 +94,7 @@ function getStrapiHeaders(): HeadersInit {
 }
 
 const RETRYABLE_STATUS = new Set([502, 503, 429]);
+const MAX_FETCH_ATTEMPTS = 4;
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -46,15 +116,15 @@ function withFetchTimeout(init: RequestInit): RequestInit {
 
 export async function fetchStrapi<T>(endpoint: string): Promise<T> {
   const url = `${STRAPI_URL}/api/${endpoint}`;
-  /** Одна повторная попытка при кратковременных 502/503/429 и сетевых сбоях. */
-  const maxAttempts = 2;
+  /** Повторы при 502/503/429 и сетевых сбоях — Strapi Cloud иногда кратковременно отвечает 503 при сборке. */
+  const maxAttempts = MAX_FETCH_ATTEMPTS;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const init = withFetchTimeout({ headers: getStrapiHeaders() });
     try {
       const res = await fetch(url, init);
       if (!res.ok && RETRYABLE_STATUS.has(res.status) && attempt < maxAttempts - 1) {
-        await delay(500 * (attempt + 1));
+        await delay(800 * (attempt + 1));
         continue;
       }
       if (!res.ok) {
@@ -62,10 +132,10 @@ export async function fetchStrapi<T>(endpoint: string): Promise<T> {
       }
 
       const json: StrapiResponse<T> = await res.json();
-      return json.data;
+      return normalizeStrapiPayload<T>(json.data);
     } catch (e) {
       if (isRetriableConnectionError(e) && attempt < maxAttempts - 1) {
-        await delay(500 * (attempt + 1));
+        await delay(800 * (attempt + 1));
         continue;
       }
       throw e;
@@ -73,6 +143,26 @@ export async function fetchStrapi<T>(endpoint: string): Promise<T> {
   }
 
   throw new Error(`Strapi: не удалось загрузить ${url}`);
+}
+
+/**
+ * События для SSG: `pageSize` не должен превышать `rest.maxLimit` в Strapi (у нас до 100).
+ * Берём 25 — совпадает с дефолтным лимитом Strapi, меньший JSON на запрос; при большом числе событий делаем несколько страниц.
+ */
+const EVENTS_PAGE_SIZE = 25;
+const EVENTS_LIST_MAX_PAGES = 500;
+
+export async function fetchAllEventsForStaticPaths(): Promise<StrapiEvent[]> {
+  const out: StrapiEvent[] = [];
+  for (let page = 1; page <= EVENTS_LIST_MAX_PAGES; page++) {
+    const batch = await fetchStrapi<StrapiEvent[]>(
+      `events?populate=*&sort=order:asc&pagination[pageSize]=${EVENTS_PAGE_SIZE}&pagination[page]=${page}`
+    );
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    out.push(...batch);
+    if (batch.length < EVENTS_PAGE_SIZE) break;
+  }
+  return out;
 }
 
 export function strapiMedia(url: string | null | undefined): string {
