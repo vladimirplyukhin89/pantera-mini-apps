@@ -5,6 +5,7 @@ import BottomBar from '../../components/BottomBar/BottomBar';
 import EventMediaGallery from '../../components/EventMediaGallery/EventMediaGallery';
 import {
   fetchStrapi,
+  fetchAllEventsForStaticPaths,
   strapiMedia,
   isVideoMedia,
   parseEmbedVideoIframeSrc,
@@ -16,10 +17,8 @@ import { absoluteImageForOg, optimizeStrapiImage800 } from '../../lib/strapiImag
 
 export async function getStaticPaths() {
   try {
-    // Список как на gallery.astro — узкий `fields=slug` + `sort=event_at` давал пустой список / ошибку API.
-    const events = await fetchStrapi<StrapiEvent[]>(
-      'events?populate=*&sort=order:asc&pagination[pageSize]=200'
-    );
+    // `pagination[pageSize]` не должен превышать `rest.maxLimit` в Strapi (в репо — 100), иначе API может ответить 400 и маршруты событий не сгенерируются.
+    const events = await fetchAllEventsForStaticPaths();
     return events.filter((e) => e.slug).map((e) => ({ params: { id: e.slug } }));
   } catch (e) {
     console.error('Strapi events list for SSG:', e);
