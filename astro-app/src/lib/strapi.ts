@@ -238,6 +238,8 @@ export interface StrapiEvent {
   title: string;
   teaser: string;
   date_label: string;
+  /** Машинная дата для слайдера и деления planned/past (см. `lib/eventAt.ts`) */
+  event_at?: string | null;
   /** Enumeration: в схеме репозитория — `statusPlan`; можно назвать поле в CMS и `statusCode` */
   statusPlan?: 'planned' | 'past';
   statusCode?: 'planned' | 'past';

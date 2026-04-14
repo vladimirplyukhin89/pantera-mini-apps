@@ -14,6 +14,12 @@ import {
   type StrapiClubValue,
   type StrapiEvent,
 } from '../lib/strapi';
+import {
+  deriveSliderStatusFromEvent,
+  parseEventAtDate,
+  sortPastByEventAt,
+  sortPlannedByEventAt,
+} from '../lib/eventAt';
 
 // ─── Gallery photos ──────────────────────────────────────
 
@@ -62,14 +68,16 @@ interface SliderEvent {
 let planned: SliderEvent[] = [];
 let past: SliderEvent[] = [];
 try {
-  const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=order:asc');
-  const all = raw.map(
-    (ev): SliderEvent => ({
+  const now = new Date();
+  const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=event_at:asc');
+  const withSort = raw.map((ev) => {
+    const at = parseEventAtDate(ev.event_at);
+    const slider: SliderEvent = {
       id: ev.slug || ev.documentId,
       title: ev.title,
       teaser: ev.teaser || '',
       date: ev.date_label || '',
-      statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
+      statusCode: deriveSliderStatusFromEvent(ev, now),
       media: (ev.media || []).map((m) => ({
         type: isVideoMedia(m) ? ('video' as const) : ('image' as const),
         src: strapiMedia(m.url),
@@ -77,10 +85,17 @@ try {
       })),
       videoCover: ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : undefined,
       accentIndex: ev.accent_index ?? 0,
-    })
-  );
-  planned = all.filter((e) => e.statusCode === 'planned');
-  past = all.filter((e) => e.statusCode === 'past');
+    };
+    return {
+      slider,
+      sortAt: at ? at.getTime() : null,
+      order: ev.order ?? 0,
+    };
+  });
+  const plannedRows = withSort.filter((r) => r.slider.statusCode === 'planned');
+  const pastRows = withSort.filter((r) => r.slider.statusCode === 'past');
+  planned = sortPlannedByEventAt(plannedRows).map((r) => r.slider);
+  past = sortPastByEventAt(pastRows).map((r) => r.slider);
 } catch (e) {
   console.error('Strapi events:', e);
 }

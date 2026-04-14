@@ -10,11 +10,12 @@ import {
   renderBlocks,
   type StrapiEvent,
 } from '../../lib/strapi';
+import { isPastEventPage } from '../../lib/eventAt';
 
 export async function getStaticPaths() {
   try {
     const events = await fetchStrapi<StrapiEvent[]>(
-      'events?fields=slug&sort=order:asc&pagination[pageSize]=200'
+      'events?fields=slug&sort=event_at:asc&pagination[pageSize]=200'
     );
     return events.filter((e) => e.slug).map((e) => ({ params: { id: e.slug } }));
   } catch (e) {
@@ -45,7 +46,7 @@ if (!event) {
 }
 
 const accent = accentColors[(event.accent_index ?? 0) % 4];
-const isPast = (event.statusCode ?? event.statusPlan ?? event.status ?? 'past') === 'past';
+const isPast = isPastEventPage(event, new Date());
 const bodyHtml = renderBlocks(event.body);
 const videoCoverUrl = event.video_cover?.url ? strapiMedia(event.video_cover.url) : undefined;
 const media = (event.media || []).map((m) => ({
