@@ -1,7 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar/BottomBar';
+import BottomBar from '../components/BottomBar/BottomBarIsland.astro';
 import HeroSection from '../components/HeroSection.astro';
 import { fetchStrapi, strapiMedia, type StrapiHero } from '../lib/strapi';
 
@@ -40,7 +40,7 @@ try {
     <Header />
   </main>
 
-  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/" />
+  <BottomBar currentPath="/" />
 </Layout>
 
 <style>

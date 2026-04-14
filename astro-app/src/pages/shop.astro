@@ -1,7 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar/BottomBar';
+import BottomBar from '../components/BottomBar/BottomBarIsland.astro';
 import { Image } from 'astro:assets';
 ---
 
@@ -25,7 +25,7 @@ import { Image } from 'astro:assets';
     </div>
   </main>
 
-  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/shop" />
+  <BottomBar currentPath="/shop" />
 </Layout>
 
 <style>

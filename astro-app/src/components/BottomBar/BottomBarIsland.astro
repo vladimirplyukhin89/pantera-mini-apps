@@ -1,0 +1,22 @@
+---
+/**
+ * Остров + slot="fallback": до гидрации (Opera Mini и др.) резервируем ту же геометрию, что у панели.
+ */
+import BottomBar from './BottomBar';
+import styles from './BottomBar.module.css';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath } = Astro.props;
+---
+
+<BottomBar client:load transition:persist transition:name="bottom-bar" currentPath={currentPath}>
+  <nav slot="fallback" class={styles.bottomBarSkeleton} aria-hidden="true">
+    <span class={styles.bottomBarSkeletonCell}></span>
+    <span class={styles.bottomBarSkeletonCell}></span>
+    <span class={styles.bottomBarSkeletonCell}></span>
+    <span class={styles.bottomBarSkeletonCell}></span>
+  </nav>
+</BottomBar>

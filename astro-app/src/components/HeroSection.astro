@@ -120,25 +120,6 @@ const {
     cursor: pointer;
   }
 
-  .hero-accent:hover,
-  .hero-accent:active {
-    opacity: 1;
-  }
-
-  .hero-accent:hover :global(.hero-icon),
-  .hero-accent:active :global(.hero-icon) {
-    transform: translateX(10px);
-  }
-
-  .hero-accent:active :global(.hero-icon) {
-    color: var(--color-icon-home);
-  }
-
-  .hero-accent:active :global(.hero-icon svg) {
-    color: var(--color-icon-home);
-    fill: var(--color-icon-home);
-  }
-
   :global(.hero-icon) {
     transition:
       transform 0.3s ease,
@@ -185,6 +166,25 @@ const {
   @media (min-width: 769px) {
     .hero-section {
       background-image: var(--bg-desktop);
+    }
+
+    .hero-accent:hover,
+    .hero-accent:active {
+      opacity: 1;
+    }
+
+    .hero-accent:hover :global(.hero-icon),
+    .hero-accent:active :global(.hero-icon) {
+      transform: translateX(10px);
+    }
+
+    .hero-accent:active :global(.hero-icon) {
+      color: var(--color-icon-home);
+    }
+
+    .hero-accent:active :global(.hero-icon svg) {
+      color: var(--color-icon-home);
+      fill: var(--color-icon-home);
     }
   }
 

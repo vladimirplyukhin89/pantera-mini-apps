@@ -1,7 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar/BottomBar';
+import BottomBar from '../components/BottomBar/BottomBarIsland.astro';
 import AthleteCard from '../components/AthleteCard.astro';
 import ContactSection from '../components/ContactSection.astro';
 import {
@@ -135,7 +135,7 @@ if (socialsRaw && socialsRaw.length > 0) {
     }
   </main>
 
-  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/sportsmen" />
+  <BottomBar currentPath="/sportsmen" />
 </Layout>
 
 <style>

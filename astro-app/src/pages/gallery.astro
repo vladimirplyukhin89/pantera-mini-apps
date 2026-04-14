@@ -1,7 +1,7 @@
 ---
 import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
-import BottomBar from '../components/BottomBar/BottomBar';
+import BottomBar from '../components/BottomBar/BottomBarIsland.astro';
 import PhotoGrid from '../components/PhotoGrid/PhotoGrid';
 import ClubValues from '../components/ClubValues.astro';
 import EventsSlider from '../components/EventsSlider/EventsSlider';
@@ -147,7 +147,7 @@ try {
     }
   </main>
 
-  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/gallery" />
+  <BottomBar currentPath="/gallery" />
 </Layout>
 
 <style>
