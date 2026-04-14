@@ -14,25 +14,33 @@ import {
   type StrapiClubValue,
   type StrapiEvent,
 } from '../lib/strapi';
-import {
-  deriveSliderStatusFromEvent,
-  parseEventAtDate,
-  sortPastByEventAt,
-  sortPlannedByEventAt,
-} from '../lib/eventAt';
+import { optimizeStrapiImage800 } from '../lib/strapiImages';
 
 // ─── Gallery photos ──────────────────────────────────────
+type GalleryPhoto = {
+  src: string;
+  alt: string;
+  variant?: 'tall' | 'wide';
+};
 
-let galleryPhotos: { src: string; alt: string; variant?: 'tall' | 'wide' }[] = [];
+let galleryPhotos: GalleryPhoto[] = [];
 try {
   const raw = await fetchStrapi<StrapiGalleryPhoto[]>(
     'gallery-photos?populate=image&sort=order:asc'
   );
-  galleryPhotos = raw.map((p) => ({
-    src: strapiMedia(p.image?.url),
-    alt: p.alt || '',
-    ...(p.variant && p.variant !== 'default' ? { variant: p.variant } : {}),
-  }));
+  const built = await Promise.all(
+    raw.map(async (p) => {
+      const remoteSrc = strapiMedia(p.image?.url);
+      const variant = p.variant === 'tall' || p.variant === 'wide' ? p.variant : undefined;
+      const common = {
+        alt: p.alt || '',
+        ...(variant ? { variant } : {}),
+      };
+      if (!remoteSrc) return null;
+      return { src: await optimizeStrapiImage800(remoteSrc, 'gallery'), ...common };
+    })
+  );
+  galleryPhotos = built.filter((x): x is GalleryPhoto => x !== null && x !== undefined);
 } catch (e) {
   console.error('Strapi gallery-photos:', e);
 }
@@ -68,16 +76,14 @@ interface SliderEvent {
 let planned: SliderEvent[] = [];
 let past: SliderEvent[] = [];
 try {
-  const now = new Date();
-  const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=event_at:asc');
-  const withSort = raw.map((ev) => {
-    const at = parseEventAtDate(ev.event_at);
-    const slider: SliderEvent = {
+  const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=order:asc');
+  const all = raw.map(
+    (ev): SliderEvent => ({
       id: ev.slug || ev.documentId,
       title: ev.title,
       teaser: ev.teaser || '',
       date: ev.date_label || '',
-      statusCode: deriveSliderStatusFromEvent(ev, now),
+      statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
       media: (ev.media || []).map((m) => ({
         type: isVideoMedia(m) ? ('video' as const) : ('image' as const),
         src: strapiMedia(m.url),
@@ -85,17 +91,10 @@ try {
       })),
       videoCover: ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : undefined,
       accentIndex: ev.accent_index ?? 0,
-    };
-    return {
-      slider,
-      sortAt: at ? at.getTime() : null,
-      order: ev.order ?? 0,
-    };
-  });
-  const plannedRows = withSort.filter((r) => r.slider.statusCode === 'planned');
-  const pastRows = withSort.filter((r) => r.slider.statusCode === 'past');
-  planned = sortPlannedByEventAt(plannedRows).map((r) => r.slider);
-  past = sortPastByEventAt(pastRows).map((r) => r.slider);
+    })
+  );
+  planned = all.filter((e) => e.statusCode === 'planned');
+  past = all.filter((e) => e.statusCode === 'past');
 } catch (e) {
   console.error('Strapi events:', e);
 }
@@ -113,7 +112,18 @@ try {
         <>
           <span class="section-label">События</span>
           <section class="events-section">
-            <EventsSlider client:load planned={planned} past={past} />
+            <EventsSlider client:idle planned={planned} past={past} />
+          </section>
+        </>
+      )
+    }
+
+    {
+      clubValues.length > 0 && (
+        <>
+          <span class="section-label">Наши ценности</span>
+          <section class="club-section">
+            <ClubValues values={clubValues} />
           </section>
         </>
       )
@@ -130,25 +140,14 @@ try {
               </h1>
               <p class="section-subtitle">Если я упал - не радуйся, я просто шнурки проверял</p>
             </div>
-            <PhotoGrid client:load photos={galleryPhotos} perPage={8} />
-          </section>
-        </>
-      )
-    }
-
-    {
-      clubValues.length > 0 && (
-        <>
-          <span class="section-label">Наши ценности</span>
-          <section class="club-section">
-            <ClubValues values={clubValues} />
+            <PhotoGrid client:visible photos={galleryPhotos} perPage={8} />
           </section>
         </>
       )
     }
   </main>
 
-  <BottomBar client:load transition:persist="bottom-bar" currentPath="/gallery" />
+  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/gallery" />
 </Layout>
 
 <style>

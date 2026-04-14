@@ -11,6 +11,8 @@ import {
   type StrapiEvent,
 } from '../../lib/strapi';
 import { isPastEventPage } from '../../lib/eventAt';
+import { absoluteImageForOg, optimizeStrapiImage800 } from '../../lib/strapiImages';
+
 
 export async function getStaticPaths() {
   try {
@@ -48,13 +50,27 @@ if (!event) {
 const accent = accentColors[(event.accent_index ?? 0) % 4];
 const isPast = isPastEventPage(event, new Date());
 const bodyHtml = renderBlocks(event.body);
-const videoCoverUrl = event.video_cover?.url ? strapiMedia(event.video_cover.url) : undefined;
-const media = (event.media || []).map((m) => ({
-  type: isVideoMedia(m) ? ('video' as const) : ('image' as const),
-  src: strapiMedia(m.url),
-  alt: m.alternativeText || '',
-  ...(isVideoMedia(m) && videoCoverUrl ? { poster: videoCoverUrl } : {}),
-}));
+
+const siteUrl = Astro.site ?? new URL('https://pantera-boxing.ru');
+
+const coverRaw = event.video_cover?.url ? strapiMedia(event.video_cover.url) : '';
+const videoCoverUrl = coverRaw
+  ? await optimizeStrapiImage800(coverRaw, `event cover (${id})`)
+  : undefined;
+
+const media = await Promise.all(
+  (event.media || []).map(async (m) => {
+    const remoteSrc = strapiMedia(m.url);
+    const video = isVideoMedia(m);
+    const src = video ? remoteSrc : await optimizeStrapiImage800(remoteSrc, `event media (${id})`);
+    return {
+      type: video ? ('video' as const) : ('image' as const),
+      src,
+      alt: m.alternativeText || '',
+      ...(video && videoCoverUrl ? { poster: videoCoverUrl } : {}),
+    };
+  })
+);
 
 const teaserPlain = event.teaser
   .replace(/<[^>]*>/g, ' ')
@@ -66,14 +82,10 @@ const metaDescription =
     : teaserPlain || `${event.title} — событие боксёрского клуба Pantera, Тюмень.`;
 
 let metaImage: string | undefined;
-if (event.video_cover?.url) metaImage = strapiMedia(event.video_cover.url);
+if (videoCoverUrl) metaImage = absoluteImageForOg(videoCoverUrl, siteUrl);
 else {
-  for (const m of event.media || []) {
-    if (!isVideoMedia(m) && m.url) {
-      metaImage = strapiMedia(m.url);
-      break;
-    }
-  }
+  const firstImg = media.find((item) => item.type === 'image');
+  if (firstImg?.src) metaImage = absoluteImageForOg(firstImg.src, siteUrl);
 }
 ---
 
@@ -81,7 +93,7 @@ else {
   <Header />
 
   <main class="main-content">
-    <a href="/gallery" class="back-link">← Назад к галерее</a>
+    <a href="/gallery" class="back-link" data-astro-prefetch="viewport">← Назад к галерее</a>
 
     <div class="event-header">
       <div class="event-meta">
@@ -104,10 +116,10 @@ else {
 
     <div class="event-body" set:html={bodyHtml} />
 
-    <a href="/gallery" class="bottom-back">← Все события</a>
+    <a href="/gallery" class="bottom-back" data-astro-prefetch="viewport">← Все события</a>
   </main>
 
-  <BottomBar client:load transition:persist="bottom-bar" currentPath="/gallery" />
+  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/gallery" />
 </Layout>
 
 <style define:vars={{ accent }}>

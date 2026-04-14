@@ -12,8 +12,9 @@ import {
   type StrapiContactInfo,
   type StrapiSocialLink,
 } from '../lib/strapi';
+import { optimizeStrapiImage800 } from '../lib/strapiImages';
 
-const [athletes, contactPropsInitial, socialsRaw] = await Promise.all([
+const [athletesRaw, contactPropsInitial, socialsRaw] = await Promise.all([
   (async (): Promise<StrapiAthlete[]> => {
     try {
       const raw = await fetchStrapi<StrapiAthlete[]>('athletes?populate=photo&sort=order:asc');
@@ -67,6 +68,14 @@ const [athletes, contactPropsInitial, socialsRaw] = await Promise.all([
   })(),
 ]);
 
+type AthleteRow = StrapiAthlete & { photoSrc: string };
+const athletes: AthleteRow[] = await Promise.all(
+  athletesRaw.map(async (a) => ({
+    ...a,
+    photoSrc: await optimizeStrapiImage800(strapiMedia(a.photo?.url), `athlete (${a.name})`),
+  }))
+);
+
 let contactProps: Record<string, unknown> = contactPropsInitial;
 if (socialsRaw && socialsRaw.length > 0) {
   contactProps = {
@@ -101,7 +110,7 @@ if (socialsRaw && socialsRaw.length > 0) {
       athletes.map((a) => (
         <section class="athlete-section">
           <AthleteCard
-            photo={strapiMedia(a.photo?.url)}
+            photo={a.photoSrc}
             label={a.label}
             name={a.name}
             quote={a.quote}
@@ -122,7 +131,7 @@ if (socialsRaw && socialsRaw.length > 0) {
     }
   </main>
 
-  <BottomBar client:load transition:persist="bottom-bar" currentPath="/sportsmen" />
+  <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath="/sportsmen" />
 </Layout>
 
 <style>
