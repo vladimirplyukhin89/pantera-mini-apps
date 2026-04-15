@@ -1,0 +1,6 @@
+# https://pantera-boxing.ru
+User-agent: *
+Allow: /
+
+# Карта сайта генерируется при сборке (@astrojs/sitemap)
+Sitemap: https://pantera-boxing.ru/sitemap-index.xml
