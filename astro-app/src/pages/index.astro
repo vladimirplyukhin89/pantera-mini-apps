@@ -5,9 +5,25 @@ import BottomBar from '../components/BottomBar/BottomBarIsland.astro';
 import HeroSection from '../components/HeroSection.astro';
 import { fetchStrapi, strapiMedia, type StrapiHero } from '../lib/strapi';
 
+const PAGE_TITLE = 'Бокс для взрослых в Тюмени — Pantera';
+
+const SEO_FALLBACK_DESCRIPTION =
+  'Бокс для взрослых в Тюмени — клуб Pantera: тренировки, события и атмосфера, которую не перепутать.';
+
+function finalizeMetaDescription(plain: string): string {
+  let t = plain.replace(/\s+/g, ' ').trim();
+  if (!t) return SEO_FALLBACK_DESCRIPTION;
+  if (!/тюмен/i.test(t)) {
+    t = `${t} — Тюмень.`;
+  }
+  if (t.length > 160) {
+    return `${t.slice(0, 157)}…`;
+  }
+  return t;
+}
+
 let heroProps: Record<string, string> = {};
-let metaDescription =
-  'Pantera — боксёрский клуб в Тюмени: тренировки, события и атмосфера, которую не перепутать.';
+let metaDescription = SEO_FALLBACK_DESCRIPTION;
 let metaImage: string | undefined;
 try {
   const raw = await fetchStrapi<StrapiHero>('hero?populate=*');
@@ -24,7 +40,7 @@ try {
         .replace(/<[^>]*>/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-      if (plain) metaDescription = plain.length > 160 ? `${plain.slice(0, 157)}…` : plain;
+      if (plain) metaDescription = finalizeMetaDescription(plain);
     }
     const og = raw.bg_desktop?.url || raw.bg_mobile?.url;
     if (og) metaImage = strapiMedia(og);
@@ -34,7 +50,7 @@ try {
 }
 ---
 
-<Layout title="Главная - Pantera" description={metaDescription} image={metaImage}>
+<Layout title={PAGE_TITLE} description={metaDescription} image={metaImage}>
   <main class="main-content">
     <HeroSection {...heroProps} />
     <Header />
