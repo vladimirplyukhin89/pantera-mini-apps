@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -20,7 +21,7 @@ export default defineConfig({
     prefetchAll: false,
     defaultStrategy: 'hover',
   },
-  integrations: [react()],
+  integrations: [react(), sitemap()],
   image: {
     // Список разрешенных доменов для компонента <Image /> и getImage()
     domains: [
