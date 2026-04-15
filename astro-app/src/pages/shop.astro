@@ -13,6 +13,7 @@ import { Image } from 'astro:assets';
 
   <main class="main-content">
     <div class="shop-center">
+      <h1 class="shop-title">Мерч Pantera</h1>
       <p class="shop-text">У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.</p>
       <Image
         src="/images/svg/white_logo.svg"
@@ -52,6 +53,16 @@ import { Image } from 'astro:assets';
     padding: 1rem 0;
   }
 
+  .shop-title {
+    font-family: 'KabrioAbarth', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--color-text-cream);
+    margin: 0;
+    max-width: 20ch;
+  }
+
   .shop-text {
     font-size: 1.0625rem;
     font-weight: 500;
@@ -71,6 +82,10 @@ import { Image } from 'astro:assets';
     .main-content {
       padding: 2rem 1.5rem 7.5rem;
       padding-top: calc(var(--header-height) + 2rem);
+    }
+
+    .shop-title {
+      font-size: 2rem;
     }
 
     .shop-text {
