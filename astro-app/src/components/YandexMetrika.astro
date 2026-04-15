@@ -1,47 +1,90 @@
 ---
 interface Props {
   counterId: number;
+  /**
+   * Загрузка после window.load и в requestIdleCallback — меньше конкуренции с LCP/INP.
+   * Первый просмотр всё равно учитывается после инициализации.
+   */
+  defer?: boolean;
+  /** Вебвизор сильно нагружает страницу (особенно мобильные); выключите, если запись сессий не нужна. */
+  webvisor?: boolean;
+  /** Карта кликов — доп. обработчики и запросы. */
+  clickmap?: boolean;
+  /** Включайте только если передаёте ecommerce в dataLayer. */
+  ecommerce?: boolean | 'dataLayer';
 }
 
-const { counterId } = Astro.props;
+const {
+  counterId,
+  defer = true,
+  webvisor = true,
+  clickmap = true,
+  ecommerce = false,
+} = Astro.props;
 ---
 
 <!-- Yandex.Metrika counter -->
-<script is:inline define:vars={{ counterId }}>
-  (function (m, e, t, r, i, k, a) {
-    m[i] =
-      m[i] ||
-      function () {
-        (m[i].a = m[i].a || []).push(arguments);
-      };
-    m[i].l = 1 * new Date();
-    for (var j = 0; j < document.scripts.length; j++) {
-      if (document.scripts[j].src === r) {
-        return;
+<script is:inline define:vars={{ counterId, defer, webvisor, clickmap, ecommerce }}>
+  function bootMetrika() {
+    if (window.__ymPanteraBooted) return;
+    window.__ymPanteraBooted = true;
+
+    (function (m, e, t, r, i, k, a) {
+      m[i] =
+        m[i] ||
+        function () {
+          (m[i].a = m[i].a || []).push(arguments);
+        };
+      m[i].l = 1 * new Date();
+      for (var j = 0; j < document.scripts.length; j++) {
+        if (document.scripts[j].src === r) {
+          return;
+        }
+      }
+      ((k = e.createElement(t)),
+        (a = e.getElementsByTagName(t)[0]),
+        (k.async = 1),
+        (k.src = r),
+        a.parentNode.insertBefore(k, a));
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + counterId, 'ym');
+
+    var initOpts = {
+      ssr: true,
+      webvisor: webvisor,
+      clickmap: clickmap,
+      referrer: document.referrer,
+      url: location.href,
+      accurateTrackBounce: true,
+      trackLinks: true,
+    };
+    if (ecommerce) {
+      initOpts.ecommerce = ecommerce === true ? 'dataLayer' : ecommerce;
+    }
+    ym(counterId, 'init', initOpts);
+
+    document.addEventListener('astro:page-load', function () {
+      if (typeof ym !== 'undefined') {
+        ym(counterId, 'hit', location.href, { referer: document.referrer });
+      }
+    });
+  }
+
+  if (!defer) {
+    bootMetrika();
+  } else {
+    function schedule() {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(bootMetrika, { timeout: 4000 });
+      } else {
+        setTimeout(bootMetrika, 1);
       }
     }
-    ((k = e.createElement(t)),
-      (a = e.getElementsByTagName(t)[0]),
-      (k.async = 1),
-      (k.src = r),
-      a.parentNode.insertBefore(k, a));
-  })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + counterId, 'ym');
-  ym(counterId, 'init', {
-    ssr: true,
-    webvisor: true,
-    clickmap: true,
-    ecommerce: 'dataLayer',
-    referrer: document.referrer,
-    url: location.href,
-    accurateTrackBounce: true,
-    trackLinks: true,
-  });
-
-  document.addEventListener('astro:page-load', function () {
-    if (typeof ym !== 'undefined') {
-      ym(counterId, 'hit', location.href, { referer: document.referrer });
+    if (document.readyState === 'complete') {
+      schedule();
+    } else {
+      window.addEventListener('load', schedule, { once: true });
     }
-  });
+  }
 </script>
 <noscript
   ><div>

@@ -38,8 +38,6 @@ const ogImage = image?.trim() || defaultOgImage;
     <meta name="generator" content={Astro.generator} />
     <meta name="google-site-verification" content="xDmV6Omaqk5hJPNlyBMVxynFF4Iv8VWkLHe0si5__Fo" />
 
-    <YandexMetrika counterId={108433630} />
-
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={absolutePageUrl} />
@@ -66,6 +64,7 @@ const ogImage = image?.trim() || defaultOgImage;
     <div class="app-container">
       <slot />
     </div>
+    <YandexMetrika counterId={108433630} ecommerce={true} />
   </body>
 </html>
 
