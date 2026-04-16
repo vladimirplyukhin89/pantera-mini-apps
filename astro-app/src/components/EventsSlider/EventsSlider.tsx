@@ -38,22 +38,35 @@ function getCardThumbnail(event: EventItem): { src: string; alt: string } | null
   return event.media.length > 0 ? { src: event.media[0].src, alt: event.media[0].alt ?? '' } : null;
 }
 
+/** SVG-превью — 16∶9 + contain; растровые — cover (см. .thumbPlanned / .thumbPast). */
+function isSvgImageSrc(src: string): boolean {
+  const s = src.trim().toLowerCase();
+  if (s.startsWith('data:image/svg+xml')) return true;
+  try {
+    const pathname = new URL(src, 'https://placeholder.invalid').pathname;
+    return pathname.endsWith('.svg');
+  } catch {
+    return /\.svg(\?|#|$)/i.test(src);
+  }
+}
+
 const hasVideo = (event: EventItem) => event.media.some((m) => m.type === 'video');
 
 const EventCard = ({ event }: { event: EventItem }) => {
   const thumb = getCardThumbnail(event);
+  const thumbIsSvg = thumb ? isSvgImageSrc(thumb.src) : false;
 
   return (
     <div className={styles.emblaSlide}>
       <a
         href={`/events/${event.id}`}
-        className={`${styles.card} ${styles[`cardAccent${event.accentIndex % 4}`]} ${event.statusCode === 'planned' ? styles.cardPlanned : ''}`}
+        className={`${styles.card} ${styles[`cardAccent${event.accentIndex % 4}`]} ${event.statusCode === 'planned' || thumbIsSvg ? styles.cardPlanned : ''}`}
         data-astro-prefetch="viewport"
       >
         <div className={styles.cardMedia}>
           {thumb ? (
             <div
-              className={`${styles.cardThumb} ${event.statusCode === 'planned' ? styles.thumbPlanned : styles.thumbPast}`}
+              className={`${styles.cardThumb} ${isSvgImageSrc(thumb.src) ? styles.thumbPlanned : styles.thumbPast}`}
             >
               <img src={thumb.src} alt={thumb.alt} loading="lazy" decoding="async" />
               {hasVideo(event) && (
