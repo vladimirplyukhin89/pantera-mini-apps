@@ -1,22 +1,92 @@
 ---
 /**
- * Остров + slot="fallback": до гидрации (Opera Mini и др.) резервируем ту же геометрию, что у панели.
+ * Нижняя навигация: разметка и стили с SSR, без React-острова (нет смены fallback → гидрация).
  */
-import BottomBar from './BottomBar';
-import styles from './BottomBar.module.css';
+import './BottomBar.css';
+import { normalizePath, resolvePathForNav } from './bottomBarNav';
 
 interface Props {
   currentPath?: string;
 }
 
 const { currentPath } = Astro.props;
+const rawPath = currentPath ?? Astro.url.pathname;
+const logicalPath = resolvePathForNav(rawPath);
+const isHomePage = normalizePath(logicalPath) === '/';
+
+function isActive(itemPath: string) {
+  return normalizePath(itemPath) === normalizePath(logicalPath);
+}
 ---
 
-<BottomBar client:load transition:persist transition:name="bottom-bar" currentPath={currentPath}>
-  <nav slot="fallback" class={styles.bottomBarSkeleton} aria-hidden="true">
-    <span class={styles.bottomBarSkeletonCell}></span>
-    <span class={styles.bottomBarSkeletonCell}></span>
-    <span class={styles.bottomBarSkeletonCell}></span>
-    <span class={styles.bottomBarSkeletonCell}></span>
-  </nav>
-</BottomBar>
+<nav
+  class:list={['bottomBar', { bottomBarBlurred: !isHomePage }]}
+  data-bottom-bar
+  transition:persist
+  transition:name="bottom-bar"
+  data-astro-transition-scope="bottom-bar"
+  aria-label="Основная навигация"
+>
+  <a
+    data-astro-prefetch
+    data-nav-path="/"
+    href="/"
+    class:list={['bottomBarItem', { bottomBarItemActive: isActive('/') }]}
+    aria-current={isActive('/') ? 'page' : undefined}
+  >
+    <svg class="icon iconHome" viewBox="0 0 24 24" aria-hidden="true"
+      ><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg
+    >
+    <span class="label">Главная</span>
+  </a>
+  <a
+    data-astro-prefetch
+    data-nav-path="/gallery"
+    href="/gallery"
+    class:list={['bottomBarItem', { bottomBarItemActive: isActive('/gallery') }]}
+    aria-current={isActive('/gallery') ? 'page' : undefined}
+  >
+    <svg class="icon iconGallery" viewBox="0 0 24 24" aria-hidden="true"
+      ><path
+        fill="currentColor"
+        d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+      ></path></svg
+    >
+    <span class="label">Галерея</span>
+  </a>
+  <a
+    data-astro-prefetch
+    data-nav-path="/sportsmen"
+    href="/sportsmen"
+    class:list={['bottomBarItem', { bottomBarItemActive: isActive('/sportsmen') }]}
+    aria-current={isActive('/sportsmen') ? 'page' : undefined}
+  >
+    <svg class="icon iconSportsmen" viewBox="0 0 24 24" aria-hidden="true"
+      ><path
+        fill="currentColor"
+        d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"
+      ></path></svg
+    >
+    <span class="label">Команда</span>
+  </a>
+  <a
+    data-astro-prefetch
+    data-nav-path="/shop"
+    href="/shop"
+    class:list={['bottomBarItem', { bottomBarItemActive: isActive('/shop') }]}
+    aria-current={isActive('/shop') ? 'page' : undefined}
+  >
+    <svg class="icon iconShop" viewBox="0 0 24 24" aria-hidden="true"
+      ><path
+        fill="currentColor"
+        d="M16 5l-1.5-3h-5L8 5H4v2h2l1.6 8.59c.15.81.88 1.41 1.71 1.41h6.38c.83 0 1.56-.6 1.71-1.41L18 7h2V5h-4zm-6.5 2h2.5l1.5 6h-5.5l1.5-6z"
+      ></path></svg
+    >
+    <span class="label">Мерч</span>
+  </a>
+</nav>
+
+<script>
+  import { initBottomBar } from './bottomBarClient';
+  initBottomBar();
+</script>
