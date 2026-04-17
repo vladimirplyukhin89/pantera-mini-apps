@@ -17,6 +17,7 @@ const og404 = new URL(bg404, site).href;
   image={og404}
   noindex
 >
+  <BottomBar slot="bottom-bar" />
   <main class="main-content">
     <HeroSection
       title="404"
@@ -27,8 +28,6 @@ const og404 = new URL(bg404, site).href;
     />
     <Header />
   </main>
-
-  <BottomBar />
 </Layout>
 
 <style>

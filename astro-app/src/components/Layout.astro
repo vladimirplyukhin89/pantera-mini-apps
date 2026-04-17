@@ -66,6 +66,8 @@ const ogImage = image?.trim() || defaultOgImage;
   </head>
   <body>
     <div class="app-container">
+      <!-- bottom-bar: первым в DOM — гидратация панели до тяжёлых островов в main -->
+      <slot name="bottom-bar" />
       <slot />
     </div>
     <YandexMetrika counterId={108433630} ecommerce={true} />
