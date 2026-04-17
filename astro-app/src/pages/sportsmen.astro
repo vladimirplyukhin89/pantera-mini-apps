@@ -13,6 +13,7 @@ import {
   type StrapiSocialLink,
 } from '../lib/strapi';
 import { optimizeStrapiImage800 } from '../lib/strapiImages';
+import { Image } from 'astro:assets';
 
 const [athletesRaw, contactPropsInitial, socialsRaw] = await Promise.all([
   (async (): Promise<StrapiAthlete[]> => {
@@ -87,6 +88,8 @@ if (socialsRaw && socialsRaw.length > 0) {
     })),
   };
 }
+
+const isSportsmenEmpty = athletes.length === 0 && (socialsRaw == null || socialsRaw.length === 0);
 ---
 
 <Layout
@@ -96,19 +99,36 @@ if (socialsRaw && socialsRaw.length > 0) {
   <BottomBar slot="bottom-bar" currentPath="/sportsmen" />
   <Header />
 
-  <main class="main-content">
+  <main class:list={['main-content', { 'main-content--empty': isSportsmenEmpty }]}>
     {
-      athletes.length > 0 ? (
-        <div class="page-header">
-          <span class="page-label">Команда</span>
-          <h1 class="page-title">Наши люди</h1>
-          <p class="page-subtitle">Люди, которые делают Pantera — ведь это не только зал</p>
-        </div>
-      ) : (
-        <div class="page-header">
-          <p class="page-subtitle">Какие-то проблемки с данными, уже шаманим</p>
+      isSportsmenEmpty && (
+        <div class="no-content">
+          <p class="no-content-text">Какие-то проблемки с данными, уже шаманим</p>
+          <Image
+            src="/images/svg/white_logo.svg"
+            alt="Pantera"
+            class="shop-logo"
+            loading="eager"
+            width={260}
+            height={260}
+          />
         </div>
       )
+    }
+
+    {
+      !isSportsmenEmpty &&
+        (athletes.length > 0 ? (
+          <div class="page-header">
+            <span class="page-label">Команда</span>
+            <h1 class="page-title">Наши люди</h1>
+            <p class="page-subtitle">Люди, которые делают Pantera — ведь это не только зал</p>
+          </div>
+        ) : (
+          <div class="page-header">
+            <p class="page-subtitle">Какие-то проблемки с данными, уже шаманим</p>
+          </div>
+        ))
     }
 
     {
@@ -127,7 +147,7 @@ if (socialsRaw && socialsRaw.length > 0) {
     }
 
     {
-      socialsRaw != null && socialsRaw.length > 0 && (
+      !isSportsmenEmpty && socialsRaw != null && socialsRaw.length > 0 && (
         <section class="socials-section">
           <span class="page-label">Контакты</span>
           <ContactSection {...contactProps} />
@@ -145,6 +165,40 @@ if (socialsRaw && socialsRaw.length > 0) {
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: 7.5rem;
+    --section-label-gap: 1.25rem;
+    --section-stack-gap: 2.5rem;
+  }
+
+  .main-content--empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .no-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.75rem;
+    padding: 1rem 0;
+  }
+
+  .no-content-text {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--color-text-cream-alpha);
+    max-width: 26rem;
+    margin: 0;
+  }
+
+  .shop-logo {
+    display: block;
+    width: min(200px, 72vw);
+    height: auto;
   }
 
   .page-header {
@@ -183,8 +237,16 @@ if (socialsRaw && socialsRaw.length > 0) {
 
   @media (min-width: 481px) {
     .main-content {
-      padding: 2rem 1.5rem 7.5rem;
+      padding: 2rem 1.5rem 7rem;
       padding-top: calc(var(--header-height) + 2rem);
+    }
+
+    .no-content-text {
+      font-size: 1.125rem;
+    }
+
+    .shop-logo {
+      width: min(240px, 50vw);
     }
 
     .page-title {
@@ -201,6 +263,11 @@ if (socialsRaw && socialsRaw.length > 0) {
       max-width: 1100px;
       padding: 2.5rem 1.5rem 8.5rem;
       padding-top: calc(var(--header-height) + 2.5rem);
+    }
+
+    .no-content-text {
+      font-size: 1.1875rem;
+      max-width: 32rem;
     }
 
     .page-title {
