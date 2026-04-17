@@ -2,7 +2,6 @@ import { useSyncExternalStore, type ReactElement } from 'react';
 import { ImCool, ImCamera } from 'react-icons/im';
 import { PiTShirtBold } from 'react-icons/pi';
 import { GoHomeFill } from 'react-icons/go';
-import styles from './BottomBar.module.css';
 
 interface BottomBarProps {
   currentPath?: string;
@@ -42,22 +41,22 @@ const navItems: NavItem[] = [
   {
     path: '/',
     label: 'Главная',
-    icon: <GoHomeFill className={`${styles.icon} ${styles.iconHome}`} />,
+    icon: <GoHomeFill className="bb-icon bb-icon--home" />,
   },
   {
     path: '/gallery',
     label: 'Галерея',
-    icon: <ImCamera className={`${styles.icon} ${styles.iconGallery}`} />,
+    icon: <ImCamera className="bb-icon bb-icon--gallery" />,
   },
   {
     path: '/sportsmen',
     label: 'Команда',
-    icon: <ImCool className={`${styles.icon} ${styles.iconSportsmen}`} />,
+    icon: <ImCool className="bb-icon bb-icon--sportsmen" />,
   },
   {
     path: '/shop',
     label: 'Мерч',
-    icon: <PiTShirtBold className={`${styles.icon} ${styles.iconShop}`} />,
+    icon: <PiTShirtBold className="bb-icon bb-icon--shop" />,
   },
 ];
 
@@ -82,7 +81,7 @@ const BottomBar = ({ currentPath }: BottomBarProps) => {
 
   return (
     <nav
-      className={`${styles.bottomBar} ${!isHomePage ? styles.bottomBarBlurred : ''}`}
+      className={`bb ${!isHomePage ? 'bb--blurred' : ''}`}
       data-astro-transition-scope="bottom-bar"
     >
       {navItems.map((item) => (
@@ -91,10 +90,10 @@ const BottomBar = ({ currentPath }: BottomBarProps) => {
           key={item.path}
           href={item.path}
           onClick={(e) => handleNavigation(e, item.path)}
-          className={`${styles.bottomBarItem} ${isActive(item.path) ? styles.bottomBarItemActive : ''}`}
+          className={`bb-item ${isActive(item.path) ? 'bb-item--active' : ''}`}
         >
           {item.icon}
-          <span className={styles.label}>{item.label}</span>
+          <span className="bb-label">{item.label}</span>
         </a>
       ))}
     </nav>

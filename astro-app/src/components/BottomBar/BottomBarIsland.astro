@@ -1,9 +1,9 @@
 ---
 /**
  * Остров + slot="fallback": до гидрации (Opera Mini и др.) резервируем ту же геометрию, что у панели.
+ * Стили скелетона — в Layout (критический CSS, классы bb-skel).
  */
 import BottomBar from './BottomBar';
-import styles from './BottomBar.module.css';
 
 interface Props {
   currentPath?: string;
@@ -13,10 +13,10 @@ const { currentPath } = Astro.props;
 ---
 
 <BottomBar client:load transition:persist transition:name="bottom-bar" currentPath={currentPath}>
-  <nav slot="fallback" class={styles.bottomBarSkeleton} aria-hidden="true">
-    <span class={styles.bottomBarSkeletonCell}></span>
-    <span class={styles.bottomBarSkeletonCell}></span>
-    <span class={styles.bottomBarSkeletonCell}></span>
-    <span class={styles.bottomBarSkeletonCell}></span>
+  <nav slot="fallback" class="bb-skel" aria-hidden="true">
+    <span class="bb-skel__cell"></span>
+    <span class="bb-skel__cell"></span>
+    <span class="bb-skel__cell"></span>
+    <span class="bb-skel__cell"></span>
   </nav>
 </BottomBar>

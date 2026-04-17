@@ -3,6 +3,8 @@ import { ClientRouter } from 'astro:transitions';
 import YandexMetrika from './YandexMetrika.astro';
 import '../styles/variables.css';
 import '../styles/fonts.css';
+/** Критический CSS нижней панели — в document без отдельного чанка (см. bottomBarCritical.css). */
+import bottomBarCriticalRaw from './BottomBar/bottomBarCritical.css?raw';
 
 interface Props {
   /** Заголовок вкладки и og:title */
@@ -59,6 +61,8 @@ const ogImage = image?.trim() || defaultOgImage;
     <link rel="icon" type="image/svg+xml" href="/images/svg/white_logo.svg" />
 
     <ClientRouter />
+
+    <style is:inline set:html={bottomBarCriticalRaw}></style>
   </head>
   <body>
     <div class="app-container">

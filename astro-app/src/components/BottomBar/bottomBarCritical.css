@@ -1,5 +1,8 @@
-/* Общая геометрия панели и скелетона (до гидрации острова). */
-.bottomBarFrame {
+/**
+ * Критический CSS нижней панели: подключается в Layout через <style is:inline>,
+ * чтобы геометрия и цвета не ждали отдельного чанка после гидрации.
+ */
+.bb {
   position: fixed;
   bottom: 3%;
   left: 50%;
@@ -15,22 +18,32 @@
   z-index: 100;
   box-sizing: border-box;
   min-height: calc(3.5rem + 1rem + max(0.5rem, env(safe-area-inset-bottom, 0px)));
-}
-
-.bottomBar {
-  composes: bottomBarFrame;
   background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 05, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.bottomBarSkeleton {
-  composes: bottomBarFrame;
+.bb-skel {
+  position: fixed;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  border-radius: 2rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+  box-sizing: border-box;
+  min-height: calc(3.5rem + 1rem + max(0.5rem, env(safe-area-inset-bottom, 0px)));
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(255, 255, 255, 0.08);
   pointer-events: none;
 }
 
-.bottomBarSkeletonCell {
+.bb-skel__cell {
   flex: 1;
   min-width: 0;
   min-height: 3.5rem;
@@ -38,12 +51,12 @@
   background: rgba(255, 248, 231, 0.06);
 }
 
-.bottomBarBlurred {
+.bb--blurred {
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
 }
 
-.bottomBarItem {
+.bb-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,64 +76,63 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .bottomBarItem:hover .icon {
+  .bb-item:hover .bb-icon {
     margin-bottom: 0.125rem;
     transform: scale(1.1);
   }
 
-  .bottomBarItem:hover .label {
+  .bb-item:hover .bb-label {
     font-size: 0.82rem;
     margin-top: 0.125rem;
     line-height: 1;
   }
 
-  .bottomBarItem:hover .iconHome {
+  .bb-item:hover .bb-icon--home {
     color: var(--color-icon-home);
   }
 
-  .bottomBarItem:hover .iconGallery {
+  .bb-item:hover .bb-icon--gallery {
     color: var(--color-icon-gallery);
   }
 
-  .bottomBarItem:hover .iconSportsmen {
+  .bb-item:hover .bb-icon--sportsmen {
     color: var(--color-icon-contacts);
   }
 
-  .bottomBarItem:hover .iconShop {
+  .bb-item:hover .bb-icon--shop {
     color: var(--color-icon-shop);
   }
 
-  .bottomBarItem:has(.iconHome):hover .label {
+  .bb-item:has(.bb-icon--home):hover .bb-label {
     color: var(--color-icon-home);
   }
 
-  .bottomBarItem:has(.iconGallery):hover .label {
+  .bb-item:has(.bb-icon--gallery):hover .bb-label {
     color: var(--color-icon-gallery);
   }
 
-  .bottomBarItem:has(.iconSportsmen):hover .label {
+  .bb-item:has(.bb-icon--sportsmen):hover .bb-label {
     color: var(--color-icon-contacts);
   }
 
-  .bottomBarItem:has(.iconShop):hover .label {
+  .bb-item:has(.bb-icon--shop):hover .bb-label {
     color: var(--color-icon-shop);
   }
 
-  .bottomBarItemActive:hover .icon {
+  .bb-item--active:hover .bb-icon {
     color: var(--color-red-accent);
   }
 
-  .bottomBarItemActive:hover .label {
+  .bb-item--active:hover .bb-label {
     color: var(--color-red-accent);
   }
 }
 
-/* Активная вкладка: красный акцент для подписи и иконки */
-.bottomBarItemActive .label {
+.bb-item--active .bb-label {
   color: var(--color-red-accent);
 }
 
-.icon {
+.bb-icon {
   width: 22px;
   height: 22px;
   margin-bottom: 0.25rem;
@@ -131,19 +143,19 @@
   flex-shrink: 0;
 }
 
-.bottomBarItemActive .icon {
+.bb-item--active .bb-icon {
   margin-bottom: 0.2rem;
   color: var(--color-red-accent);
 }
 
-.iconHome,
-.iconGallery,
-.iconSportsmen,
-.iconShop {
+.bb-icon--home,
+.bb-icon--gallery,
+.bb-icon--sportsmen,
+.bb-icon--shop {
   transition: color 0.2s;
 }
 
-.label {
+.bb-label {
   font-size: 0.8rem;
   font-weight: 600;
   transition: color 0.2s;
@@ -153,87 +165,89 @@
 }
 
 @media (min-width: 481px) {
-  .bottomBarFrame {
+  .bb,
+  .bb-skel {
     width: 85%;
     bottom: 4%;
     padding: 0.625rem 0.5rem;
     min-height: calc(3.75rem + 1.25rem + max(0.625rem, env(safe-area-inset-bottom, 0px)));
   }
 
-  .bottomBarSkeletonCell {
+  .bb-skel__cell {
     min-height: 3.75rem;
   }
 
-  .bottomBarItem {
+  .bb-item {
     padding: 0.45rem 0.5rem;
     min-height: 3.75rem;
   }
 
-  .icon {
+  .bb-icon {
     width: 24px;
     height: 24px;
   }
 
-  .bottomBarItem:hover .icon {
+  .bb-item:hover .bb-icon {
     width: 24px;
     height: 24px;
     margin-bottom: 0.125rem;
   }
 
-  .bottomBarItem:hover .label {
+  .bb-item:hover .bb-label {
     font-size: 0.88rem;
     margin-top: 0.125rem;
   }
 
-  .bottomBarItemActive .icon {
+  .bb-item--active .bb-icon {
     width: 24px;
     height: 24px;
     margin-bottom: 0.2rem;
   }
 
-  .label {
+  .bb-label {
     font-size: 0.88rem;
   }
 }
 
 @media (min-width: 1024px) {
-  .bottomBarFrame {
+  .bb,
+  .bb-skel {
     width: 500px;
     bottom: 2rem;
     padding: 0.75rem 0.5rem;
     min-height: calc(4rem + 1.5rem + max(0.75rem, env(safe-area-inset-bottom, 0px)));
   }
 
-  .bottomBarSkeletonCell {
+  .bb-skel__cell {
     min-height: 4rem;
   }
 
-  .bottomBarItem {
+  .bb-item {
     min-height: 4rem;
   }
 
-  .icon {
+  .bb-icon {
     width: 26px;
     height: 26px;
   }
 
-  .bottomBarItem:hover .icon {
+  .bb-item:hover .bb-icon {
     width: 26px;
     height: 26px;
     margin-bottom: 0.125rem;
   }
 
-  .bottomBarItem:hover .label {
+  .bb-item:hover .bb-label {
     font-size: 0.95rem;
   }
 
-  .bottomBarItemActive .icon {
+  .bb-item--active .bb-icon {
     width: 26px;
     height: 26px;
     margin-bottom: 0.2rem;
   }
 
-  .label {
+  .bb-label {
     font-size: 0.95rem;
   }
 }
