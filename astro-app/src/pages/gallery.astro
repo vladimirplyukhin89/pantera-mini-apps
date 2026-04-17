@@ -15,6 +15,7 @@ import {
   type StrapiEvent,
 } from '../lib/strapi';
 import { optimizeStrapiImage800 } from '../lib/strapiImages';
+import { Image } from 'astro:assets';
 
 // ─── Gallery photos ──────────────────────────────────────
 type GalleryPhoto = {
@@ -98,6 +99,9 @@ try {
 } catch (e) {
   console.error('Strapi events:', e);
 }
+
+const isGalleryEmpty =
+  !planned.length && !past.length && !clubValues.length && !galleryPhotos.length;
 ---
 
 <Layout
@@ -107,7 +111,23 @@ try {
   <BottomBar slot="bottom-bar" currentPath="/gallery" />
   <Header />
 
-  <main class="main-content">
+  <main class:list={['main-content', { 'main-content--empty': isGalleryEmpty }]}>
+    {
+      isGalleryEmpty && (
+        <div class="no-content">
+          <p class="no-content-text">Какие-то проблемки с данными, уже шаманим</p>
+          <Image
+            src="/images/svg/white_logo.svg"
+            alt="Pantera"
+            class="shop-logo"
+            loading="eager"
+            width={260}
+            height={260}
+          />
+        </div>
+      )
+    }
+
     {
       (planned.length > 0 || past.length > 0) && (
         <>
@@ -161,12 +181,44 @@ try {
     --section-stack-gap: 2.5rem;
   }
 
+  .main-content--empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+  }
+
   .section-label {
     font-size: 1rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 3px;
     color: var(--color-icon-gallery);
+  }
+
+  .no-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.75rem;
+    padding: 1rem 0;
+  }
+
+  .no-content-text {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--color-text-cream-alpha);
+    max-width: 26rem;
+    margin: 0;
+  }
+
+  .shop-logo {
+    display: block;
+    width: min(200px, 72vw);
+    height: auto;
   }
 
   /* Подписи, идущие сразу под <main>: одинаковый отступ сверху и снизу */
@@ -226,6 +278,14 @@ try {
       padding-top: calc(var(--header-height) + 2rem);
     }
 
+    .no-content-text {
+      font-size: 1.125rem;
+    }
+
+    .shop-logo {
+      width: min(240px, 50vw);
+    }
+
     .section-title {
       font-size: 2.5rem;
     }
@@ -240,6 +300,11 @@ try {
       max-width: 1100px;
       padding: 2.5rem 1.5rem 8.5rem;
       padding-top: calc(var(--header-height) + 2.5rem);
+    }
+
+    .no-content-text {
+      font-size: 1.1875rem;
+      max-width: 32rem;
     }
 
     .section-title {

@@ -3,6 +3,9 @@ import Layout from '../components/Layout.astro';
 import Header from '../components/Header.astro';
 import BottomBar from '../components/BottomBar/BottomBarIsland.astro';
 import { Image } from 'astro:assets';
+
+/** Когда появятся товары из CMS: false и блок каталога ниже */
+const isShopEmpty = true;
 ---
 
 <Layout
@@ -12,41 +15,50 @@ import { Image } from 'astro:assets';
   <BottomBar slot="bottom-bar" currentPath="/shop" />
   <Header />
 
-  <main class="main-content">
-    <div class="shop-center">
-      <h1 class="shop-title">Мерч Pantera</h1>
-      <p class="shop-text">У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.</p>
-      <Image
-        src="/images/svg/white_logo.svg"
-        alt="Pantera"
-        class="shop-logo"
-        loading="eager"
-        width={260}
-        height={260}
-      />
-    </div>
+  <main class:list={['main-content', { 'main-content--empty': isShopEmpty }]}>
+    {
+      isShopEmpty && (
+        <div class="no-content">
+          <h1 class="shop-title">Мерч Pantera</h1>
+          <p class="shop-text">У нас есть мерч Pantera — вы знаете. Скоро его добавим и здесь.</p>
+          <Image
+            src="/images/svg/white_logo.svg"
+            alt="Pantera"
+            class="shop-logo"
+            loading="eager"
+            width={260}
+            height={260}
+          />
+        </div>
+      )
+    }
   </main>
 </Layout>
 
 <style>
   .main-content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
     padding: 1.5rem 1rem;
     padding-top: calc(var(--header-height) + 1.5rem);
-    padding-bottom: 7.5rem;
     max-width: 100%;
     margin: 0 auto;
-    min-height: 100%;
+    padding-bottom: 7.5rem;
+    --section-label-gap: 1.25rem;
+    --section-stack-gap: 2.5rem;
   }
 
-  .shop-center {
-    flex: 1;
+  .main-content--empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .no-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     text-align: center;
     gap: 1.75rem;
     padding: 1rem 0;
@@ -79,7 +91,7 @@ import { Image } from 'astro:assets';
 
   @media (min-width: 481px) {
     .main-content {
-      padding: 2rem 1.5rem 7.5rem;
+      padding: 2rem 1.5rem 7rem;
       padding-top: calc(var(--header-height) + 2rem);
     }
 
@@ -97,9 +109,21 @@ import { Image } from 'astro:assets';
   }
 
   @media (min-width: 1024px) {
+    .main-content {
+      max-width: 1100px;
+      padding: 2.5rem 1.5rem 8.5rem;
+      padding-top: calc(var(--header-height) + 2.5rem);
+    }
+
     .shop-text {
       font-size: 1.1875rem;
       max-width: 32rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .main-content {
+      max-width: 1200px;
     }
   }
 </style>
