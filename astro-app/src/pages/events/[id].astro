@@ -91,6 +91,7 @@ else {
 ---
 
 <Layout title={`${event.title} — Pantera`} description={metaDescription} image={metaImage}>
+  <BottomBar slot="bottom-bar" currentPath="/gallery" />
   <Header />
 
   <main class="main-content">
@@ -123,8 +124,6 @@ else {
 
     <a href="/gallery" class="bottom-back" data-astro-prefetch="viewport">← Все события</a>
   </main>
-
-  <BottomBar currentPath="/gallery" />
 </Layout>
 
 <style define:vars={{ accent }}>

@@ -51,12 +51,11 @@ try {
 ---
 
 <Layout title={PAGE_TITLE} description={metaDescription} image={metaImage}>
+  <BottomBar slot="bottom-bar" currentPath="/" />
   <main class="main-content">
     <HeroSection {...heroProps} />
     <Header />
   </main>
-
-  <BottomBar currentPath="/" />
 </Layout>
 
 <style>

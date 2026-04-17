@@ -9,6 +9,7 @@ import { Image } from 'astro:assets';
   title="Мерч - Pantera"
   description="Фирменный мерч боксёрского клуба Pantera. Скоро здесь — следите за обновлениями."
 >
+  <BottomBar slot="bottom-bar" currentPath="/shop" />
   <Header />
 
   <main class="main-content">
@@ -25,8 +26,6 @@ import { Image } from 'astro:assets';
       />
     </div>
   </main>
-
-  <BottomBar currentPath="/shop" />
 </Layout>
 
 <style>
