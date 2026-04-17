@@ -45,7 +45,7 @@ export function initBottomBar() {
           e.preventDefault();
         }
       },
-      true,
+      true
     );
   }
 }
