@@ -1,5 +1,5 @@
-/* Общая геометрия панели и скелетона (до гидрации острова). */
-.bottomBarFrame {
+/* Глобальные классы: стабильны при transition:persist и без отдельного CSS-модуля. */
+.bottomBar {
   position: fixed;
   bottom: 3%;
   left: 50%;
@@ -15,27 +15,8 @@
   z-index: 100;
   box-sizing: border-box;
   min-height: calc(3.5rem + 1rem + max(0.5rem, env(safe-area-inset-bottom, 0px)));
-}
-
-.bottomBar {
-  composes: bottomBarFrame;
   background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 05, 255, 0.1);
-}
-
-.bottomBarSkeleton {
-  composes: bottomBarFrame;
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-
-.bottomBarSkeletonCell {
-  flex: 1;
-  min-width: 0;
-  min-height: 3.5rem;
-  border-radius: 1rem;
-  background: rgba(255, 248, 231, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .bottomBarBlurred {
@@ -115,12 +96,11 @@
   }
 }
 
-/* Активная вкладка: красный акцент для подписи и иконки */
 .bottomBarItemActive .label {
   color: var(--color-red-accent);
 }
 
-.icon {
+.bottomBar .icon {
   width: 22px;
   height: 22px;
   margin-bottom: 0.25rem;
@@ -143,7 +123,7 @@
   transition: color 0.2s;
 }
 
-.label {
+.bottomBar .label {
   font-size: 0.8rem;
   font-weight: 600;
   transition: color 0.2s;
@@ -153,15 +133,11 @@
 }
 
 @media (min-width: 481px) {
-  .bottomBarFrame {
+  .bottomBar {
     width: 85%;
     bottom: 4%;
     padding: 0.625rem 0.5rem;
     min-height: calc(3.75rem + 1.25rem + max(0.625rem, env(safe-area-inset-bottom, 0px)));
-  }
-
-  .bottomBarSkeletonCell {
-    min-height: 3.75rem;
   }
 
   .bottomBarItem {
@@ -169,7 +145,7 @@
     min-height: 3.75rem;
   }
 
-  .icon {
+  .bottomBar .icon {
     width: 24px;
     height: 24px;
   }
@@ -191,28 +167,24 @@
     margin-bottom: 0.2rem;
   }
 
-  .label {
+  .bottomBar .label {
     font-size: 0.88rem;
   }
 }
 
 @media (min-width: 1024px) {
-  .bottomBarFrame {
+  .bottomBar {
     width: 500px;
     bottom: 2rem;
     padding: 0.75rem 0.5rem;
     min-height: calc(4rem + 1.5rem + max(0.75rem, env(safe-area-inset-bottom, 0px)));
   }
 
-  .bottomBarSkeletonCell {
-    min-height: 4rem;
-  }
-
   .bottomBarItem {
     min-height: 4rem;
   }
 
-  .icon {
+  .bottomBar .icon {
     width: 26px;
     height: 26px;
   }
@@ -233,7 +205,7 @@
     margin-bottom: 0.2rem;
   }
 
-  .label {
+  .bottomBar .label {
     font-size: 0.95rem;
   }
 }
