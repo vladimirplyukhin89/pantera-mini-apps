@@ -8,7 +8,7 @@
 ## Стек
 
 - **Astro 5** + **React 19** — SSR с островной архитектурой
-- **Strapi 5** — headless CMS (REST API, SQLite)
+- **Strapi 5** — headless CMS (REST API); исходники CMS — в отдельном репозитории (см. [docs/repo-split-strapi-amvera.md](docs/repo-split-strapi-amvera.md))
 - **Embla Carousel** — карусели событий и медиа
 - **CSS Modules** — стилизация компонентов
 
@@ -16,24 +16,21 @@
 
 | Директория | Назначение |
 |------------|------------|
-| `astro-app/` | Фронтенд — Astro SSR + React-острова |
-| `strapi-cms/` | CMS — Strapi 5, Content Types, REST API |
+| `astro-app/` | Фронтенд — Astro SSR + React-острова (сборка тянет контент по API с развёрнутого Strapi) |
 | `docs/` | Документация: обзор, деплой, CI; миграция CMS — [strapi-cloud-to-beget.md](docs/strapi-cloud-to-beget.md) |
 
 ## Быстрый старт
 
 ```bash
-# Фронтенд
 cd astro-app && npm install && npm run dev   # → http://localhost:4321
-
-# CMS
-cd strapi-cms && npm install && npm run develop   # → http://localhost:1337/admin
 ```
 
-Переменные окружения в `astro-app/.env`:
+Strapi (админка и API) поднимается из **отдельного репозитория** — см. [docs/repo-split-strapi-amvera.md](docs/repo-split-strapi-amvera.md).
+
+Переменные окружения в `astro-app/.env` (укажите URL и токен вашего Strapi — локальный или прод):
 
 ```
-STRAPI_URL=http://localhost:1337
+STRAPI_URL=https://…
 STRAPI_TOKEN=<API token из Strapi>
 ```
 

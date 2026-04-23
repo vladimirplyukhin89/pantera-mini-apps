@@ -23,7 +23,7 @@
 
 ### 2.1. Новое поле в модели Event
 
-В репозитории схема лежит в `strapi-cms/src/api/event/content-types/event/schema.json`. Добавьте атрибут, например:
+В репозитории Strapi (CMS) схема лежит в `src/api/event/content-types/event/schema.json`. Добавьте атрибут, например:
 
 - **`event_at`** — тип `datetime` (обязательное для новых событий; для старых записей позже заполните вручную или миграцией).
 
