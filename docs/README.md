@@ -25,6 +25,8 @@ STRAPI_TOKEN=<API token из Strapi>
 
 **Перенос админки и API со Strapi Cloud на поддомен Beget** (пошагово): [strapi-cloud-to-beget.md](./strapi-cloud-to-beget.md).
 
+**Разделение репозиториев (Strapi отдельно на Amvera, фронтенд на Beget):** [repo-split-strapi-amvera.md](./repo-split-strapi-amvera.md).
+
 **Клиентский роутинг Astro и мобильные браузеры** (Chrome / Safari / Firefox / Opera Mini, gallery, выбор стека): [mobile-and-browser-astro-routing.md](./mobile-and-browser-astro-routing.md).
 
 ### SEO и превью ссылок (Google, соцсети)
