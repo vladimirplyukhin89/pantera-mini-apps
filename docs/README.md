@@ -89,7 +89,7 @@ Workflow CI: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) �
 ## Структура проекта
 
 ```
-pantera-mini-apps/          # фронтенд; CMS — отдельный репо (см. repo-split-strapi-amvera.md)
+pantera-mini-apps/          # фронтенд; кода Strapi в этом репо нет (см. repo-split-strapi-amvera.md)
 ├── astro-app/              # Astro (output: static), React-острова
 │   ├── src/
 │   │   ├── pages/          # Маршруты
@@ -151,4 +151,4 @@ npm run preview
 ---
 
 **Версия:** 2.1.0  
-**Обновлено:** 2026-04-09
+**Обновлено:** 2026-04-24
