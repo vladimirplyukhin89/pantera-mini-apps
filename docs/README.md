@@ -8,11 +8,9 @@
 # Astro (фронтенд)
 cd astro-app && npm install && npm run dev
 # → http://localhost:4321
-
-# Strapi (CMS)
-cd strapi-cms && npm install && npm run develop
-# → http://localhost:1337/admin
 ```
+
+Strapi (админка и API) — в [отдельном репозитории](repo-split-strapi-amvera.md); для локальной разработки укажите в `astro-app/.env` URL доступного Strapi.
 
 Для связки нужны переменные окружения в `astro-app/.env` (шаблон: `astro-app/.env.example`):
 
@@ -24,6 +22,8 @@ STRAPI_TOKEN=<API token из Strapi>
 **Сборка (`npm run build`)** без Strapi на `STRAPI_URL` даст пустой/урезанный контент: для полноценного `dist` API должен отвечать во время сборки.
 
 **Перенос админки и API со Strapi Cloud на поддомен Beget** (пошагово): [strapi-cloud-to-beget.md](./strapi-cloud-to-beget.md).
+
+**Разделение репозиториев (Strapi отдельно на Amvera, фронтенд на Beget):** [repo-split-strapi-amvera.md](./repo-split-strapi-amvera.md).
 
 **Клиентский роутинг Astro и мобильные браузеры** (Chrome / Safari / Firefox / Opera Mini, gallery, выбор стека): [mobile-and-browser-astro-routing.md](./mobile-and-browser-astro-routing.md).
 
@@ -75,21 +75,21 @@ STRAPI_TOKEN=<API token из Strapi>
 | Сервис | Назначение |
 |--------|------------|
 | GitHub Actions | Проверки при push/PR (`deploy.yml`), опционально пересборка статики и FTP (`rebuild-static.yml`) |
-| Strapi Cloud | Хостинг CMS (при текущей схеме) |
+| Strapi (Amvera / облако / свой сервер) | API и админка CMS; не входит в этот репозиторий |
 | Beget | Статика сайта (после выкладки `dist/`) |
 
-Workflow CI: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) — на push/PR в `main`: Prettier, `astro check`, сборка Astro; сборка Strapi admin.
+Workflow CI: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) — на push/PR в `main`: Prettier, `astro check`, сборка Astro.
 
 **Секреты для сборки Astro** (Settings → Actions → Secrets): `STRAPI_URL`, `STRAPI_TOKEN`.
 
-**Strapi Cloud (кратко):** [cloud.strapi.io](https://cloud.strapi.io) → проект, base directory `strapi-cms`, переменные `APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `JWT_SECRET`, `ENCRYPTION_KEY` — см. шаблон в панели Cloud.
+**Strapi Cloud (если ещё используете):** [cloud.strapi.io](https://cloud.strapi.io) → проект, base directory — корень приложения в репозитории, переменные `APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `JWT_SECRET`, `ENCRYPTION_KEY` — см. шаблон в панели Cloud.
 
 ---
 
 ## Структура проекта
 
 ```
-pantera-mini-apps/
+pantera-mini-apps/          # фронтенд; кода Strapi в этом репо нет (см. repo-split-strapi-amvera.md)
 ├── astro-app/              # Astro (output: static), React-острова
 │   ├── src/
 │   │   ├── pages/          # Маршруты
@@ -97,8 +97,6 @@ pantera-mini-apps/
 │   │   ├── lib/strapi.ts
 │   │   └── styles/
 │   └── public/
-├── strapi-cms/             # Strapi 5 (локально SQLite; Cloud — Postgres)
-│   └── src/api/
 └── docs/                   # Документация
 ```
 
@@ -142,18 +140,15 @@ pantera-mini-apps/
 ## Команды
 
 ```bash
-# Astro (из каталога astro-app)
+cd astro-app
 npm run dev
 npm run build
 npm run preview
-
-# Strapi (из каталога strapi-cms)
-npm run develop
-npm run build
-npm run start
 ```
+
+Команды Strapi — в репозитории CMS.
 
 ---
 
 **Версия:** 2.1.0  
-**Обновлено:** 2026-04-09
+**Обновлено:** 2026-04-24
