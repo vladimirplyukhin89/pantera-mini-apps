@@ -13,12 +13,33 @@ interface Props {
   quote?: string;
   stats?: Stat[];
   badge?: string;
+  reveal?: boolean;
+  revealDirection?: 'up' | 'down' | 'left' | 'right' | 'none';
+  revealSpeed?: number;
+  revealDistance?: string;
 }
 
-const { photo, label, name, quote, stats, badge } = Astro.props;
+const {
+  photo,
+  label,
+  name,
+  quote,
+  stats,
+  badge,
+  reveal = true,
+  revealDirection = 'up',
+  revealSpeed = 750,
+  revealDistance = '1.5rem',
+} = Astro.props;
 ---
 
-<div class="athlete-card">
+<div
+  class:list={['athlete-card', { 'athlete-card--reveal': reveal }]}
+  data-athlete-card-reveal={reveal ? '' : undefined}
+  data-reveal-direction={reveal ? revealDirection : undefined}
+  data-reveal-speed={reveal ? String(revealSpeed) : undefined}
+  data-reveal-distance={reveal ? revealDistance : undefined}
+>
   <div class="athlete-photo">
     {
       photo ? (
@@ -50,6 +71,21 @@ const { photo, label, name, quote, stats, badge } = Astro.props;
   </div>
 </div>
 
+<script>
+  import { initRevealOnView } from '../lib/revealOnView';
+
+  initRevealOnView({
+    selector: '[data-athlete-card-reveal]',
+    visibleClass: 'athlete-card--visible',
+    observedAttr: 'data-athlete-card-observed',
+    rootMargin: '0px 0px -8% 0px',
+    threshold: 0.1,
+    defaultDirection: 'up',
+    defaultDistance: '1.5rem',
+    defaultDurationMs: 750,
+  });
+</script>
+
 <style>
   .athlete-card {
     position: relative;
@@ -57,6 +93,27 @@ const { photo, label, name, quote, stats, badge } = Astro.props;
     overflow: hidden;
     background: #111;
     border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .athlete-card--reveal {
+    opacity: 0;
+    transform: translate3d(var(--reveal-translate-x, 0px), var(--reveal-translate-y, 1.5rem), 0);
+    transition:
+      opacity var(--reveal-duration, 750ms) cubic-bezier(0.22, 1, 0.36, 1),
+      transform var(--reveal-duration, 750ms) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .athlete-card--visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .athlete-card--reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 
   .athlete-photo {
