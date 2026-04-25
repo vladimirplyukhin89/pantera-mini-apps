@@ -135,15 +135,15 @@
 
 .modalClose {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: -3.25rem;
+  right: 0;
   z-index: 2;
   width: 2.75rem;
   height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-burgundy, rgba(119, 18, 19, 0.95));
+  background: var(--color-bg-purple);
   border: 1px solid rgba(255, 248, 231, 0.4);
   border-radius: 50%;
   color: var(--color-text-cream, #fff);
@@ -155,7 +155,7 @@
 }
 
 .modalClose:hover {
-  background: var(--color-red-accent, #d84c4c);
+  background: var(--color-bg-accent-purple-2);
   border-color: rgba(255, 248, 231, 0.55);
 }
 

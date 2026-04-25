@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { TfiArrowCircleRight } from 'react-icons/tfi';
+import { SlArrowRight } from "react-icons/sl";
 import styles from './PhotoGrid.module.css';
 
 interface PhotoItem {
@@ -106,7 +108,7 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
               }}
               aria-label="Предыдущее фото"
             >
-              ‹
+              <SlArrowRight className={`${styles.lightboxNavIcon} ${styles.lightboxNavIconPrev}`} />
             </button>
           )}
 
@@ -123,7 +125,7 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
               }}
               aria-label="Следующее фото"
             >
-              ›
+              <SlArrowRight className={styles.lightboxNavIcon} />
             </button>
           )}
 

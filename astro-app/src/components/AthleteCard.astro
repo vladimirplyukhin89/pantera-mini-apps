@@ -36,6 +36,7 @@ const {
 <div
   class:list={['athlete-card', { 'athlete-card--reveal': reveal }]}
   data-athlete-card-reveal={reveal ? '' : undefined}
+  data-reveal-id={reveal ? name || label : undefined}
   data-reveal-direction={reveal ? revealDirection : undefined}
   data-reveal-speed={reveal ? String(revealSpeed) : undefined}
   data-reveal-distance={reveal ? revealDistance : undefined}
@@ -83,6 +84,8 @@ const {
     defaultDirection: 'up',
     defaultDistance: '1.5rem',
     defaultDurationMs: 750,
+    persistCompleteInSession: true,
+    sessionStorageKey: 'reveal:athlete-card',
   });
 </script>
 
