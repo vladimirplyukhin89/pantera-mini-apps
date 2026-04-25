@@ -4,6 +4,9 @@ interface RevealOnViewOptions {
   selector: string;
   visibleClass?: string;
   observedAttr?: string;
+  completeAttr?: string;
+  persistCompleteInSession?: boolean;
+  sessionStorageKey?: string;
   rootMargin?: string;
   threshold?: number | number[];
   once?: boolean;
@@ -39,11 +42,33 @@ function parseDirection(raw: string | null, fallback: RevealDirection): RevealDi
   return fallback;
 }
 
+function getSessionKey(storageKey: string, item: HTMLElement, index: number): string {
+  const revealId = item.dataset.revealId || item.id || String(index);
+  return `${storageKey}:${revealId}`;
+}
+
 function revealElements(
   options: Required<Omit<RevealOnViewOptions, 'selector'>> & { selector: string }
 ) {
-  const items = document.querySelectorAll<HTMLElement>(
-    `${options.selector}:not([${options.observedAttr}])`
+  const allItems = Array.from(document.querySelectorAll<HTMLElement>(options.selector));
+  if (!allItems.length) return;
+
+  if (options.persistCompleteInSession) {
+    allItems.forEach((item, index) => {
+      try {
+        if (!window.sessionStorage.getItem(getSessionKey(options.sessionStorageKey, item, index)))
+          return;
+      } catch {
+        return;
+      }
+      item.classList.add(options.visibleClass);
+      item.setAttribute(options.observedAttr, '1');
+      item.setAttribute(options.completeAttr, '1');
+    });
+  }
+
+  const items = allItems.filter(
+    (item) => !item.hasAttribute(options.completeAttr) && !item.hasAttribute(options.observedAttr)
   );
   if (!items.length) return;
 
@@ -68,9 +93,17 @@ function revealElements(
   });
 
   if (reduceMotion) {
-    items.forEach((item) => {
+    items.forEach((item, index) => {
       item.classList.add(options.visibleClass);
       item.setAttribute(options.observedAttr, '1');
+      item.setAttribute(options.completeAttr, '1');
+      if (options.persistCompleteInSession) {
+        try {
+          window.sessionStorage.setItem(getSessionKey(options.sessionStorageKey, item, index), '1');
+        } catch {
+          // Ignore quota/security errors and keep non-persistent behavior.
+        }
+      }
     });
     return;
   }
@@ -79,7 +112,20 @@ function revealElements(
     (entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
-        entry.target.classList.add(options.visibleClass);
+        const target = entry.target as HTMLElement;
+        target.classList.add(options.visibleClass);
+        target.setAttribute(options.completeAttr, '1');
+        if (options.persistCompleteInSession) {
+          const index = allItems.indexOf(target);
+          try {
+            window.sessionStorage.setItem(
+              getSessionKey(options.sessionStorageKey, target, index === -1 ? 0 : index),
+              '1'
+            );
+          } catch {
+            // Ignore quota/security errors and keep non-persistent behavior.
+          }
+        }
         if (options.once) observer.unobserve(entry.target);
       }
     },
@@ -96,6 +142,9 @@ export function initRevealOnView({
   selector,
   visibleClass = 'is-reveal-visible',
   observedAttr = 'data-reveal-observed',
+  completeAttr = 'data-reveal-complete',
+  persistCompleteInSession = false,
+  sessionStorageKey = `reveal:${window.location.pathname}:${selector}`,
   rootMargin = '0px 0px -12% 0px',
   threshold = 0.12,
   once = true,
@@ -105,7 +154,7 @@ export function initRevealOnView({
 }: RevealOnViewOptions) {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
-  const bindingKey = `${selector}::${visibleClass}::${observedAttr}`;
+  const bindingKey = `${selector}::${visibleClass}::${observedAttr}::${completeAttr}`;
   const revealWindow = window as RevealWindow;
   revealWindow.__revealOnViewBindings ??= new Set<string>();
   if (revealWindow.__revealOnViewBindings.has(bindingKey)) return;
@@ -116,6 +165,9 @@ export function initRevealOnView({
       selector,
       visibleClass,
       observedAttr,
+      completeAttr,
+      persistCompleteInSession,
+      sessionStorageKey,
       rootMargin,
       threshold,
       once,
