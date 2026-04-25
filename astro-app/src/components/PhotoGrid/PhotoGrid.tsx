@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { TfiArrowCircleRight } from 'react-icons/tfi';
-import { SlArrowRight } from "react-icons/sl";
+import { SlArrowRight } from 'react-icons/sl';
 import styles from './PhotoGrid.module.css';
 
 interface PhotoItem {

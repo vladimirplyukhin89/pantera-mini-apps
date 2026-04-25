@@ -34,11 +34,14 @@ function getAxisOffset(direction: RevealDirection, distance: string): { x: strin
 
 function parseDirection(raw: string | null, fallback: RevealDirection): RevealDirection {
   if (!raw) return fallback;
-  if (raw === 'up' || raw === 'down' || raw === 'left' || raw === 'right' || raw === 'none') return raw;
+  if (raw === 'up' || raw === 'down' || raw === 'left' || raw === 'right' || raw === 'none')
+    return raw;
   return fallback;
 }
 
-function revealElements(options: Required<Omit<RevealOnViewOptions, 'selector'>> & { selector: string }) {
+function revealElements(
+  options: Required<Omit<RevealOnViewOptions, 'selector'>> & { selector: string }
+) {
   const items = document.querySelectorAll<HTMLElement>(
     `${options.selector}:not([${options.observedAttr}])`
   );
@@ -47,9 +50,13 @@ function revealElements(options: Required<Omit<RevealOnViewOptions, 'selector'>>
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   items.forEach((item, index) => {
-    const direction = parseDirection(item.dataset.revealDirection ?? null, options.defaultDirection);
+    const direction = parseDirection(
+      item.dataset.revealDirection ?? null,
+      options.defaultDirection
+    );
     const distance = item.dataset.revealDistance || options.defaultDistance;
-    const durationMs = Number.parseInt(item.dataset.revealSpeed || '', 10) || options.defaultDurationMs;
+    const durationMs =
+      Number.parseInt(item.dataset.revealSpeed || '', 10) || options.defaultDurationMs;
     const axis = getAxisOffset(direction, distance);
 
     item.style.setProperty('--reveal-translate-x', axis.x);
