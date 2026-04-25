@@ -6,6 +6,10 @@ interface ValueItem {
   title: string;
   description: string;
   accent?: string;
+  revealDirection?: 'up' | 'down' | 'left' | 'right' | 'none';
+  revealSpeed?: number;
+  revealDistance?: string;
+  revealStagger?: string;
 }
 
 interface Props {
@@ -27,7 +31,14 @@ const { values, bgVariant = 'salad' } = Astro.props;
   <div class="values-grid">
     {
       values?.map((value, index) => (
-        <div class="value-card" data-value-card style={`--reveal-index: ${index}`}>
+        <div
+          class="value-card"
+          data-value-card
+          data-reveal-direction={value.revealDirection}
+          data-reveal-speed={value.revealSpeed ? String(value.revealSpeed) : undefined}
+          data-reveal-distance={value.revealDistance}
+          style={`--reveal-index: ${index};${value.revealStagger ? ` --reveal-stagger: ${value.revealStagger};` : ''}`}
+        >
           <img src={value.photo} alt={value.title} loading="lazy" />
           <div class="value-overlay">
             <div class="value-content">
@@ -47,38 +58,18 @@ const { values, bgVariant = 'salad' } = Astro.props;
 </section>
 
 <script>
-  function initClubValuesReveal() {
-    const cards = document.querySelectorAll('[data-value-card]:not([data-reveal-observed])');
-    if (!cards.length) return;
+  import { initRevealOnView } from '../lib/revealOnView';
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      cards.forEach((card) => {
-        card.classList.add('value-card--visible');
-        card.setAttribute('data-reveal-observed', '1');
-      });
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          entry.target.classList.add('value-card--visible');
-          observer.unobserve(entry.target);
-        }
-      },
-      { rootMargin: '0px 0px -12% 0px', threshold: 0.12 }
-    );
-
-    cards.forEach((card) => {
-      card.setAttribute('data-reveal-observed', '1');
-      observer.observe(card);
-    });
-  }
-
-  initClubValuesReveal();
-  document.addEventListener('astro:page-load', initClubValuesReveal);
+  initRevealOnView({
+    selector: '[data-value-card]',
+    visibleClass: 'value-card--visible',
+    observedAttr: 'data-reveal-observed',
+    rootMargin: '0px 0px -12% 0px',
+    threshold: 0.12,
+    defaultDirection: 'up',
+    defaultDistance: '1.5rem',
+    defaultDurationMs: 750,
+  });
 </script>
 
 <style>
@@ -125,11 +116,11 @@ const { values, bgVariant = 'salad' } = Astro.props;
     overflow: hidden;
     cursor: default;
     opacity: 0;
-    transform: translateY(1.5rem);
+    transform: translate3d(var(--reveal-translate-x, 0px), var(--reveal-translate-y, 1.5rem), 0);
     transition:
-      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-    transition-delay: calc(var(--reveal-index, 0) * 0.5s);
+      opacity var(--reveal-duration, 750ms) cubic-bezier(0.22, 1, 0.36, 1),
+      transform var(--reveal-duration, 750ms) cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--reveal-index, 0) * var(--reveal-stagger, 0.12s));
   }
 
   .value-card--visible {

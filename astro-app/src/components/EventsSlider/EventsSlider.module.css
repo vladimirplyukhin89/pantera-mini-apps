@@ -196,7 +196,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--color-bg-purple);
   border-radius: 50%;
   color: var(--color-text-cream);
   pointer-events: none;

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
+import { FaPlayCircle } from 'react-icons/fa';
 import styles from './EventMediaGallery.module.css';
 
 export interface MediaItem {
@@ -20,10 +21,7 @@ function isSvgImageSrc(src: string) {
 function PlayButton({ onClick }: { onClick: () => void }) {
   return (
     <button className={styles.playOverlay} onClick={onClick} aria-label="Воспроизвести видео">
-      <svg className={styles.playIcon} viewBox="0 0 64 64" fill="none">
-        <circle cx="32" cy="32" r="31" stroke="currentColor" strokeWidth="2" opacity="0.5" />
-        <path d="M26 20v24l20-12z" fill="currentColor" />
-      </svg>
+      <FaPlayCircle className={styles.playIcon} aria-hidden="true" />
     </button>
   );
 }

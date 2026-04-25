@@ -1,4 +1,5 @@
 import useEmblaCarousel from 'embla-carousel-react';
+import { FaPlayCircle } from 'react-icons/fa';
 import '../../styles/section-backgrounds.css';
 import styles from './EventsSlider.module.css';
 
@@ -71,9 +72,7 @@ const EventCard = ({ event }: { event: EventItem }) => {
               <img src={thumb.src} alt={thumb.alt} loading="lazy" decoding="async" />
               {hasVideo(event) && (
                 <div className={styles.videoIndicator} aria-label="Содержит видео">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+                  <FaPlayCircle size={20} aria-hidden="true" />
                 </div>
               )}
             </div>
