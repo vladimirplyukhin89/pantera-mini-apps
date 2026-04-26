@@ -23,6 +23,57 @@ export async function optimizeStrapiImage800(
   }
 }
 
+type ResponsiveImageVariant = {
+  src: string;
+  srcSet: string;
+  sizes: string;
+};
+
+/** Строит responsive-варианты для клиентских компонентов (img + srcset/sizes). */
+export async function optimizeStrapiImageResponsive(
+  remoteSrc: string,
+  widths: number[],
+  sizes: string,
+  logContext: string
+): Promise<ResponsiveImageVariant> {
+  if (!remoteSrc) {
+    return { src: remoteSrc, srcSet: '', sizes };
+  }
+  if (/\.svg(\?|$)/i.test(remoteSrc)) {
+    return { src: remoteSrc, srcSet: '', sizes };
+  }
+
+  const uniqueWidths = Array.from(new Set(widths.filter((w) => Number.isFinite(w) && w > 0))).sort(
+    (a, b) => a - b
+  );
+  if (uniqueWidths.length === 0) {
+    return { src: await optimizeStrapiImage800(remoteSrc, logContext), srcSet: '', sizes };
+  }
+
+  try {
+    const optimized = await Promise.all(
+      uniqueWidths.map(async (width) => ({
+        width,
+        src: (
+          await getImage({
+            src: remoteSrc,
+            width,
+            format: 'webp',
+            inferSize: true,
+          })
+        ).src,
+      }))
+    );
+
+    const srcSet = optimized.map((x) => `${x.src} ${x.width}w`).join(', ');
+    const src = optimized[optimized.length - 1]?.src ?? remoteSrc;
+    return { src, srcSet, sizes };
+  } catch (e) {
+    console.error(`getImage responsive ${logContext}:`, e);
+    return { src: await optimizeStrapiImage800(remoteSrc, logContext), srcSet: '', sizes };
+  }
+}
+
 /**
  * og:image / twitter:image должны быть абсолютными URL.
  * Сырой Strapi уже абсолютный; результат getImage часто путь вида `/_astro/...`.

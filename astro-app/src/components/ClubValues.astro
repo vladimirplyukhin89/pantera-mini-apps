@@ -1,5 +1,6 @@
 ---
 import '../styles/section-backgrounds.css';
+import { Image } from 'astro:assets';
 
 interface ValueItem {
   photo: string;
@@ -39,7 +40,7 @@ const { values, bgVariant = 'salad' } = Astro.props;
           data-reveal-distance={value.revealDistance}
           style={`--reveal-index: ${index};${value.revealStagger ? ` --reveal-stagger: ${value.revealStagger};` : ''}`}
         >
-          <img src={value.photo} alt={value.title} loading="lazy" />
+          <Image src={value.photo} alt={value.title} loading="lazy" width={1200} height={800} />
           <div class="value-overlay">
             <div class="value-content">
               <span

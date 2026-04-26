@@ -14,12 +14,14 @@ import {
   type StrapiClubValue,
   type StrapiEvent,
 } from '../lib/strapi';
-import { optimizeStrapiImage800 } from '../lib/strapiImages';
+import { optimizeStrapiImageResponsive } from '../lib/strapiImages';
 import { Image } from 'astro:assets';
 
 // ─── Gallery photos ──────────────────────────────────────
 type GalleryPhoto = {
   src: string;
+  srcSet: string;
+  sizes: string;
   alt: string;
   variant?: 'tall' | 'wide';
 };
@@ -38,7 +40,13 @@ try {
         ...(variant ? { variant } : {}),
       };
       if (!remoteSrc) return null;
-      return { src: await optimizeStrapiImage800(remoteSrc, 'gallery'), ...common };
+      const optimized = await optimizeStrapiImageResponsive(
+        remoteSrc,
+        [320, 480, 640, 800],
+        '(max-width: 480px) 50vw, (max-width: 1024px) 33vw, 360px',
+        'gallery:grid'
+      );
+      return { ...optimized, ...common };
     })
   );
   galleryPhotos = built.filter((x): x is GalleryPhoto => x !== null && x !== undefined);
@@ -69,8 +77,10 @@ interface SliderEvent {
   teaser: string;
   date: string;
   statusCode: 'planned' | 'past';
-  media: { type: 'image' | 'video'; src: string; alt?: string }[];
+  media: { type: 'image' | 'video'; src: string; srcSet?: string; sizes?: string; alt?: string }[];
   videoCover?: string;
+  videoCoverSrcSet?: string;
+  videoCoverSizes?: string;
   accentIndex: number;
 }
 
@@ -78,20 +88,54 @@ let planned: SliderEvent[] = [];
 let past: SliderEvent[] = [];
 try {
   const raw = await fetchStrapi<StrapiEvent[]>('events?populate=*&sort=order:asc');
-  const all = raw.map(
-    (ev): SliderEvent => ({
-      id: ev.slug || ev.documentId,
-      title: ev.title,
-      teaser: ev.teaser || '',
-      date: ev.date_label || '',
-      statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
-      media: (ev.media || []).map((m) => ({
-        type: isVideoMedia(m) ? ('video' as const) : ('image' as const),
-        src: strapiMedia(m.url),
-        alt: m.alternativeText || '',
-      })),
-      videoCover: ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : undefined,
-      accentIndex: ev.accent_index ?? 0,
+  const all = await Promise.all(
+    raw.map(async (ev): Promise<SliderEvent> => {
+      const media = await Promise.all(
+        (ev.media || []).map(async (m) => {
+          const isVideo = isVideoMedia(m);
+          const remoteSrc = strapiMedia(m.url);
+          const optimized =
+            !isVideo && remoteSrc
+              ? await optimizeStrapiImageResponsive(
+                  remoteSrc,
+                  [240, 320, 480, 640],
+                  '(max-width: 480px) 80vw, (max-width: 1024px) 44vw, 360px',
+                  `gallery:event:${ev.slug || ev.documentId}`
+                )
+              : { src: remoteSrc, srcSet: '', sizes: '' };
+
+          return {
+            type: isVideo ? ('video' as const) : ('image' as const),
+            src: optimized.src,
+            ...(optimized.srcSet ? { srcSet: optimized.srcSet } : {}),
+            ...(optimized.sizes ? { sizes: optimized.sizes } : {}),
+            alt: m.alternativeText || '',
+          };
+        })
+      );
+
+      const videoCoverRemote = ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : '';
+      const videoCoverOptimized = videoCoverRemote
+        ? await optimizeStrapiImageResponsive(
+            videoCoverRemote,
+            [240, 320, 480, 640],
+            '(max-width: 480px) 80vw, (max-width: 1024px) 44vw, 360px',
+            `gallery:event:video-cover:${ev.slug || ev.documentId}`
+          )
+        : null;
+
+      return {
+        id: ev.slug || ev.documentId,
+        title: ev.title,
+        teaser: ev.teaser || '',
+        date: ev.date_label || '',
+        statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
+        media,
+        videoCover: videoCoverOptimized?.src,
+        ...(videoCoverOptimized?.srcSet ? { videoCoverSrcSet: videoCoverOptimized.srcSet } : {}),
+        ...(videoCoverOptimized?.sizes ? { videoCoverSizes: videoCoverOptimized.sizes } : {}),
+        accentIndex: ev.accent_index ?? 0,
+      };
     })
   );
   planned = all.filter((e) => e.statusCode === 'planned');
@@ -159,7 +203,7 @@ const isGalleryEmpty =
               <h1 class="section-title">
                 Место, где <span class="accent-word">характер</span> закаляется
               </h1>
-              <p class="section-subtitle">Если я упал - не радуйся, я просто шнурки проверял</p>
+              <p class="section-subtitle">Если я упал - не радуйся, я просто отдохнул и встал</p>
             </div>
             <PhotoGrid client:visible photos={galleryPhotos} perPage={8} />
           </section>
@@ -173,7 +217,7 @@ const isGalleryEmpty =
   .main-content {
     flex: 1;
     padding: 1.5rem 1rem;
-    padding-top: calc(var(--header-height) + 1.5rem);
+    padding-top: calc(var(--header-height) + 0.75rem);
     max-width: 100%;
     margin: 0 auto;
     padding-bottom: 7.5rem;
@@ -275,9 +319,8 @@ const isGalleryEmpty =
   @media (min-width: 481px) {
     .main-content {
       padding: 2rem 1.5rem 7rem;
-      padding-top: calc(var(--header-height) + 2rem);
+      padding-top: calc(var(--header-height) + 0.75rem);
     }
-
     .no-content-text {
       font-size: 1.125rem;
     }
@@ -292,6 +335,13 @@ const isGalleryEmpty =
 
     .section-subtitle {
       font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .main-content {
+      padding: 2rem 1.5rem 7rem;
+      padding-top: calc(var(--header-height) + 1.5rem);
     }
   }
 

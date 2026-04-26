@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { TfiArrowCircleRight } from 'react-icons/tfi';
 import { SlArrowRight } from 'react-icons/sl';
 import styles from './PhotoGrid.module.css';
 
 interface PhotoItem {
   src: string;
+  srcSet?: string;
+  sizes?: string;
   alt: string;
   variant?: 'tall' | 'wide';
 }
@@ -71,7 +72,14 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
             style={{ animationDelay: `${(i % perPage) * 0.05}s` }}
             onClick={() => setLightboxIndex(i)}
           >
-            <img src={photo.src} alt={photo.alt} loading="lazy" />
+            <img
+              src={photo.src}
+              srcSet={photo.srcSet}
+              sizes={photo.sizes}
+              alt={photo.alt}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         ))}
 
