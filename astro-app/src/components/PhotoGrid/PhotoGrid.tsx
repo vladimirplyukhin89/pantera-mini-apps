@@ -4,6 +4,8 @@ import styles from './PhotoGrid.module.css';
 
 interface PhotoItem {
   src: string;
+  srcSet?: string;
+  sizes?: string;
   alt: string;
   variant?: 'tall' | 'wide';
 }
@@ -70,7 +72,14 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
             style={{ animationDelay: `${(i % perPage) * 0.05}s` }}
             onClick={() => setLightboxIndex(i)}
           >
-            <img src={photo.src} alt={photo.alt} loading="lazy" />
+            <img
+              src={photo.src}
+              srcSet={photo.srcSet}
+              sizes={photo.sizes}
+              alt={photo.alt}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         ))}
 
@@ -112,7 +121,13 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
           )}
 
           <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-            <img src={photos[lightboxIndex].src} alt={photos[lightboxIndex].alt} />
+            <img
+              src={photos[lightboxIndex].src}
+              srcSet={photos[lightboxIndex].srcSet}
+              sizes="100vw"
+              alt={photos[lightboxIndex].alt}
+              decoding="async"
+            />
           </div>
 
           {lightboxIndex < photos.length - 1 && (

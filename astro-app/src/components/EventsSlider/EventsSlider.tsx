@@ -6,6 +6,8 @@ import styles from './EventsSlider.module.css';
 interface EventMedia {
   type: 'image' | 'video';
   src: string;
+  srcSet?: string;
+  sizes?: string;
   alt?: string;
 }
 
@@ -17,6 +19,8 @@ export interface EventItem {
   statusCode: 'planned' | 'past';
   media: EventMedia[];
   videoCover?: string;
+  videoCoverSrcSet?: string;
+  videoCoverSizes?: string;
   accentIndex: number;
 }
 
@@ -25,18 +29,37 @@ interface EventsSliderProps {
   past: EventItem[];
 }
 
-function getCardThumbnail(event: EventItem): { src: string; alt: string } | null {
+function getCardThumbnail(
+  event: EventItem
+): { src: string; srcSet?: string; sizes?: string; alt: string } | null {
   if (event.videoCover) {
-    return { src: event.videoCover, alt: event.title };
+    return {
+      src: event.videoCover,
+      srcSet: event.videoCoverSrcSet,
+      sizes: event.videoCoverSizes,
+      alt: event.title,
+    };
   }
   const firstImage = event.media.find((m) => m.type === 'image');
   if (firstImage) {
-    return { src: firstImage.src, alt: firstImage.alt ?? '' };
+    return {
+      src: firstImage.src,
+      srcSet: firstImage.srcSet,
+      sizes: firstImage.sizes,
+      alt: firstImage.alt ?? '',
+    };
   }
   if (event.media.length > 0 && event.media[0].type === 'video') {
     return null;
   }
-  return event.media.length > 0 ? { src: event.media[0].src, alt: event.media[0].alt ?? '' } : null;
+  return event.media.length > 0
+    ? {
+        src: event.media[0].src,
+        srcSet: event.media[0].srcSet,
+        sizes: event.media[0].sizes,
+        alt: event.media[0].alt ?? '',
+      }
+    : null;
 }
 
 /** SVG-превью — 16∶9 + contain; растровые — cover (см. .thumbPlanned / .thumbPast). */
@@ -69,7 +92,14 @@ const EventCard = ({ event }: { event: EventItem }) => {
             <div
               className={`${styles.cardThumb} ${isSvgImageSrc(thumb.src) ? styles.thumbPlanned : styles.thumbPast}`}
             >
-              <img src={thumb.src} alt={thumb.alt} loading="lazy" decoding="async" />
+              <img
+                src={thumb.src}
+                srcSet={thumb.srcSet}
+                sizes={thumb.sizes}
+                alt={thumb.alt}
+                loading="lazy"
+                decoding="async"
+              />
               {hasVideo(event) && (
                 <div className={styles.videoIndicator} aria-label="Содержит видео">
                   <FaPlayCircle size={20} aria-hidden="true" />

@@ -14,12 +14,14 @@ import {
   type StrapiClubValue,
   type StrapiEvent,
 } from '../lib/strapi';
-import { optimizeStrapiImage800 } from '../lib/strapiImages';
+import { optimizeStrapiImageResponsive } from '../lib/strapiImages';
 import { Image } from 'astro:assets';
 
 // ─── Gallery photos ──────────────────────────────────────
 type GalleryPhoto = {
   src: string;
+  srcSet: string;
+  sizes: string;
   alt: string;
   variant?: 'tall' | 'wide';
 };
@@ -38,7 +40,13 @@ try {
         ...(variant ? { variant } : {}),
       };
       if (!remoteSrc) return null;
-      return { src: await optimizeStrapiImage800(remoteSrc, 'gallery'), ...common };
+      const optimized = await optimizeStrapiImageResponsive(
+        remoteSrc,
+        [320, 480, 640, 800],
+        '(max-width: 480px) 50vw, (max-width: 1024px) 33vw, 360px',
+        'gallery:grid'
+      );
+      return { ...optimized, ...common };
     })
   );
   galleryPhotos = built.filter((x): x is GalleryPhoto => x !== null && x !== undefined);
@@ -69,8 +77,10 @@ interface SliderEvent {
   teaser: string;
   date: string;
   statusCode: 'planned' | 'past';
-  media: { type: 'image' | 'video'; src: string; alt?: string }[];
+  media: { type: 'image' | 'video'; src: string; srcSet?: string; sizes?: string; alt?: string }[];
   videoCover?: string;
+  videoCoverSrcSet?: string;
+  videoCoverSizes?: string;
   accentIndex: number;
 }
 
@@ -84,26 +94,35 @@ try {
         (ev.media || []).map(async (m) => {
           const isVideo = isVideoMedia(m);
           const remoteSrc = strapiMedia(m.url);
-          const src =
+          const optimized =
             !isVideo && remoteSrc
-              ? await optimizeStrapiImage800(remoteSrc, `gallery:event:${ev.slug || ev.documentId}`)
-              : remoteSrc;
+              ? await optimizeStrapiImageResponsive(
+                  remoteSrc,
+                  [240, 320, 480, 640],
+                  '(max-width: 480px) 80vw, (max-width: 1024px) 44vw, 360px',
+                  `gallery:event:${ev.slug || ev.documentId}`
+                )
+              : { src: remoteSrc, srcSet: '', sizes: '' };
 
           return {
             type: isVideo ? ('video' as const) : ('image' as const),
-            src,
+            src: optimized.src,
+            ...(optimized.srcSet ? { srcSet: optimized.srcSet } : {}),
+            ...(optimized.sizes ? { sizes: optimized.sizes } : {}),
             alt: m.alternativeText || '',
           };
         })
       );
 
       const videoCoverRemote = ev.video_cover?.url ? strapiMedia(ev.video_cover.url) : '';
-      const videoCover = videoCoverRemote
-        ? await optimizeStrapiImage800(
+      const videoCoverOptimized = videoCoverRemote
+        ? await optimizeStrapiImageResponsive(
             videoCoverRemote,
+            [240, 320, 480, 640],
+            '(max-width: 480px) 80vw, (max-width: 1024px) 44vw, 360px',
             `gallery:event:video-cover:${ev.slug || ev.documentId}`
           )
-        : undefined;
+        : null;
 
       return {
         id: ev.slug || ev.documentId,
@@ -112,7 +131,9 @@ try {
         date: ev.date_label || '',
         statusCode: ev.statusCode ?? ev.statusPlan ?? ev.status ?? 'past',
         media,
-        videoCover,
+        videoCover: videoCoverOptimized?.src,
+        ...(videoCoverOptimized?.srcSet ? { videoCoverSrcSet: videoCoverOptimized.srcSet } : {}),
+        ...(videoCoverOptimized?.sizes ? { videoCoverSizes: videoCoverOptimized.sizes } : {}),
         accentIndex: ev.accent_index ?? 0,
       };
     })
@@ -182,7 +203,7 @@ const isGalleryEmpty =
               <h1 class="section-title">
                 Место, где <span class="accent-word">характер</span> закаляется
               </h1>
-              <p class="section-subtitle">Если я упал - не радуйся, я просто шнурки проверял</p>
+              <p class="section-subtitle">Если я упал - не радуйся, я просто отдохнул и встал</p>
             </div>
             <PhotoGrid client:visible photos={galleryPhotos} perPage={8} />
           </section>
