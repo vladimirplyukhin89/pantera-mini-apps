@@ -121,13 +121,7 @@ const PhotoGrid = ({ photos, perPage = 8 }: PhotoGridProps) => {
           )}
 
           <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-            <img
-              src={photos[lightboxIndex].src}
-              srcSet={photos[lightboxIndex].srcSet}
-              sizes="100vw"
-              alt={photos[lightboxIndex].alt}
-              decoding="async"
-            />
+            <img src={photos[lightboxIndex].src} alt={photos[lightboxIndex].alt} />
           </div>
 
           {lightboxIndex < photos.length - 1 && (
