@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+
 interface PhotoItem {
   src: string;
   alt: string;
@@ -10,21 +12,21 @@ interface Props {
   photos?: PhotoItem[];
 }
 
-const defaultPhotos: PhotoItem[] = [
-  { src: '/images/jpg/01.jpg', alt: 'Pantera клуб', tag: 'Атмосфера', variant: 'tall' },
-  { src: '/images/jpg/03.jpg', alt: 'Тренировка', tag: 'Тренировки' },
-  { src: '/images/jpg/07.jpg', alt: 'В зале', tag: 'Дисциплина' },
-  { src: '/images/jpg/36.jpg', alt: 'Команда', tag: 'Команда', variant: 'wide' },
-  { src: '/images/jpg/09.jpg', alt: 'Спарринг', tag: 'Спарринги' },
-  { src: '/images/jpg/37.jpg', alt: 'Дух победы', tag: 'Дух победы', variant: 'tall' },
-];
+// const defaultPhotos: PhotoItem[] = [
+//   { src: '/images/jpg/01.jpg', alt: 'Pantera клуб', tag: 'Атмосфера', variant: 'tall' },
+//   { src: '/images/jpg/03.jpg', alt: 'Тренировка', tag: 'Тренировки' },
+//   { src: '/images/jpg/07.jpg', alt: 'В зале', tag: 'Дисциплина' },
+//   { src: '/images/jpg/36.jpg', alt: 'Команда', tag: 'Команда', variant: 'wide' },
+//   { src: '/images/jpg/09.jpg', alt: 'Спарринг', tag: 'Спарринги' },
+//   { src: '/images/jpg/37.jpg', alt: 'Дух победы', tag: 'Дух победы', variant: 'tall' },
+// ];
 
-const { photos = defaultPhotos } = Astro.props;
+const { photos } = Astro.props;
 ---
 
 <div class="photo-grid">
   {
-    photos.map((photo) => (
+    photos?.map((photo: PhotoItem) => (
       <div
         class:list={[
           'grid-item',
@@ -32,7 +34,13 @@ const { photos = defaultPhotos } = Astro.props;
           { 'grid-item-wide': photo.variant === 'wide' },
         ]}
       >
-        <img src={photo.src} alt={photo.alt} loading="lazy" />
+        <Image
+          src={photo.src}
+          alt={photo.alt}
+          loading="lazy"
+          width={1200}
+          height={800}
+        />
         <div class="grid-overlay">
           <span class="grid-tag">{photo.tag}</span>
         </div>
