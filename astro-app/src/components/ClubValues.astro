@@ -40,13 +40,7 @@ const { values, bgVariant = 'salad' } = Astro.props;
           data-reveal-distance={value.revealDistance}
           style={`--reveal-index: ${index};${value.revealStagger ? ` --reveal-stagger: ${value.revealStagger};` : ''}`}
         >
-          <Image
-            src={value.photo}
-            alt={value.title}
-            loading="lazy"
-            width={1200}
-            height={800}
-          />
+          <Image src={value.photo} alt={value.title} loading="lazy" width={1200} height={800} />
           <div class="value-overlay">
             <div class="value-content">
               <span

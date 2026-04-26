@@ -34,13 +34,7 @@ const { photos } = Astro.props;
           { 'grid-item-wide': photo.variant === 'wide' },
         ]}
       >
-        <Image
-          src={photo.src}
-          alt={photo.alt}
-          loading="lazy"
-          width={1200}
-          height={800}
-        />
+        <Image src={photo.src} alt={photo.alt} loading="lazy" width={1200} height={800} />
         <div class="grid-overlay">
           <span class="grid-tag">{photo.tag}</span>
         </div>
