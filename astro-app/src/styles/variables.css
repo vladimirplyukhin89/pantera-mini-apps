@@ -20,6 +20,7 @@
   --color-bg-cream: #fff8e7;
   --color-bg-dark: rgba(0, 0, 0, 0.8);
   --color-bg-purple: rgba(156, 39, 176, 0.3);
+  --color-bg-purple-2: rgba(156, 39, 176, 0.8);
   --color-bg-orange: rgba(230, 96, 0, 0.8);
   --color-overlay-dark: rgba(0, 0, 0, 0.3);
   --color-bg-overlay-white: rgba(255, 255, 255, 0.9);
@@ -30,7 +31,6 @@
   --color-bg-accent-green: rgba(8, 255, 162, 0.8);
   --color-bg-accent-purple: rgba(255, 05, 255, 0.2);
   --color-bg-accent-purple-2: rgba(255, 05, 255, 0.5);
-  --color-bg-accent-purple-3: rgba(255, 05, 255, 0.85);
 
   /* Тени */
   --color-shadow-text: rgba(0, 0, 0, 0.3);
